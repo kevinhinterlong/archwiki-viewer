@@ -1,0 +1,28 @@
+@CHARSET "UTF-8";
+
+/*hide bad links*/
+#jump-to-nav,#siteSub,#archnavbar,#footer,#column-one,#catlinks {
+	display: none !important;
+}
+
+/*this is needed for "Summary" and "Related"  */
+table {
+	width: 100% !important;
+}
+
+#content {
+	width: 100% !important;
+}
+
+div.printfooter,div.mw-search-formheader {
+	display: none;
+}
+
+input {
+	display: none;
+}
+
+/*display toc table */
+table.toc {
+	display: block !important;
+}

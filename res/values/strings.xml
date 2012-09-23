@@ -1,0 +1,8 @@
+<resources>
+
+    <string name="app_name">ArchWiki Viewer</string>
+    <string name="app_label">ArchWiki Viewer</string>
+    <string name="menu_settings">Settings</string>
+    <string name="title_activity_wiki">ArchWiki Viewer</string>
+
+</resources>
