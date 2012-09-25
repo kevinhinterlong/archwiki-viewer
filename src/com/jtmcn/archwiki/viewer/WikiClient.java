@@ -1,10 +1,5 @@
 package com.jtmcn.archwiki.viewer;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.Stack;
 
 import android.app.Activity;
@@ -20,12 +15,12 @@ import android.widget.Toast;
 
 public class WikiClient extends WebViewClient {
 
-	WebView myView;
-	String webpage;
+	static WebView myView;
+	static BuildWikiPage webpage;
 	String myUrl;
 	ProgressBar myProg;
 	Activity thisActivity;
-	boolean pageFinished;
+	static boolean pageFinished;
 
 	private Stack<String> histStack = new Stack<String>();
 
@@ -43,7 +38,6 @@ public class WikiClient extends WebViewClient {
 
 			pageFinished = false;
 			myView.stopLoading();
-
 			addHistory(myUrl);
 
 			new Read().execute(url);
@@ -97,51 +91,6 @@ public class WikiClient extends WebViewClient {
 			myProg.setVisibility(View.GONE);
 	}
 
-	private String buildPage(String urlString) {
-		myUrl = urlString;
-		try {
-			URL url = new URL(urlString);
-			HttpURLConnection urlConnection = (HttpURLConnection) url
-					.openConnection();
-
-			urlConnection.setReadTimeout(10000 /* milliseconds */);
-			urlConnection.setConnectTimeout(15000 /* milliseconds */);
-			urlConnection.setRequestMethod("GET");
-
-			BufferedReader in = new BufferedReader(new InputStreamReader(
-					urlConnection.getInputStream()));
-
-			StringBuffer sb = new StringBuffer("");
-			String l = "";
-			String nl = System.getProperty("line.separator");
-
-			while ((l = in.readLine()) != null) {
-				sb.append(l + nl);
-			}
-
-			urlConnection.disconnect();
-			in.close();
-
-			String pageString = sb.toString();
-
-			StringBuilder htmlString = new StringBuilder();
-			htmlString.append(pageString);
-
-			int headStart = htmlString.indexOf("<head>");
-			int headEnd = htmlString.indexOf("</head>");
-
-			String head = "<link rel='stylesheet' href='file:///android_asset/style.css'></head>";
-			String page = htmlString.replace(headStart, headEnd, head)
-					.toString();
-
-			return page;
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		return null;
-
-	}
 
 	public int histStackSize() {
 		int histSize = histStack.size();
@@ -152,12 +101,12 @@ public class WikiClient extends WebViewClient {
 		histStack.removeAllElements();
 	}
 
-	public class Read extends AsyncTask<String, Integer, String> {
+	public static class Read extends AsyncTask<String, Integer, String> {
 
 		@Override
 		protected String doInBackground(String... params) {
-			webpage = buildPage(params[0]); // url
-			return webpage;
+			webpage = new BuildWikiPage(params[0]); // url
+			return null;
 		}
 
 		@Override
@@ -167,7 +116,7 @@ public class WikiClient extends WebViewClient {
 			String urlStr = "https://wiki.archlinux.org/";
 			String mimeType = "text/html";
 			String encoding = "UTF-8";
-			String pageData = result;
+			String pageData = webpage.getHtmlString();
 
 			myView.loadDataWithBaseURL(urlStr, pageData, mimeType, encoding,
 					null);
