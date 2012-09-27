@@ -19,15 +19,17 @@ public class WikiActivity extends Activity implements OnClickListener {
 	LinearLayout titleBar;
 	ProgressBar progress;
 	Button searchButton;
-
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
 		// use custom titlebar to add search button
 		titleBar = (LinearLayout) findViewById(R.id.title);
-
+		
 		// initialize view
+		// TODO: why does this crash if set before titlebar?
+		// "textiew cannot be cast to linearlayout"
 		setContentView(R.layout.wiki_layout);
 
 		// associate xml variables
@@ -36,7 +38,7 @@ public class WikiActivity extends Activity implements OnClickListener {
 		searchButton = (Button) findViewById(R.id.search);
 		searchButton.setOnClickListener(this);
 
-		myClient = new WikiClient(this, progress);
+		myClient = new WikiClient(wikiViewer, progress);
 		wikiViewer.setWebViewClient(myClient);
 
 		Intent intent = getIntent();
@@ -44,7 +46,7 @@ public class WikiActivity extends Activity implements OnClickListener {
 			String query = intent.getStringExtra(SearchManager.QUERY);
 			String searchUrl = "https://wiki.archlinux.org/index.php?title=Special%3ASearch&search="
 					+ query;
-			myClient.searchWiki(wikiViewer, searchUrl);
+			myClient.searchWiki(searchUrl);
 		} else {
 			wikiViewer.loadUrl("file:///android_asset/startPage.html");
 		}

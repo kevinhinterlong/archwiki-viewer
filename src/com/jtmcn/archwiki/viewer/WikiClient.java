@@ -1,8 +1,10 @@
 package com.jtmcn.archwiki.viewer;
 
+import java.lang.ref.WeakReference;
 import java.util.Stack;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -12,32 +14,33 @@ import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-
 public class WikiClient extends WebViewClient {
 
-	static WebView myView;
 	static BuildWikiPage webpage;
 	String myUrl;
 	ProgressBar myProg;
-	Activity thisActivity;
+	Context context;
+
 	static boolean pageFinished;
+	protected static WeakReference<WebView> wrWeb;
 
 	private Stack<String> histStack = new Stack<String>();
 
-	public WikiClient(Activity act, ProgressBar progress) {
+	public WikiClient(WebView wikiViewer, ProgressBar progress) {
+		wrWeb = new WeakReference<WebView>(wikiViewer);
 		myProg = progress;
-		thisActivity = act;
 	}
 
+	@Override
 	public boolean shouldOverrideUrlLoading(WebView view, String url) {
-		myView = view;
+
 		myUrl = url;
 
 		// check if page is part of the wiki
 		if (myUrl.startsWith("https://wiki.archlinux.org/")) {
 
 			pageFinished = false;
-			myView.stopLoading();
+			wrWeb.get().stopLoading();
 			addHistory(myUrl);
 
 			new Read().execute(url);
@@ -46,10 +49,8 @@ public class WikiClient extends WebViewClient {
 
 			return false;
 		} else {
-
 			Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-
-			thisActivity.startActivity(intent);
+			context.startActivity(intent);
 			return true;
 		}
 
@@ -65,8 +66,7 @@ public class WikiClient extends WebViewClient {
 		histStack.push(histUrl);
 	}
 
-	public void searchWiki(WebView wikiViewer, String searchUrl) {
-		myView = wikiViewer;
+	public void searchWiki(String searchUrl) {
 		new Read().execute(searchUrl);
 	}
 
@@ -91,7 +91,6 @@ public class WikiClient extends WebViewClient {
 			myProg.setVisibility(View.GONE);
 	}
 
-
 	public int histStackSize() {
 		int histSize = histStack.size();
 		return histSize;
@@ -101,7 +100,7 @@ public class WikiClient extends WebViewClient {
 		histStack.removeAllElements();
 	}
 
-	public static class Read extends AsyncTask<String, Integer, String> {
+	private static class Read extends AsyncTask<String, Integer, String> {
 
 		@Override
 		protected String doInBackground(String... params) {
@@ -118,8 +117,8 @@ public class WikiClient extends WebViewClient {
 			String encoding = "UTF-8";
 			String pageData = webpage.getHtmlString();
 
-			myView.loadDataWithBaseURL(urlStr, pageData, mimeType, encoding,
-					null);
+			wrWeb.get().loadDataWithBaseURL(urlStr, pageData, mimeType,
+					encoding, null);
 
 		}
 
