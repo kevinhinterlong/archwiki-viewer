@@ -19,19 +19,25 @@ public class WikiActivity extends Activity implements OnClickListener {
 	LinearLayout titleBar;
 	ProgressBar progress;
 	Button searchButton;
-	
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		Intent intent = getIntent();
 
-		// use custom titlebar to add search button
-		titleBar = (LinearLayout) findViewById(R.id.title);
-		
-		// initialize view
-		// TODO: why does this crash if set before titlebar?
-		// "textiew cannot be cast to linearlayout"
 		setContentView(R.layout.wiki_layout);
 
+		initializeUI();
+
+		if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
+			String query = intent.getStringExtra(SearchManager.QUERY);
+			String searchUrl = "https://wiki.archlinux.org/index.php?title=Special%3ASearch&search="
+					+ query;
+			myClient.searchWiki(searchUrl);
+		}
+	}
+
+	public void initializeUI() {
 		// associate xml variables
 		wikiViewer = (WebView) findViewById(R.id.wvMain);
 		progress = (ProgressBar) findViewById(R.id.ProgressBar);
@@ -40,16 +46,14 @@ public class WikiActivity extends Activity implements OnClickListener {
 
 		myClient = new WikiClient(wikiViewer, progress);
 		wikiViewer.setWebViewClient(myClient);
+		wikiViewer.loadUrl("file:///android_asset/startPage.html");
+	}
 
-		Intent intent = getIntent();
-		if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
-			String query = intent.getStringExtra(SearchManager.QUERY);
-			String searchUrl = "https://wiki.archlinux.org/index.php?title=Special%3ASearch&search="
-					+ query;
-			myClient.searchWiki(searchUrl);
-		} else {
-			wikiViewer.loadUrl("file:///android_asset/startPage.html");
-		}
+	@Override
+	protected void onRestoreInstanceState(Bundle savedInstanceState) {
+		super.onRestoreInstanceState(savedInstanceState);
+		// restore the WikiClient
+		myClient.restorePage();
 	}
 
 	@Override
@@ -58,7 +62,7 @@ public class WikiActivity extends Activity implements OnClickListener {
 		// history needs to be managed manually
 		if ((keyCode == KeyEvent.KEYCODE_BACK)
 				&& (myClient.histStackSize() == 1)) {
-			// if there's only one entry load local.html
+			// if there's only one entry load local html
 			progress.setVisibility(View.VISIBLE);
 			wikiViewer.loadUrl("file:///android_asset/startPage.html");
 			myClient.reduceStackSize();

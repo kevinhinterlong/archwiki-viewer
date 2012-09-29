@@ -3,7 +3,6 @@ package com.jtmcn.archwiki.viewer;
 import java.lang.ref.WeakReference;
 import java.util.Stack;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -17,11 +16,12 @@ import android.widget.Toast;
 public class WikiClient extends WebViewClient {
 
 	static BuildWikiPage webpage;
+	static String savedPage;
+	static boolean pageFinished;
 	String myUrl;
 	ProgressBar myProg;
 	Context context;
 
-	static boolean pageFinished;
 	protected static WeakReference<WebView> wrWeb;
 
 	private Stack<String> histStack = new Stack<String>();
@@ -31,16 +31,17 @@ public class WikiClient extends WebViewClient {
 		myProg = progress;
 	}
 
+	/*
+	 * Intercept url when clicked. If it's part of the wiki create a new thread
+	 * to load the page. If not, open the device's default browser.
+	 */
 	@Override
 	public boolean shouldOverrideUrlLoading(WebView view, String url) {
-
 		myUrl = url;
-
-		// check if page is part of the wiki
 		if (myUrl.startsWith("https://wiki.archlinux.org/")) {
-
 			pageFinished = false;
 			wrWeb.get().stopLoading();
+
 			addHistory(myUrl);
 
 			new Read().execute(url);
@@ -53,21 +54,66 @@ public class WikiClient extends WebViewClient {
 			context.startActivity(intent);
 			return true;
 		}
-
 	}
 
+	/*
+	 * Show Toast message on error. Either my code has been perfect or this
+	 * doesn't ever get called.
+	 */
 	public void onReceivedError(WebView view, int errorCode,
 			String description, String failingUrl) {
 		Toast.makeText(view.getContext(), "Error: " + description,
 				Toast.LENGTH_SHORT).show();
 	}
 
+	/*
+	 * When everything is done, turn off progress wheel
+	 */
+	@Override
+	public void onPageFinished(WebView view, String url) {
+		super.onPageFinished(view, url);
+		if (pageFinished)
+			myProg.setVisibility(View.GONE);
+	}
+
+	/*
+	 * Execute new thread to create search page
+	 */
+	public void searchWiki(String searchUrl) {
+		new Read().execute(searchUrl);
+	}
+
+	/*
+	 * Manage data to be reloaded on orientation change
+	 */
+	public static void savePage(String sPage) {
+		savedPage = sPage;
+	}
+
+	public void restorePage() {
+		String urlStr = "https://wiki.archlinux.org/";
+		String mimeType = "text/html";
+		String encoding = "UTF-8";
+
+		wrWeb.get().loadDataWithBaseURL(urlStr, savedPage, mimeType, encoding,
+				null);
+	}
+
+	/*
+	 * Manage page history
+	 */
 	public void addHistory(String histUrl) {
 		histStack.push(histUrl);
 	}
 
-	public void searchWiki(String searchUrl) {
-		new Read().execute(searchUrl);
+	public void reduceStackSize() {
+		// called on local html page reload
+		histStack.removeAllElements();
+	}
+
+	public int histStackSize() {
+		int histSize = histStack.size();
+		return histSize;
 	}
 
 	public String getHistory() {
@@ -76,7 +122,6 @@ public class WikiClient extends WebViewClient {
 		// remove the current page
 		histStack.remove(histStack.size() - 1);
 		return loadUrl;
-
 	}
 
 	public void goBackHistory() {
@@ -84,22 +129,9 @@ public class WikiClient extends WebViewClient {
 		new Read().execute(prevUrl);
 	}
 
-	@Override
-	public void onPageFinished(WebView view, String url) {
-		super.onPageFinished(view, url);
-		if (pageFinished)
-			myProg.setVisibility(View.GONE);
-	}
-
-	public int histStackSize() {
-		int histSize = histStack.size();
-		return histSize;
-	}
-
-	public void reduceStackSize() {
-		histStack.removeAllElements();
-	}
-
+	/*
+	 * Background thread to download and manipulate page data.
+	 */
 	private static class Read extends AsyncTask<String, Integer, String> {
 
 		@Override
@@ -117,9 +149,12 @@ public class WikiClient extends WebViewClient {
 			String encoding = "UTF-8";
 			String pageData = webpage.getHtmlString();
 
+			// load the page in webview
 			wrWeb.get().loadDataWithBaseURL(urlStr, pageData, mimeType,
 					encoding, null);
-
+			// save page data string incase of orientation change to
+			// prevent unnecessary reloading
+			savePage(pageData);
 		}
 
 	}
