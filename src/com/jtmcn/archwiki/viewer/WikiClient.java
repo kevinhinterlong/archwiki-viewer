@@ -15,7 +15,7 @@ import android.widget.Toast;
 
 public class WikiClient extends WebViewClient {
 
-	static BuildWikiPage webpage;
+	static WikiPageBuilder webpage;
 	static String savedPage;
 	static boolean pageFinished;
 	String myUrl;
@@ -136,7 +136,7 @@ public class WikiClient extends WebViewClient {
 
 		@Override
 		protected String doInBackground(String... params) {
-			webpage = new BuildWikiPage(params[0]); // url
+			webpage = new WikiPageBuilder(params[0]); // url
 			return null;
 		}
 

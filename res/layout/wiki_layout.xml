@@ -46,7 +46,7 @@
             android:gravity="right|center_vertical" />
     </LinearLayout>
 
-    <WebView
+    <com.jtmcn.archwiki.viewer.WikiView
         android:id="@+id/wvMain"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"

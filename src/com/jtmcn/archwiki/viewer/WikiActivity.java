@@ -14,7 +14,7 @@ import android.widget.ProgressBar;
 
 public class WikiActivity extends Activity implements OnClickListener {
 
-	private WebView wikiViewer;
+	private WikiView wikiViewer;
 	static WikiClient myClient;
 	LinearLayout titleBar;
 	ProgressBar progress;
@@ -39,7 +39,7 @@ public class WikiActivity extends Activity implements OnClickListener {
 
 	public void initializeUI() {
 		// associate xml variables
-		wikiViewer = (WebView) findViewById(R.id.wvMain);
+		wikiViewer = (WikiView) findViewById(R.id.wvMain);
 		progress = (ProgressBar) findViewById(R.id.ProgressBar);
 		searchButton = (Button) findViewById(R.id.search);
 		searchButton.setOnClickListener(this);
