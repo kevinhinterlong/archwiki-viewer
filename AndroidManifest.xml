@@ -15,7 +15,7 @@
         android:theme="@android:style/Theme.Black.NoTitleBar" >
         <activity
             android:name=".WikiActivity"
-            android:configChanges="orientation|keyboardHidden"
+            android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_wiki" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

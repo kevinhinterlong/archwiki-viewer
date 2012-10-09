@@ -19,16 +19,17 @@ public class WikiClient extends WebViewClient {
 	static String savedPage;
 	static boolean pageFinished;
 	String myUrl;
-	ProgressBar myProg;
+//	ProgressBar myProg;
 	Context context;
 
 	protected static WeakReference<WebView> wrWeb;
 
 	private Stack<String> histStack = new Stack<String>();
 
-	public WikiClient(WebView wikiViewer, ProgressBar progress) {
+//	public WikiClient(WebView wikiViewer, ProgressBar progress) {
+	public WikiClient(WebView wikiViewer) {
 		wrWeb = new WeakReference<WebView>(wikiViewer);
-		myProg = progress;
+//		myProg = progress;
 	}
 
 	/*
@@ -46,7 +47,7 @@ public class WikiClient extends WebViewClient {
 
 			new Read().execute(url);
 
-			myProg.setVisibility(View.VISIBLE);
+//			myProg.setVisibility(View.VISIBLE);
 
 			return false;
 		} else {
@@ -72,8 +73,8 @@ public class WikiClient extends WebViewClient {
 	@Override
 	public void onPageFinished(WebView view, String url) {
 		super.onPageFinished(view, url);
-		if (pageFinished)
-			myProg.setVisibility(View.GONE);
+//		if (pageFinished)
+//			myProg.setVisibility(View.GONE);
 	}
 
 	/*
