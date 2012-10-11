@@ -15,14 +15,15 @@ public class WikiClient extends WebViewClient {
 
 	String myUrl;
 	Context context;
-	
+
 	static boolean pageFinished;
+	static String pageTitle;
 	static WikiPageBuilder webpage;
 	static String savedPage;
 	static String urlStr = "https://wiki.archlinux.org/";
 	static String mimeType = "text/html";
 	static String encoding = "UTF-8";
-	
+
 	protected static WeakReference<WebView> wrWeb;
 
 	private static Stack<String> histStack = new Stack<String>();
@@ -75,6 +76,8 @@ public class WikiClient extends WebViewClient {
 		super.onPageFinished(view, url);
 		if (pageFinished)
 			WikiChromeClient.hideProgress();
+		if (pageTitle != null)
+			WikiChromeClient.setTvTitle(pageTitle);
 	}
 
 	/*
@@ -113,9 +116,9 @@ public class WikiClient extends WebViewClient {
 
 	public void goBackHistory() {
 		String prevHtml = getHistory();
-		
-		wrWeb.get().loadDataWithBaseURL(urlStr, prevHtml, mimeType,
-				encoding, null);
+
+		wrWeb.get().loadDataWithBaseURL(urlStr, prevHtml, mimeType, encoding,
+				null);
 	}
 
 	/*
@@ -135,11 +138,17 @@ public class WikiClient extends WebViewClient {
 
 			String pageData = webpage.getHtmlString();
 
+			pageTitle = webpage.getPageTitle();
+
+			Toast.makeText(wrWeb.get().getContext(), pageTitle,
+					Toast.LENGTH_SHORT).show();
+
 			// load the page in webview
 			wrWeb.get().loadDataWithBaseURL(urlStr, pageData, mimeType,
 					encoding, null);
 
 			addHistory(pageData);
+
 		}
 
 	}

@@ -17,7 +17,7 @@ public class WikiView extends WebView {
 	public void buildView(Activity act) {
 		myClient = new WikiClient(this);
 		setWebViewClient(myClient);
-		
+
 		loadUrl("file:///android_asset/startPage.html");
 	}
 
@@ -28,13 +28,11 @@ public class WikiView extends WebView {
 		if ((keyCode == KeyEvent.KEYCODE_BACK)
 				&& (myClient.histStackSize() == 1)) {
 			// if there's only one entry load local html
-			// progress.setVisibility(View.VISIBLE);
 			loadUrl("file:///android_asset/startPage.html");
 			myClient.reduceStackSize();
 			return true;
 		} else if ((keyCode == KeyEvent.KEYCODE_BACK)
 				&& (myClient.histStackSize() > 1)) {
-			// progress.setVisibility(View.VISIBLE);
 			myClient.goBackHistory();
 			return true;
 		} else {

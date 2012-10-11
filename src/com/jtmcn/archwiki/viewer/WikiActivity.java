@@ -9,11 +9,14 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 public class WikiActivity extends Activity implements OnClickListener {
 
 	private WikiView wikiViewer;
 	LinearLayout titleBar;
+	TextView tvTitle;
+	String titleString;
 	ProgressBar progressBar;
 	Button searchButton;
 
@@ -41,8 +44,12 @@ public class WikiActivity extends Activity implements OnClickListener {
 		progressBar = (ProgressBar) findViewById(R.id.ProgressBar);
 		searchButton = (Button) findViewById(R.id.search);
 		searchButton.setOnClickListener(this);
+		
+		tvTitle = (TextView) findViewById(R.id.title); 
 
-		WikiChromeClient myChrome = new WikiChromeClient(progressBar);
+//		tvTitle.setText("hello");
+		
+		WikiChromeClient myChrome = new WikiChromeClient(progressBar, tvTitle);
 		wikiViewer.setWebChromeClient(myChrome);
 	}
 

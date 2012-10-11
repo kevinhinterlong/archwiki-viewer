@@ -9,7 +9,7 @@
         android:id="@+id/header"
         android:layout_width="fill_parent"
         android:layout_height="60dp"
-        android:background="#000000"
+        android:background="#333333"
         android:orientation="horizontal" >
 
         <ImageView
@@ -31,10 +31,10 @@
             android:layout_marginLeft="63dp"
             android:layout_weight="0.85"
             android:gravity="center_vertical"
-            android:padding="9dip"
+            android:padding="3dip"
             android:text="ArchWiki Viewer"
             android:textColor="#ffffff"
-            android:textSize="20dp" />
+            android:textSize="30dp" />
 
         <Button
             android:id="@+id/search"
@@ -46,11 +46,20 @@
             android:gravity="right|center_vertical" />
     </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/lower_stripe"
+        android:layout_width="fill_parent"
+        android:layout_height="5dp"
+        android:layout_below="@id/header"
+        android:background="#0088CC"
+        android:orientation="horizontal" >
+    </LinearLayout>
+
     <com.jtmcn.archwiki.viewer.WikiView
         android:id="@+id/wvMain"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_below="@id/header" />
+        android:layout_below="@id/lower_stripe" />
 
     <ProgressBar
         android:id="@+id/ProgressBar"

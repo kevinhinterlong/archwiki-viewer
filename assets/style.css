@@ -1,5 +1,9 @@
 @CHARSET "UTF-8";
 
+body {
+	background-color: #F6F9FC;
+}
+
 /*hide bad links*/
 #jump-to-nav,#siteSub,#archnavbar,#footer,#column-one,#catlinks {
 	display: none !important;
@@ -10,8 +14,21 @@ table {
 	width: 100% !important;
 }
 
+li.toclevel-1{
+	 padding: 5px;
+}
+
+li.toclevel-2{ 
+	display: none;
+}
+
 #content {
 	width: 100% !important;
+	background-color: #F6F9FC;
+}
+
+h1.firstHeading {/*hide title*/
+	display: none;
 }
 
 div.printfooter,div.mw-search-formheader {
@@ -23,6 +40,3 @@ input {
 }
 
 /*display toc table */
-table.toc {
-	display: block !important;
-}

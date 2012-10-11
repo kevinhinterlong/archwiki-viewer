@@ -6,18 +6,21 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import android.widget.Toast;
+
 public class WikiPageBuilder {
 
 	String myUrl = "";
-	String page;
-	
-	public WikiPageBuilder(String urlString){
+	String page = null;
+	String pageTitle;
+
+	public WikiPageBuilder(String urlString) {
 		myUrl = urlString;
 		buildPage();
 	}
-	
+
 	private String buildPage() {
-		
+
 		try {
 			URL url = new URL(myUrl);
 			HttpURLConnection urlConnection = (HttpURLConnection) url
@@ -46,25 +49,32 @@ public class WikiPageBuilder {
 			StringBuilder htmlString = new StringBuilder();
 			htmlString.append(pageString);
 
+			// start after <title>
+			int titleStart = (htmlString.indexOf("<title>") + 7);
+			// drop " - ArchWiki"
+			int titleEnd = (htmlString.indexOf("</title>") - 11);
+
+			pageTitle = htmlString.substring(titleStart, titleEnd);
+
 			int headStart = htmlString.indexOf("<head>");
 			int headEnd = htmlString.indexOf("</head>");
 
 			String head = "<link rel='stylesheet' href='file:///android_asset/style.css'></head>";
-			page = htmlString.replace(headStart, headEnd, head)
-					.toString();
-
-			return page;
+			page = htmlString.replace(headStart, headEnd, head).toString();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 
-		return null;
+		return page;
 
+	}
+
+	public String getPageTitle() {
+		return pageTitle;
 	}
 
 	public String getHtmlString() {
 		return page;
 	}
-	
-	
+
 }
