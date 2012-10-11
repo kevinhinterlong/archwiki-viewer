@@ -26,7 +26,8 @@ public class WikiClient extends WebViewClient {
 
 	protected static WeakReference<WebView> wrWeb;
 
-	private static Stack<String> histStack = new Stack<String>();
+	private static Stack<String> histHtmlStack = new Stack<String>();
+	private static Stack<String> histTitleStack = new Stack<String>();
 
 	public WikiClient(WebView wikiViewer) {
 		wrWeb = new WeakReference<WebView>(wikiViewer);
@@ -86,31 +87,36 @@ public class WikiClient extends WebViewClient {
 	public void searchWiki(String searchUrl) {
 		new Read().execute(searchUrl);
 		WikiChromeClient.showProgress();
-		// histStack.push(searchUrl);
 	}
 
 	/*
 	 * Manage page history
 	 */
-	public static void addHistory(String histHtml) {
-		histStack.push(histHtml);
+	public static void addHistory(String histHtml, String histTitle) {
+		histHtmlStack.push(histHtml);
+		histTitleStack.push(histTitle);
 	}
 
-	public void reduceStackSize() {
+	public void resetStackSize() {
 		// called on local html page reload
-		histStack.removeAllElements();
+		histHtmlStack.removeAllElements();
+		histTitleStack.removeAllElements();
+		pageTitle = null;
 	}
 
 	public int histStackSize() {
-		int histSize = histStack.size();
+		int histSize = histHtmlStack.size();
 		return histSize;
 	}
 
 	public String getHistory() {
 		// load the 2nd to last page
-		String loadHtml = histStack.elementAt(histStack.size() - 2);
+		String loadHtml = histHtmlStack.elementAt(histHtmlStack.size() - 2);
+		pageTitle = histTitleStack.elementAt(histTitleStack.size() - 2);
+		
 		// remove the current page
-		histStack.remove(histStack.size() - 1);
+		histHtmlStack.remove(histHtmlStack.size() - 1);
+		histTitleStack.remove(histTitleStack.size() - 1);
 		return loadHtml;
 	}
 
@@ -119,6 +125,8 @@ public class WikiClient extends WebViewClient {
 
 		wrWeb.get().loadDataWithBaseURL(urlStr, prevHtml, mimeType, encoding,
 				null);
+		
+		WikiChromeClient.setTvTitle(pageTitle);
 	}
 
 	/*
@@ -140,14 +148,11 @@ public class WikiClient extends WebViewClient {
 
 			pageTitle = webpage.getPageTitle();
 
-			Toast.makeText(wrWeb.get().getContext(), pageTitle,
-					Toast.LENGTH_SHORT).show();
-
 			// load the page in webview
 			wrWeb.get().loadDataWithBaseURL(urlStr, pageData, mimeType,
 					encoding, null);
 
-			addHistory(pageData);
+			addHistory(pageData, pageTitle);
 
 		}
 

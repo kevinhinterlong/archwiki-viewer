@@ -28,8 +28,11 @@ public class WikiView extends WebView {
 		if ((keyCode == KeyEvent.KEYCODE_BACK)
 				&& (myClient.histStackSize() == 1)) {
 			// if there's only one entry load local html
+			myClient.resetStackSize();
 			loadUrl("file:///android_asset/startPage.html");
-			myClient.reduceStackSize();
+			WikiChromeClient.setTvTitle("ArchWiki Viewer");
+			
+
 			return true;
 		} else if ((keyCode == KeyEvent.KEYCODE_BACK)
 				&& (myClient.histStackSize() > 1)) {

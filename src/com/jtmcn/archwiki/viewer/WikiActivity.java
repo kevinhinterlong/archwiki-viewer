@@ -46,8 +46,6 @@ public class WikiActivity extends Activity implements OnClickListener {
 		searchButton.setOnClickListener(this);
 		
 		tvTitle = (TextView) findViewById(R.id.title); 
-
-//		tvTitle.setText("hello");
 		
 		WikiChromeClient myChrome = new WikiChromeClient(progressBar, tvTitle);
 		wikiViewer.setWebChromeClient(myChrome);

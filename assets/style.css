@@ -4,8 +4,8 @@ body {
 	background-color: #F6F9FC;
 }
 
-/*hide bad links*/
-#jump-to-nav,#siteSub,#archnavbar,#footer,#column-one,#catlinks {
+/*hide links*/
+#jump-to-nav,#siteSub,#archnavbar,#footer,#column-one,#catlinks{
 	display: none !important;
 }
 
@@ -14,11 +14,16 @@ table {
 	width: 100% !important;
 }
 
+/*format */
 li.toclevel-1{
 	 padding: 5px;
 }
 
-li.toclevel-2{ 
+li.toclevel-2{
+	 padding: 3px;
+}
+
+li.toclevel-3{ 
 	display: none;
 }
 
@@ -31,12 +36,16 @@ h1.firstHeading {/*hide title*/
 	display: none;
 }
 
-div.printfooter,div.mw-search-formheader {
+div.mw-search-result-heading{
+		 padding-top: 10px;
+}
+
+div.printfooter,div.mw-search-formheader, div.mw-search-result-data  {
 	display: none;
 }
 
-input {
+input { /*hide search*/
 	display: none;
 }
 
-/*display toc table */
+

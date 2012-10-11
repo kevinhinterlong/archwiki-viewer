@@ -41,7 +41,8 @@
             android:layout_width="40dip"
             android:layout_height="40dip"
             android:layout_marginRight="2dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="10dp"
             android:background="@drawable/ic_action_search"
             android:gravity="right|center_vertical" />
     </LinearLayout>
