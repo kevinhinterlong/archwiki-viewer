@@ -41,7 +41,7 @@ public class WikiClient extends WebViewClient {
 
 			addHistory(myUrl);
 
-			new Read().execute(url);
+			new Read().execute(myUrl);
 
 			WikiChromeClient.showProgress();
 
@@ -64,7 +64,9 @@ public class WikiClient extends WebViewClient {
 	}
 
 	/*
-	 * When everything is done, turn off progress wheel
+	 * When everything is done, turn off progress wheel. The boolean is
+	 * necessary for the progressBar to continue after initial
+	 * wrWeb.get().stopLoading();
 	 */
 	@Override
 	public void onPageFinished(WebView view, String url) {
@@ -81,23 +83,7 @@ public class WikiClient extends WebViewClient {
 		WikiChromeClient.showProgress();
 		histStack.push(searchUrl);
 	}
-
-	/*
-	 * Manage data to be reloaded on orientation change
-	 */
-	public static void savePage(String sPage) {
-		savedPage = sPage;
-	}
-
-	public void restorePage() {
-		String urlStr = "https://wiki.archlinux.org/";
-		String mimeType = "text/html";
-		String encoding = "UTF-8";
-
-		wrWeb.get().loadDataWithBaseURL(urlStr, savedPage, mimeType, encoding,
-				null);
-	}
-
+	
 	/*
 	 * Manage page history
 	 */
@@ -152,9 +138,7 @@ public class WikiClient extends WebViewClient {
 			// load the page in webview
 			wrWeb.get().loadDataWithBaseURL(urlStr, pageData, mimeType,
 					encoding, null);
-			// save page data string incase of orientation change to
-			// prevent unnecessary reloading
-			savePage(pageData);
+			
 		}
 
 	}
