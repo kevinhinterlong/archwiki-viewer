@@ -31,7 +31,6 @@ public class WikiView extends WebView {
 			myClient.resetStackSize();
 			loadUrl("file:///android_asset/startPage.html");
 			WikiChromeClient.setTvTitle("ArchWiki Viewer");
-			
 
 			return true;
 		} else if ((keyCode == KeyEvent.KEYCODE_BACK)

@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.webkit.WebSettings;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -28,10 +29,11 @@ public class WikiActivity extends Activity implements OnClickListener {
 		setContentView(R.layout.wiki_layout);
 
 		initializeUI();
+		setWebSettings();
 
 		if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
 			String query = intent.getStringExtra(SearchManager.QUERY);
-			String searchUrl = "https://wiki.archlinux.org/index.php?title=Special%3ASearch&search="
+			String searchUrl = "https://wiki.archlinux.org/index.php?&search="
 					+ query;
 			wikiViewer.passSearch(searchUrl);
 
@@ -44,11 +46,15 @@ public class WikiActivity extends Activity implements OnClickListener {
 		progressBar = (ProgressBar) findViewById(R.id.ProgressBar);
 		searchButton = (Button) findViewById(R.id.search);
 		searchButton.setOnClickListener(this);
-		
-		tvTitle = (TextView) findViewById(R.id.title); 
-		
+		tvTitle = (TextView) findViewById(R.id.title);
+
 		WikiChromeClient myChrome = new WikiChromeClient(progressBar, tvTitle);
 		wikiViewer.setWebChromeClient(myChrome);
+	}
+
+	public void setWebSettings() {
+		WebSettings webSettings = wikiViewer.getSettings();
+		webSettings.setBuiltInZoomControls(true);
 	}
 
 	public void onClick(View v) {

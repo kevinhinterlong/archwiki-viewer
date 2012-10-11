@@ -113,7 +113,7 @@ public class WikiClient extends WebViewClient {
 		// load the 2nd to last page
 		String loadHtml = histHtmlStack.elementAt(histHtmlStack.size() - 2);
 		pageTitle = histTitleStack.elementAt(histTitleStack.size() - 2);
-		
+
 		// remove the current page
 		histHtmlStack.remove(histHtmlStack.size() - 1);
 		histTitleStack.remove(histTitleStack.size() - 1);
@@ -125,7 +125,7 @@ public class WikiClient extends WebViewClient {
 
 		wrWeb.get().loadDataWithBaseURL(urlStr, prevHtml, mimeType, encoding,
 				null);
-		
+
 		WikiChromeClient.setTvTitle(pageTitle);
 	}
 

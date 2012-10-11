@@ -22,10 +22,9 @@ public class WikiChromeClient extends WebChromeClient {
 	public static void hideProgress() {
 		progressBar.setVisibility(View.GONE);
 	}
-	
-	public static void setTvTitle(String title){
+
+	public static void setTvTitle(String title) {
 		tvTitle.setText(title);
 	}
 
 }
-
