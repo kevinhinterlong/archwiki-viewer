@@ -7,10 +7,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.view.View;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 
 public class WikiClient extends WebViewClient {
@@ -19,17 +17,14 @@ public class WikiClient extends WebViewClient {
 	static String savedPage;
 	static boolean pageFinished;
 	String myUrl;
-//	ProgressBar myProg;
 	Context context;
 
 	protected static WeakReference<WebView> wrWeb;
 
 	private Stack<String> histStack = new Stack<String>();
 
-//	public WikiClient(WebView wikiViewer, ProgressBar progress) {
 	public WikiClient(WebView wikiViewer) {
 		wrWeb = new WeakReference<WebView>(wikiViewer);
-//		myProg = progress;
 	}
 
 	/*
@@ -41,25 +36,26 @@ public class WikiClient extends WebViewClient {
 		myUrl = url;
 		if (myUrl.startsWith("https://wiki.archlinux.org/")) {
 			pageFinished = false;
+
 			wrWeb.get().stopLoading();
 
 			addHistory(myUrl);
 
 			new Read().execute(url);
 
-//			myProg.setVisibility(View.VISIBLE);
+			WikiChromeClient.showProgress();
 
 			return false;
 		} else {
 			Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-			context.startActivity(intent);
+			view.getContext().startActivity(intent);
 			return true;
 		}
 	}
 
 	/*
-	 * Show Toast message on error. Either my code has been perfect or this
-	 * doesn't ever get called.
+	 * Show Toast message on error. Either code is perfect or this doesn't ever
+	 * get called.
 	 */
 	public void onReceivedError(WebView view, int errorCode,
 			String description, String failingUrl) {
@@ -73,8 +69,8 @@ public class WikiClient extends WebViewClient {
 	@Override
 	public void onPageFinished(WebView view, String url) {
 		super.onPageFinished(view, url);
-//		if (pageFinished)
-//			myProg.setVisibility(View.GONE);
+		if (pageFinished)
+			WikiChromeClient.hideProgress();
 	}
 
 	/*
@@ -82,6 +78,8 @@ public class WikiClient extends WebViewClient {
 	 */
 	public void searchWiki(String searchUrl) {
 		new Read().execute(searchUrl);
+		WikiChromeClient.showProgress();
+		histStack.push(searchUrl);
 	}
 
 	/*
@@ -128,6 +126,7 @@ public class WikiClient extends WebViewClient {
 	public void goBackHistory() {
 		String prevUrl = getHistory();
 		new Read().execute(prevUrl);
+		WikiChromeClient.showProgress();
 	}
 
 	/*
