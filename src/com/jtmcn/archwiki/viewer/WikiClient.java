@@ -13,15 +13,19 @@ import android.widget.Toast;
 
 public class WikiClient extends WebViewClient {
 
-	static WikiPageBuilder webpage;
-	static String savedPage;
-	static boolean pageFinished;
 	String myUrl;
 	Context context;
-
+	
+	static boolean pageFinished;
+	static WikiPageBuilder webpage;
+	static String savedPage;
+	static String urlStr = "https://wiki.archlinux.org/";
+	static String mimeType = "text/html";
+	static String encoding = "UTF-8";
+	
 	protected static WeakReference<WebView> wrWeb;
 
-	private Stack<String> histStack = new Stack<String>();
+	private static Stack<String> histStack = new Stack<String>();
 
 	public WikiClient(WebView wikiViewer) {
 		wrWeb = new WeakReference<WebView>(wikiViewer);
@@ -38,8 +42,6 @@ public class WikiClient extends WebViewClient {
 			pageFinished = false;
 
 			wrWeb.get().stopLoading();
-
-			addHistory(myUrl);
 
 			new Read().execute(myUrl);
 
@@ -81,14 +83,14 @@ public class WikiClient extends WebViewClient {
 	public void searchWiki(String searchUrl) {
 		new Read().execute(searchUrl);
 		WikiChromeClient.showProgress();
-		histStack.push(searchUrl);
+		// histStack.push(searchUrl);
 	}
-	
+
 	/*
 	 * Manage page history
 	 */
-	public void addHistory(String histUrl) {
-		histStack.push(histUrl);
+	public static void addHistory(String histHtml) {
+		histStack.push(histHtml);
 	}
 
 	public void reduceStackSize() {
@@ -103,16 +105,17 @@ public class WikiClient extends WebViewClient {
 
 	public String getHistory() {
 		// load the 2nd to last page
-		String loadUrl = histStack.elementAt(histStack.size() - 2);
+		String loadHtml = histStack.elementAt(histStack.size() - 2);
 		// remove the current page
 		histStack.remove(histStack.size() - 1);
-		return loadUrl;
+		return loadHtml;
 	}
 
 	public void goBackHistory() {
-		String prevUrl = getHistory();
-		new Read().execute(prevUrl);
-		WikiChromeClient.showProgress();
+		String prevHtml = getHistory();
+		
+		wrWeb.get().loadDataWithBaseURL(urlStr, prevHtml, mimeType,
+				encoding, null);
 	}
 
 	/*
@@ -130,15 +133,13 @@ public class WikiClient extends WebViewClient {
 		protected void onPostExecute(String result) {
 			pageFinished = true;
 
-			String urlStr = "https://wiki.archlinux.org/";
-			String mimeType = "text/html";
-			String encoding = "UTF-8";
 			String pageData = webpage.getHtmlString();
 
 			// load the page in webview
 			wrWeb.get().loadDataWithBaseURL(urlStr, pageData, mimeType,
 					encoding, null);
-			
+
+			addHistory(pageData);
 		}
 
 	}
