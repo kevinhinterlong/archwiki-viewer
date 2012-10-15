@@ -4,26 +4,31 @@ body {
 	background-color: #F6F9FC;
 }
 
+pre {
+	white-space: pre-wrap;
+}
+
 /*hide links*/
-#jump-to-nav,#siteSub,#archnavbar,#footer,#column-one,#catlinks{
+#jump-to-nav,#siteSub,#archnavbar,#footer,#column-one,#catlinks {
 	display: none !important;
 }
 
 /*this is needed for "Summary" and "Related"  */
 table {
 	width: 100% !important;
+	overflow: scroll;
 }
 
 /*format */
-li.toclevel-1{
-	 padding: 5px;
+li.toclevel-1 {
+	padding: 5px;
 }
 
-li.toclevel-2{
-	 padding: 3px;
+li.toclevel-2 {
+	padding: 3px;
 }
 
-li.toclevel-3{ 
+li.toclevel-3 {
 	display: none;
 }
 
@@ -32,20 +37,18 @@ li.toclevel-3{
 	background-color: #F6F9FC;
 }
 
-h1.firstHeading {/*hide title*/
+h1.firstHeading { /*hide title*/
 	display: none;
 }
 
-div.mw-search-result-heading{
-		 padding-top: 10px;
+div.mw-search-result-heading {
+	padding-top: 10px;
 }
 
-div.printfooter,div.mw-search-formheader, div.mw-search-result-data  {
+div.printfooter,div.mw-search-formheader,div.mw-search-result-data {
 	display: none;
 }
 
 input { /*hide search*/
 	display: none;
 }
-
-

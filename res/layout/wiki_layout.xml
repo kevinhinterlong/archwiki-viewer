@@ -8,7 +8,7 @@
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/header"
         android:layout_width="fill_parent"
-        android:layout_height="60dp"
+        android:layout_height="50dp"
         android:background="#333333"
         android:orientation="horizontal" >
 
@@ -34,7 +34,7 @@
             android:padding="3dip"
             android:text="ArchWiki Viewer"
             android:textColor="#ffffff"
-            android:textSize="30dp" />
+            android:textSize="25dp" />
 
         <Button
             android:id="@+id/search"
