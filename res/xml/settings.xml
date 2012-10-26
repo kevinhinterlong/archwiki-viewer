@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <ListPreference
+        android:defaultValue="Normal"
+        android:entries="@array/fontSize"
+        android:entryValues="@array/fontSizeValue"
+        android:key="listPref"
+        android:summary="This should display the font dpi(?)"
+        android:title="Page Text Size" />
+
+</PreferenceScreen>
