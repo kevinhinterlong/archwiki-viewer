@@ -27,23 +27,34 @@
             android:id="@+id/title"
             android:layout_width="0dip"
             android:layout_height="match_parent"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="8dp"
             android:layout_weight="0.85"
             android:gravity="center_vertical"
             android:padding="3dip"
             android:text="ArchWiki Viewer"
             android:textColor="#ffffff"
-            android:textSize="25dp" />
+            android:textSize="27dp" />
 
         <Button
             android:id="@+id/search"
             android:layout_width="40dip"
             android:layout_height="40dip"
+            android:layout_marginBottom="10dp"
             android:layout_marginRight="2dp"
             android:layout_marginTop="5dp"
-            android:layout_marginBottom="10dp"
             android:background="@drawable/ic_action_search"
             android:gravity="right|center_vertical" />
+
+        <Button
+            android:id="@+id/overflow"
+            android:layout_width="40dip"
+            android:layout_height="40dip"
+            android:layout_marginBottom="10dp"
+            android:layout_marginRight="2dp"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/overflow"
+            android:gravity="right|center_vertical"
+            android:onClick="showPopup"/>
     </LinearLayout>
 
     <LinearLayout
