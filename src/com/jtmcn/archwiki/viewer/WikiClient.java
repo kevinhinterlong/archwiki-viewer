@@ -15,17 +15,11 @@ public class WikiClient extends WebViewClient {
 
 	String myUrl;
 	Context context;
-
+	String pageTitle;
 	static boolean pageFinished;
-	static String pageTitle;
 	static WikiPageBuilder webpage;
 	static String savedPage;
-	static String urlStr = "https://wiki.archlinux.org/";
-	static String mimeType = "text/html";
-	static String encoding = "UTF-8";
-
 	protected static WeakReference<WebView> wrWeb;
-
 	private static Stack<String> histHtmlStack = new Stack<String>();
 	private static Stack<String> histTitleStack = new Stack<String>();
 
@@ -77,8 +71,7 @@ public class WikiClient extends WebViewClient {
 		super.onPageFinished(view, url);
 		if (pageFinished)
 			WikiChromeClient.hideProgress();
-		if (pageTitle != null)
-			WikiChromeClient.setTvTitle(pageTitle);
+		setPageTitle();
 	}
 
 	/*
@@ -101,7 +94,7 @@ public class WikiClient extends WebViewClient {
 		// called on local html page reload
 		histHtmlStack.removeAllElements();
 		histTitleStack.removeAllElements();
-		pageTitle = null;
+		// pageTitle = null;
 	}
 
 	public int histStackSize() {
@@ -112,7 +105,6 @@ public class WikiClient extends WebViewClient {
 	public String getHistory() {
 		// load the 2nd to last page
 		String loadHtml = histHtmlStack.elementAt(histHtmlStack.size() - 2);
-		pageTitle = histTitleStack.elementAt(histTitleStack.size() - 2);
 
 		// remove the current page
 		histHtmlStack.remove(histHtmlStack.size() - 1);
@@ -120,13 +112,34 @@ public class WikiClient extends WebViewClient {
 		return loadHtml;
 	}
 
-	public void goBackHistory() {
-		String prevHtml = getHistory();
+	public String getPageTitle() {
 
-		wrWeb.get().loadDataWithBaseURL(urlStr, prevHtml, mimeType, encoding,
-				null);
+		return pageTitle;
+	}
+
+	public void setPageTitle() {
+
+		if (histTitleStack.size() > 0)
+			pageTitle = histTitleStack.elementAt(histTitleStack.size() - 1);
+		else
+			pageTitle = "ArchWiki Viewer";
 
 		WikiChromeClient.setTvTitle(pageTitle);
+	}
+
+	public void goBackHistory() {
+		String prevHtml = getHistory();
+		loadWikiHtml(prevHtml);
+	}
+
+	public static void loadWikiHtml(String wikiHtml) {
+		String urlStr = "https://wiki.archlinux.org/";
+		String mimeType = "text/html";
+		String encoding = "UTF-8";
+
+		// load the page in webview
+		wrWeb.get().loadDataWithBaseURL(urlStr, wikiHtml, mimeType, encoding,
+				null);
 	}
 
 	/*
@@ -146,13 +159,11 @@ public class WikiClient extends WebViewClient {
 
 			String pageData = webpage.getHtmlString();
 
-			pageTitle = webpage.getPageTitle();
+			String pageTitleData = webpage.getPageTitle();
 
-			// load the page in webview
-			wrWeb.get().loadDataWithBaseURL(urlStr, pageData, mimeType,
-					encoding, null);
+			loadWikiHtml(pageData);
 
-			addHistory(pageData, pageTitle);
+			addHistory(pageData, pageTitleData);
 
 		}
 

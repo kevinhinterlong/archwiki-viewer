@@ -7,7 +7,7 @@ import android.view.KeyEvent;
 import android.webkit.WebView;
 
 public class WikiView extends WebView {
-	WikiClient myClient;
+	WikiClient wikiClient;
 
 	public WikiView(Context context, AttributeSet attrs) {
 		super(context, attrs);
@@ -15,10 +15,13 @@ public class WikiView extends WebView {
 	}
 
 	public void buildView(Activity act) {
-		myClient = new WikiClient(this);
-		setWebViewClient(myClient);
-
+		wikiClient = new WikiClient(this);
+		setWebViewClient(wikiClient);
 		loadUrl("file:///android_asset/startPage.html");
+	}
+
+	public void resetApplication() {
+		wikiClient.resetStackSize();
 	}
 
 	@Override
@@ -26,16 +29,14 @@ public class WikiView extends WebView {
 		// Check if the key event was the Back button and if there's history
 		// history needs to be managed manually
 		if ((keyCode == KeyEvent.KEYCODE_BACK)
-				&& (myClient.histStackSize() == 1)) {
+				&& (wikiClient.histStackSize() == 1)) {
 			// if there's only one entry load local html
-			myClient.resetStackSize();
+			wikiClient.resetStackSize();
 			loadUrl("file:///android_asset/startPage.html");
-			WikiChromeClient.setTvTitle("ArchWiki Viewer");
-
 			return true;
 		} else if ((keyCode == KeyEvent.KEYCODE_BACK)
-				&& (myClient.histStackSize() > 1)) {
-			myClient.goBackHistory();
+				&& (wikiClient.histStackSize() > 1)) {
+			wikiClient.goBackHistory();
 			return true;
 		} else {
 			// if there are zero entries exit application
@@ -44,7 +45,7 @@ public class WikiView extends WebView {
 	}
 
 	public void passSearch(String searchUrl) {
-		myClient.searchWiki(searchUrl);
+		wikiClient.searchWiki(searchUrl);
 	}
 
 }

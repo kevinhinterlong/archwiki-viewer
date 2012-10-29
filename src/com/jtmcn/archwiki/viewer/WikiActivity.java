@@ -30,14 +30,16 @@ public class WikiActivity extends Activity implements OnClickListener {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
 		Intent intent = getIntent();
 
 		setContentView(R.layout.wiki_layout);
 
 		initializeUI();
 		setWebSettings();
-
+		
+		//reset historyStacks
+		wikiViewer.resetApplication();
+		
 		if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
 			String query = intent.getStringExtra(SearchManager.QUERY);
 			String searchUrl = "https://wiki.archlinux.org/index.php?&search="
@@ -58,26 +60,26 @@ public class WikiActivity extends Activity implements OnClickListener {
 		overflowButton.setOnClickListener(this);
 
 		tvTitle = (TextView) findViewById(R.id.title);
+		
 
-		WikiChromeClient myChrome = new WikiChromeClient(progressBar, tvTitle);
-		wikiViewer.setWebChromeClient(myChrome);
+
+		WikiChromeClient wikiChrome = new WikiChromeClient(progressBar, tvTitle);
+		wikiViewer.setWebChromeClient(wikiChrome);
+
 	}
 
 	public void setWebSettings() {
 		WebSettings webSettings = wikiViewer.getSettings();
-		// webSettings.setBuiltInZoomControls(true);
 
-		PreferenceManager.setDefaultValues(getApplicationContext(),
-				R.xml.settings, false);
 		SharedPreferences prefs = PreferenceManager
 				.getDefaultSharedPreferences(getApplicationContext());
-		String fontSize = prefs.getString("listPref", "Normal");
-		// Toast.makeText(this, "fontSize: " + fontSize,
-		// Toast.LENGTH_LONG).show();
 
-		int fontDpi = Integer.parseInt(fontSize);
+		// due to a known bug, the size cannot be stored in an integer array
+		String fontSizePref = prefs.getString("listPref", "16");
+		int fontDpi = Integer.valueOf(fontSizePref);
 
 		webSettings.setDefaultFontSize(fontDpi);
+
 	}
 
 	public void onClick(View v) {
@@ -86,7 +88,6 @@ public class WikiActivity extends Activity implements OnClickListener {
 			onSearchRequested();
 			break;
 		case R.id.overflow:
-			// Toast.makeText(this, "Overflow", Toast.LENGTH_LONG).show();
 			openOptionsMenu();
 			break;
 		}
@@ -103,13 +104,10 @@ public class WikiActivity extends Activity implements OnClickListener {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case R.id.menu_settings:
-			// Toast.makeText(this, "Settings", Toast.LENGTH_LONG).show();
 			Intent p = new Intent("com.jtmcn.archwiki.viewer.WIKIPREFS");
 			startActivityForResult(p, 0);
 			break;
 		case R.id.exit:
-			// Toast.makeText(this, "Exit!", Toast.LENGTH_LONG).show();
-			// tvTitle = null;
 			this.finish();
 			break;
 		}
@@ -125,5 +123,4 @@ public class WikiActivity extends Activity implements OnClickListener {
 		super.onActivityResult(requestCode, resultCode, data);
 		setWebSettings();
 	}
-
 }
