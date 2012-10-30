@@ -79,6 +79,7 @@ public class WikiActivity extends Activity implements OnClickListener {
 		int fontDpi = Integer.valueOf(fontSizePref);
 
 		webSettings.setDefaultFontSize(fontDpi);
+		webSettings.setDefaultFixedFontSize(fontDpi);
 
 	}
 

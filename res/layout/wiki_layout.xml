@@ -8,7 +8,7 @@
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/header"
         android:layout_width="fill_parent"
-        android:layout_height="50dp"
+        android:layout_height="40dp"
         android:background="#333333"
         android:orientation="horizontal" >
 
@@ -16,51 +16,46 @@
             android:id="@+id/icon"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_marginBottom="2dp"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="2dp"
-            android:layout_marginTop="5dp"
             android:gravity="center_vertical"
+            android:padding="3dp"
             android:src="@drawable/ic_launcher" />
 
         <TextView
             android:id="@+id/title"
             android:layout_width="0dip"
             android:layout_height="match_parent"
-            android:layout_marginTop="8dp"
             android:layout_weight="0.85"
             android:gravity="center_vertical"
             android:padding="3dip"
             android:text="ArchWiki Viewer"
             android:textColor="#ffffff"
-            android:textSize="27dp" />
+            android:textSize="22dp" />
 
         <Button
             android:id="@+id/search"
-            android:layout_width="40dip"
-            android:layout_height="40dip"
-            android:layout_marginBottom="10dp"
+            android:layout_width="35dip"
+            android:layout_height="35dip"
+            android:layout_marginBottom="1dp"
             android:layout_marginRight="2dp"
-            android:layout_marginTop="5dp"
+            android:layout_marginTop="1dp"
             android:background="@drawable/ic_action_search"
             android:gravity="right|center_vertical" />
 
         <Button
             android:id="@+id/overflow"
-            android:layout_width="40dip"
-            android:layout_height="40dip"
-            android:layout_marginBottom="10dp"
+            android:layout_width="35dip"
+            android:layout_height="35dip"
+            android:layout_marginBottom="1dp"
             android:layout_marginRight="2dp"
-            android:layout_marginTop="5dp"
+            android:layout_marginTop="1dp"
             android:background="@drawable/overflow"
-            android:gravity="right|center_vertical"
-            android:onClick="showPopup"/>
+            android:gravity="right|center_vertical" />
     </LinearLayout>
 
     <LinearLayout
         android:id="@+id/lower_stripe"
         android:layout_width="fill_parent"
-        android:layout_height="5dp"
+        android:layout_height="7dp"
         android:layout_below="@id/header"
         android:background="#0088CC"
         android:orientation="horizontal" >

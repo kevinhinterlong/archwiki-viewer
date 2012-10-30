@@ -57,7 +57,9 @@ public class WikiPageBuilder {
 			int headStart = htmlString.indexOf("<head>");
 			int headEnd = htmlString.indexOf("</head>");
 
-			String head = "<link rel='stylesheet' href='file:///android_asset/style.css'></head>";
+			String head = "<link rel='stylesheet' href='file:///android_asset/style.css'>"
+					+ "<meta name='viewport' content='width=device-width, initial-scale=1.0, user-scalable=no'>"
+					+ "</head>";
 			page = htmlString.replace(headStart, headEnd, head).toString();
 		} catch (IOException e) {
 			e.printStackTrace();

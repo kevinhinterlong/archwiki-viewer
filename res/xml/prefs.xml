@@ -3,7 +3,6 @@
     android:key="applicationPreference"
     android:title="Preferences" >
 
-    <PreferenceCategory android:title="Preferences" >
         <ListPreference
             android:defaultValue="16"
             android:entries="@array/fontSize"
@@ -12,6 +11,5 @@
             android:summary="As measured in DPI"
             android:title="Default Text" 
             android:dialogTitle="Default Text Size"/>
-    </PreferenceCategory>
 
 </PreferenceScreen>
