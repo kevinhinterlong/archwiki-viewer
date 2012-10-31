@@ -18,6 +18,10 @@ public class WikiPageBuilder {
 		buildPage();
 	}
 
+	/*
+	 * buildPage will rerun twice after failure
+	 */
+	
 	private String buildPage() {
 
 		try {
@@ -56,8 +60,9 @@ public class WikiPageBuilder {
 			int titleEnd = (htmlString.indexOf("</title>", titleStart) - 11);
 
 			if (titleStart == 6) { // -1 + 7 = 6 (no page)
-				if (pageRetries < 1) {
+				if (pageRetries < 3) {
 					buildPage();
+					pageRetries++;
 				}
 				return null;
 			}
