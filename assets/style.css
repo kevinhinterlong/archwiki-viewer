@@ -81,13 +81,6 @@ span.texhtml {
 	cursor: pointer
 }
 
-div#mw-js-message {
-	margin: 1em 5%;
-	padding: 0.5em 2.5%;
-	border: solid 1px #ddd;
-	background-color: #fcfcfc
-}
-
 .editsection {
 	float: right;
 	margin-left: 5px
@@ -226,7 +219,8 @@ table.wikitable {
 	background-color: #f9f9f9;
 	border: 1px #aaa solid;
 	border-collapse: collapse;
-	color: black
+	color: black;
+	font-size: 90%
 }
 
 table.wikitable> ; tr> ; th,table.wikitable> ; tr> ; td,table.wikitable>
@@ -875,6 +869,7 @@ code {
 
 pre {
 	padding: 1em;
+	white-space: pre-wrap;
 	border: 1px dashed #2f6fab;
 	color: black;
 	background-color: #f9f9f9
@@ -1119,7 +1114,7 @@ div#content {
 
 body {
 	font: x-small sans-serif;
-	background: #FFF888;
+	/*background: #FFF888;*/
 	color: black;
 	margin: 0;
 	padding: 0;
@@ -1128,7 +1123,7 @@ body {
 }
 
 div#globalWrapper {
-	font-size: 127%;
+	font-size: 115%; /*default 127%*/
 	width: 100%;
 	margin: 0;
 	padding: 0
@@ -1262,107 +1257,10 @@ input.searchButton {
 	color: #999
 }
 
-.mw-htmlform-submit {
-	font-weight: bold;
-	padding-left: .3em;
-	padding-right: .3em;
-	margin-right: 2em
-}
-
-#preftoc {
-	margin: 0;
-	padding: 0;
-	width: 100%;
-	clear: both
-}
-
-#preftoc li {
-	background-color: #f0f0f0;
-	color: #000
-}
-
-#preftoc li {
-	margin: 1px -2px 1px 2px;
-	float: left;
-	padding: 2px 0 3px 0;
-	border: 1px solid #fff;
-	border-right-color: #716f64;
-	border-bottom: 0;
-	position: relative;
-	white-space: nowrap;
-	list-style-type: none;
-	list-style-image: none;
-	z-index: 3
-}
-
-#preftoc li.selected {
-	font-weight: bold;
-	background-color: #f9f9f9;
-	border: 1px solid #aaa;
-	border-bottom: none;
-	cursor: default;
-	top: 1px;
-	padding-top: 2px;
-	margin-right: -3px
-}
-
-#preftoc> ; li.selected {
-	top: 2px
-}
-
-#preftoc a,#preftoc a:active {
-	display: block;
-	color: #000;
-	padding: 0 .7em;
-	position: relative;
-	text-decoration: none
-}
-
-#preftoc li.selected a {
-	cursor: default;
-	text-decoration: none
-}
-
-#preferences {
-	margin: 0;
-	border: 1px solid #aaa;
-	clear: both;
-	padding: 1.5em;
-	background-color: #F9F9F9
-}
-
-.prefsection {
-	border: none;
-	padding: 0;
-	margin: 0
-}
-
-.prefsection legend {
-	font-weight: bold
-}
-
-.prefsection table,.prefsection legend {
-	background-color: #F9F9F9
-}
-
-.mainLegend {
-	display: none
-}
-
 td.htmlform-tip {
 	font-size: x-small;
 	padding: .2em 2em;
 	color: #666
-}
-
-.preferences-login {
-	clear: both;
-	margin-bottom: 1.5em
-}
-
-.prefcache {
-	font-size: 90%;
-	margin-top: 2em
 }
 
 *> ; html #bodyContent,*> ; html #bodyContent pre {
@@ -1400,21 +1298,6 @@ div.patrollink {
 span.updatedmarker {
 	color: black;
 	background-color: #0f0
-}
-
-.editExternally {
-	border: 1px solid gray;
-	background-color: #ffffff;
-	padding: 3px;
-	margin-top: 0.5em;
-	float: left;
-	font-size: small;
-	text-align: center
-}
-
-.editExternallyHelp {
-	font-style: italic;
-	color: gray
 }
 
 .toggle {
@@ -1536,8 +1419,8 @@ div.mw-lag-warn-high {
 	font-size: 127%
 }
 
-body {
-	background: #f6f9fc
+body { /*background: #f6f9fc*/
+	background: #fff
 }
 
 body,#content,table {
@@ -1615,7 +1498,6 @@ a.new {
 #content {
 	top: 10px
 }*/
-
 div#globalWrapper {
 	width: 100%
 }
@@ -1679,12 +1561,10 @@ table {
 	/*border: 1px solid #BCD*/
 }
 
-/*
-#content {
-	width: 99% !important;
+#content { /*	width: 99% !important;*/
 	background-color: #F6F9FC;
 }
-*/
+
 li.toclevel-1 {
 	padding: 5px;
 }
@@ -1704,4 +1584,3 @@ div.mw-search-result-heading {
 	border: 1px solid #333
 }
 */
-

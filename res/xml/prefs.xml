@@ -4,12 +4,12 @@
     android:title="Preferences" >
 
         <ListPreference
-            android:defaultValue="16"
+            android:defaultValue="2"
             android:entries="@array/fontSize"
             android:entryValues="@array/fontSizeValue"
             android:key="listPref"
-            android:summary="As measured in DPI"
-            android:title="Default Text" 
-            android:dialogTitle="Default Text Size"/>
+
+            android:title="Text Size" 
+            android:dialogTitle="Text Size"/>
 
 </PreferenceScreen>

@@ -16,6 +16,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class WikiActivity extends Activity implements OnClickListener {
 
@@ -36,10 +37,10 @@ public class WikiActivity extends Activity implements OnClickListener {
 
 		initializeUI();
 		setWebSettings();
-		
-		//reset historyStacks
+
+		// reset historyStacks
 		wikiViewer.resetApplication();
-		
+
 		if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
 			String query = intent.getStringExtra(SearchManager.QUERY);
 			String searchUrl = "https://wiki.archlinux.org/index.php?&search="
@@ -60,8 +61,6 @@ public class WikiActivity extends Activity implements OnClickListener {
 		overflowButton.setOnClickListener(this);
 
 		tvTitle = (TextView) findViewById(R.id.title);
-		
-
 
 		WikiChromeClient wikiChrome = new WikiChromeClient(progressBar, tvTitle);
 		wikiViewer.setWebChromeClient(wikiChrome);
@@ -75,12 +74,29 @@ public class WikiActivity extends Activity implements OnClickListener {
 				.getDefaultSharedPreferences(getApplicationContext());
 
 		// due to a known bug, the size cannot be stored in an integer array
-		String fontSizePref = prefs.getString("listPref", "16");
-		int fontDpi = Integer.valueOf(fontSizePref);
+		String fontSizePref = prefs.getString("listPref", "2");
+		int fontSize = Integer.valueOf(fontSizePref);
 
-		webSettings.setDefaultFontSize(fontDpi);
-		webSettings.setDefaultFixedFontSize(fontDpi);
+		// deprecated method must be used for consistency with variable
+		// resolutions and dpi
 
+		switch (fontSize) {
+		case 0:
+			webSettings.setTextSize(WebSettings.TextSize.SMALLEST);
+			break;
+		case 1:
+			webSettings.setTextSize(WebSettings.TextSize.SMALLER);
+			break;
+		case 2:
+			webSettings.setTextSize(WebSettings.TextSize.NORMAL);
+			break;
+		case 3:
+			webSettings.setTextSize(WebSettings.TextSize.LARGER);
+			break;
+		case 4:
+			webSettings.setTextSize(WebSettings.TextSize.LARGEST);
+			break;
+		}
 	}
 
 	public void onClick(View v) {

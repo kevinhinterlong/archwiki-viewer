@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
+import android.webkit.WebSettings;
 
 public class WikiPrefs extends PreferenceActivity implements
 		OnSharedPreferenceChangeListener {
@@ -24,14 +25,16 @@ public class WikiPrefs extends PreferenceActivity implements
 
 		listPreference = (ListPreference) getPreferenceScreen().findPreference(
 				KEY_LIST_PREFERENCE);
+
+		listPreference.setSummary(listPreference.getEntry());
 	}
 
 	@Override
 	protected void onResume() {
 		super.onResume();
 
-		listPreference.setSummary("Size: "
-				+ listPreference.getValue().toString());
+		listPreference.setSummary(listPreference.getEntry());
+
 		PreferenceManager.getDefaultSharedPreferences(this)
 				.registerOnSharedPreferenceChangeListener(this);
 	}
@@ -46,8 +49,8 @@ public class WikiPrefs extends PreferenceActivity implements
 
 	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
 			String key) {
-		listPreference.setSummary("Size: "
-				+ sharedPreferences.getString(key, ""));
-	}
 
+		listPreference.setSummary(listPreference.getEntry());
+
+	}
 }
