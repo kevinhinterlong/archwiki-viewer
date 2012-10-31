@@ -11,6 +11,7 @@ public class WikiPageBuilder {
 	String myUrl = "";
 	String page = null;
 	String pageTitle;
+	int pageRetries = 0;
 
 	public WikiPageBuilder(String urlString) {
 		myUrl = urlString;
@@ -29,7 +30,7 @@ public class WikiPageBuilder {
 			urlConnection.setRequestMethod("GET");
 
 			BufferedReader in = new BufferedReader(new InputStreamReader(
-					urlConnection.getInputStream()));
+					urlConnection.getInputStream()), 8);// buffer 8k
 
 			StringBuffer sb = new StringBuffer("");
 			String l = "";
@@ -47,10 +48,23 @@ public class WikiPageBuilder {
 			StringBuilder htmlString = new StringBuilder();
 			htmlString.append(pageString);
 
+			// System.out.println(htmlString.substring(0, 100));
+
 			// start after <title>
 			int titleStart = (htmlString.indexOf("<title>") + 7);
 			// drop " - ArchWiki"
-			int titleEnd = (htmlString.indexOf("</title>") - 11);
+			int titleEnd = (htmlString.indexOf("</title>", titleStart) - 11);
+
+			if (titleStart == 6) { // -1 + 7 = 6 (no page)
+				if (pageRetries < 1) {
+					buildPage();
+				}
+				return null;
+			}
+			
+
+			System.out.println("titleStart: " + titleStart);
+			System.out.println("titleEnd: " + titleEnd);
 
 			pageTitle = htmlString.substring(titleStart, titleEnd);
 
