@@ -1555,12 +1555,6 @@ input { /*hide search*/
 }
 
 /***format page***/
-/*this is needed for "Summary" and "Related"  */
-table {
-	width: 100% !important;
-	/*border: 1px solid #BCD*/
-}
-
 #content { /*	width: 99% !important;*/
 	background-color: #F6F9FC;
 }
@@ -1584,3 +1578,25 @@ div.mw-search-result-heading {
 	border: 1px solid #333
 }
 */
+/*this is needed for "Summary" and "Related"  */
+div#mw-content-text.mw-content-ltr table {
+	/*background-color: #F97;*/
+	width: 100% !important;
+	float: none !important;
+	clear: none !important;
+	position: relative !important;
+	margin: 0em;
+	left: -5px;
+	/*display: inline-block !important;*/
+	/*border: 1px solid #BCD*/
+}
+
+
+table#disputed.notice.noprint.toc {
+	/*background-color: #F17;*/
+	/*position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;*/
+	/*display: block !important;*/
+}
