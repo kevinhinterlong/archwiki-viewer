@@ -1,9 +1,12 @@
 package com.jtmcn.archwiki.viewer;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.SearchManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.Menu;
@@ -16,6 +19,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.SearchView;
 import android.widget.Toast;
 
 public class WikiActivity extends Activity implements OnClickListener {
@@ -27,6 +31,7 @@ public class WikiActivity extends Activity implements OnClickListener {
 	ProgressBar progressBar;
 	Button searchButton;
 	Button overflowButton;
+	Menu optionMenu;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -41,12 +46,24 @@ public class WikiActivity extends Activity implements OnClickListener {
 		// reset historyStacks
 		wikiViewer.resetApplication();
 
+		handleIntent(intent);
+	}
+
+	@Override
+	protected void onNewIntent(Intent intent) {
+		setIntent(intent);
+		handleIntent(intent);
+	}
+
+	private void handleIntent(Intent intent) {
 		if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+				optionMenu.findItem(R.id.menu_search).collapseActionView();
+			}
 			String query = intent.getStringExtra(SearchManager.QUERY);
 			String searchUrl = "https://wiki.archlinux.org/index.php?&search="
 					+ query;
 			wikiViewer.passSearch(searchUrl);
-
 		}
 	}
 
@@ -54,17 +71,22 @@ public class WikiActivity extends Activity implements OnClickListener {
 		// associate xml variables
 		wikiViewer = (WikiView) findViewById(R.id.wvMain);
 		progressBar = (ProgressBar) findViewById(R.id.ProgressBar);
-		searchButton = (Button) findViewById(R.id.search);
-		searchButton.setOnClickListener(this);
 
-		overflowButton = (Button) findViewById(R.id.overflow);
-		overflowButton.setOnClickListener(this);
+		WikiChromeClient wikiChrome;
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+			wikiChrome = new WikiChromeClient(progressBar, null, getActionBar());
+		} else {
+			searchButton = (Button) findViewById(R.id.search);
+			searchButton.setOnClickListener(this);
 
-		tvTitle = (TextView) findViewById(R.id.title);
+			overflowButton = (Button) findViewById(R.id.overflow);
+			overflowButton.setOnClickListener(this);
 
-		WikiChromeClient wikiChrome = new WikiChromeClient(progressBar, tvTitle);
+			tvTitle = (TextView) findViewById(R.id.title);
+			wikiChrome = new WikiChromeClient(progressBar, tvTitle, null);
+		}
+
 		wikiViewer.setWebChromeClient(wikiChrome);
-
 	}
 
 	public void setWebSettings() {
@@ -114,6 +136,12 @@ public class WikiActivity extends Activity implements OnClickListener {
 	public boolean onCreateOptionsMenu(Menu menu) {
 		MenuInflater inflater = getMenuInflater();
 		inflater.inflate(R.menu.options, menu);
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+			SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+			SearchView searchView = (SearchView) menu.findItem(R.id.menu_search).getActionView();
+			searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+		}
+		optionMenu = menu;
 		return true;
 	}
 
