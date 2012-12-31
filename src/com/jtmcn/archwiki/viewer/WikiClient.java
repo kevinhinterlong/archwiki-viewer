@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Toast;
@@ -121,6 +122,8 @@ public class WikiClient extends WebViewClient {
 
 		if (histTitleStack.size() > 0)
 			pageTitle = histTitleStack.elementAt(histTitleStack.size() - 1);
+		else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
+			pageTitle = null;
 		else
 			pageTitle = "ArchWiki Viewer";
 
