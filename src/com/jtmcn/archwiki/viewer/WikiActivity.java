@@ -31,6 +31,7 @@ public class WikiActivity extends Activity implements OnClickListener {
 	ProgressBar progressBar;
 	Button searchButton;
 	Button overflowButton;
+	Menu optionMenu;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -45,12 +46,24 @@ public class WikiActivity extends Activity implements OnClickListener {
 		// reset historyStacks
 		wikiViewer.resetApplication();
 
+		handleIntent(intent);
+	}
+
+	@Override
+	protected void onNewIntent(Intent intent) {
+		setIntent(intent);
+		handleIntent(intent);
+	}
+
+	private void handleIntent(Intent intent) {
 		if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+				optionMenu.findItem(R.id.menu_search).collapseActionView();
+			}
 			String query = intent.getStringExtra(SearchManager.QUERY);
 			String searchUrl = "https://wiki.archlinux.org/index.php?&search="
 					+ query;
 			wikiViewer.passSearch(searchUrl);
-
 		}
 	}
 
@@ -128,6 +141,7 @@ public class WikiActivity extends Activity implements OnClickListener {
 			SearchView searchView = (SearchView) menu.findItem(R.id.menu_search).getActionView();
 			searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
 		}
+		optionMenu = menu;
 		return true;
 	}
 
