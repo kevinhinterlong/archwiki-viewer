@@ -1,5 +1,7 @@
 package com.jtmcn.archwiki.viewer;
 
+import android.app.ActionBar;
+import android.os.Build;
 import android.view.View;
 import android.webkit.WebChromeClient;
 import android.widget.ProgressBar;
@@ -9,10 +11,12 @@ public class WikiChromeClient extends WebChromeClient {
 
 	static ProgressBar progressBar;
 	static TextView tvTitle;
+	static ActionBar actionBar;
 
-	public WikiChromeClient(ProgressBar progressBar, TextView tvTitle) {
+	public WikiChromeClient(ProgressBar progressBar, TextView tvTitle, ActionBar actionBar) {
 		WikiChromeClient.progressBar = progressBar;
 		WikiChromeClient.tvTitle = tvTitle;
+		WikiChromeClient.actionBar = actionBar;
 	}
 
 	public static void showProgress() {
@@ -24,7 +28,11 @@ public class WikiChromeClient extends WebChromeClient {
 	}
 
 	public static void setTvTitle(String title) {
-		tvTitle.setText(title);
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+			actionBar.setSubtitle(title);
+		} else {
+			tvTitle.setText(title);
+		}
 	}
 
 }
