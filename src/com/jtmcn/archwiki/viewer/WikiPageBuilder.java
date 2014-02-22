@@ -15,6 +15,7 @@ public class WikiPageBuilder {
 
 	public WikiPageBuilder(String urlString) {
 		myUrl = urlString;
+        ArchWikiApplication.getInstance().setCurrentUrl(myUrl);
 		buildPage();
 	}
 
