@@ -59,6 +59,10 @@ public class WikiActivity extends Activity implements OnClickListener {
                     + query;
             wikiViewer.passSearch(searchUrl);
         }
+        else if (Intent.ACTION_VIEW.equals(intent.getAction())){
+            final String url = intent.getDataString();
+            wikiViewer.wikiClient.shouldOverrideUrlLoading(wikiViewer, url);
+        }
     }
 
     public void initializeUI() {
