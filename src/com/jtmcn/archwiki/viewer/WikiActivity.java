@@ -58,8 +58,7 @@ public class WikiActivity extends Activity implements OnClickListener {
             String searchUrl = "https://wiki.archlinux.org/index.php?&search="
                     + query;
             wikiViewer.passSearch(searchUrl);
-        }
-        else if (Intent.ACTION_VIEW.equals(intent.getAction())){
+        } else if (Intent.ACTION_VIEW.equals(intent.getAction())) {
             final String url = intent.getDataString();
             wikiViewer.wikiClient.shouldOverrideUrlLoading(wikiViewer, url);
         }
@@ -151,12 +150,18 @@ public class WikiActivity extends Activity implements OnClickListener {
                 startActivityForResult(p, 0);
                 break;
             case R.id.menu_share:
-                Intent sendIntent = new Intent();
-                sendIntent.setAction(Intent.ACTION_SEND);
-                sendIntent.putExtra(Intent.EXTRA_TEXT, ArchWikiApplication.getInstance().getCurrentUrl());
-                sendIntent.putExtra(Intent.EXTRA_TITLE, ArchWikiApplication.getInstance().getCurrentTitle());
-                sendIntent.setType("text/plain");
-                startActivity(sendIntent);
+                if (ArchWikiApplication.getInstance().getCurrentUrl() != null
+                        && !ArchWikiApplication.getInstance().getCurrentUrl().equals("")) {
+                    Intent sendIntent = new Intent();
+                    sendIntent.setAction(Intent.ACTION_SEND);
+                    sendIntent.putExtra(Intent.EXTRA_TEXT, ArchWikiApplication.getInstance().getCurrentUrl());
+                    sendIntent.putExtra(Intent.EXTRA_TITLE, ArchWikiApplication.getInstance().getCurrentTitle());
+                    sendIntent.setType("text/plain");
+                    startActivity(sendIntent);
+                }
+                else {
+                    Toast.makeText(this, "Sorry, can't share this page!", Toast.LENGTH_SHORT).show();
+                }
                 break;
             case R.id.exit:
                 this.finish();
