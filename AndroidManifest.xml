@@ -5,7 +5,7 @@
 
     <uses-sdk
         android:minSdkVersion="8"
-        android:targetSdkVersion="17" />
+        android:targetSdkVersion="19" />
 
     <uses-permission android:name="android.permission.INTERNET" />
 
@@ -15,6 +15,7 @@
         android:theme="@style/AppTheme" >
         <activity
             android:name=".WikiActivity"
+            android:exported="true"
             android:configChanges="orientation|screenSize"
             android:label="@string/title_activity_wiki"
             android:launchMode="singleTop">
@@ -23,6 +24,17 @@
                 <action android:name="android.intent.action.SEARCH" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <intent-filter>
+                <data
+                    android:host="wiki.archlinux.org"
+                    android:pathPrefix="/index.php/"
+                    android:scheme="https" />
+
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.BROWSABLE" />
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
 
             <meta-data

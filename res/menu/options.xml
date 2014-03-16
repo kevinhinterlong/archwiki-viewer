@@ -4,7 +4,11 @@
         android:id="@+id/menu_settings"
         android:orderInCategory="100"
         android:showAsAction="always"
-        android:title="@string/menu_settings"/> 
+        android:title="@string/menu_settings"/>
+    <item
+        android:id="@+id/menu_share"
+        android:showAsAction="always"
+        android:title="@string/share"/>
 
     <item
         android:id="@+id/exit"
