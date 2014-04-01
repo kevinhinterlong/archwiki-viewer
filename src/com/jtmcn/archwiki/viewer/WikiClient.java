@@ -53,8 +53,7 @@ public class WikiClient extends WebViewClient {
 	}
 
 	/*
-	 * Show Toast message on error. Either code is perfect or this doesn't ever
-	 * get called.
+	 * Show Toast message on error. This is never called...?
 	 */
 	public void onReceivedError(WebView view, int errorCode,
 			String description, String failingUrl) {

@@ -1,5 +1,6 @@
 package com.jtmcn.archwiki.viewer;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.SearchManager;
 import android.content.Context;
@@ -16,6 +17,7 @@ import android.view.View.OnClickListener;
 import android.webkit.WebSettings;
 import android.widget.*;
 
+@TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
 public class WikiActivity extends Activity implements OnClickListener {
 
     private WikiView wikiViewer;
@@ -92,7 +94,7 @@ public class WikiActivity extends Activity implements OnClickListener {
         SharedPreferences prefs = PreferenceManager
                 .getDefaultSharedPreferences(getApplicationContext());
 
-        // due to a known bug, the size cannot be stored in an integer array
+        // due to a known bug(?), the size cannot be stored in an integer array
         String fontSizePref = prefs.getString("listPref", "2");
         int fontSize = Integer.valueOf(fontSizePref);
 

@@ -6,7 +6,7 @@ import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
-import android.webkit.WebSettings;
+//import android.webkit.WebSettings;
 
 public class WikiPrefs extends PreferenceActivity implements
 		OnSharedPreferenceChangeListener {
