@@ -8,7 +8,7 @@
         <item>Larger</item>
         <item>Largest</item>
     </string-array>
-    <string-array name="fontSizeValue">
+    <string-array name="fontSizeValue" translatable="false">
         <item>0</item>
         <item>1</item>
         <item>2</item>
