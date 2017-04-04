@@ -13,7 +13,7 @@ public class WikiView extends WebView {
 	public WikiView(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		buildView();
-		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
 			//this allows the webview to inject the css (otherwise it blocks it for security reasons)
 			getSettings().setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
 		}
