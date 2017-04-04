@@ -1,9 +1,8 @@
 package com.jtmcn.archwiki.viewer;
 
 /**
- * Created by kevin on 4/3/2017.
+ * Wrapper for a downloaded wiki page which holds the title and html.
  */
-
 public class WikiPage {
 	private final String pageTitle;
 	private final String htmlString;
