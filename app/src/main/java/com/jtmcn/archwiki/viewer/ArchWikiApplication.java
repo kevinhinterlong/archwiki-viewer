@@ -6,9 +6,9 @@ import android.app.Application;
  * Application singleton for the ArchWiki app
  * Created by vishnu on 2/22/14.
  */
-public class ArchWikiApplication extends Application{
-    public String mCurrentUrl;
-    public String mCurrentTitle;
+public class ArchWikiApplication extends Application {
+    private String mCurrentUrl;
+    private String mCurrentTitle;
     public static final ArchWikiApplication mApplication = new ArchWikiApplication();
 
     public String getCurrentUrl() {
@@ -27,7 +27,7 @@ public class ArchWikiApplication extends Application{
         mCurrentTitle = currentTitle;
     }
 
-    public static ArchWikiApplication getInstance(){
+    public static ArchWikiApplication getInstance() {
         return mApplication;
     }
 }

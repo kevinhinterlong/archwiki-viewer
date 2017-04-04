@@ -15,15 +15,17 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.webkit.WebSettings;
-import android.widget.*;
+import android.widget.Button;
+import android.widget.ProgressBar;
+import android.widget.SearchView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
 public class WikiActivity extends Activity implements OnClickListener {
 
     private WikiView wikiViewer;
-    LinearLayout titleBar;
     TextView tvTitle;
-    String titleString;
     ProgressBar progressBar;
     Button searchButton;
     Button overflowButton;
@@ -32,9 +34,9 @@ public class WikiActivity extends Activity implements OnClickListener {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Intent intent = getIntent();
-
         setContentView(R.layout.wiki_layout);
+
+        Intent intent = getIntent();
 
         initializeUI();
         setWebSettings();
@@ -152,16 +154,11 @@ public class WikiActivity extends Activity implements OnClickListener {
                 startActivityForResult(p, 0);
                 break;
             case R.id.menu_share:
-                if (ArchWikiApplication.getInstance().getCurrentUrl() != null
-                        && !ArchWikiApplication.getInstance().getCurrentUrl().equals("")) {
-                    Intent sendIntent = new Intent();
-                    sendIntent.setAction(Intent.ACTION_SEND);
-                    sendIntent.putExtra(Intent.EXTRA_TEXT, ArchWikiApplication.getInstance().getCurrentUrl());
-                    sendIntent.putExtra(Intent.EXTRA_TITLE, ArchWikiApplication.getInstance().getCurrentTitle());
-                    sendIntent.setType("text/plain");
-                    startActivity(sendIntent);
-                }
-                else {
+                String url = ArchWikiApplication.getInstance().getCurrentUrl();
+                String title = ArchWikiApplication.getInstance().getCurrentTitle();
+                if (url != null && !url.isEmpty()) {
+                    Utils.shareText(title, url, this);
+                } else {
                     Toast.makeText(this, "Sorry, can't share this page!", Toast.LENGTH_SHORT).show();
                 }
                 break;

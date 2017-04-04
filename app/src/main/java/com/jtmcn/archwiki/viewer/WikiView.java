@@ -1,6 +1,5 @@
 package com.jtmcn.archwiki.viewer;
 
-import android.app.Activity;
 import android.content.Context;
 import android.os.Build;
 import android.util.AttributeSet;
@@ -13,14 +12,14 @@ public class WikiView extends WebView {
 
 	public WikiView(Context context, AttributeSet attrs) {
 		super(context, attrs);
-		buildView((Activity) context);
+		buildView();
 		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
 			//this allows the webview to inject the css (otherwise it blocks it for security reasons)
 			getSettings().setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
 		}
 	}
 
-	public void buildView(Activity act) {
+	public void buildView() {
 		wikiClient = new WikiClient(this);
 		setWebViewClient(wikiClient);
 		loadUrl("file:///android_asset/startPage.html");
