@@ -1,10 +1,9 @@
 <resources>
 
     <string name="app_name">ArchWiki Viewer</string>
-    <string name="app_label">ArchWiki Viewer</string>
     <string name="menu_settings">Preferences</string>
-    <string name="title_activity_wiki">ArchWiki Viewer</string>
     <string name="share">Share Link</string>
     <string name="search">Search</string>
+    <string name="search_archwiki">Search ArchWiki</string>
 
 </resources>

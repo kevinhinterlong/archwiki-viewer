@@ -128,7 +128,7 @@ public class WikiClient extends WebViewClient {
 		else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
 			pageTitle = null;
 		else
-			pageTitle = "ArchWiki Viewer";
+			pageTitle = ArchWikiApplication.getInstance().getApplicationContext().getString(R.string.app_name);
 
 		WikiChromeClient.setTvTitle(pageTitle);
 	}
