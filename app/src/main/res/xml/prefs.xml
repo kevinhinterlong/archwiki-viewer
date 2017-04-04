@@ -9,7 +9,7 @@
             android:entryValues="@array/fontSizeValue"
             android:key="listPref"
 
-            android:title="Text Size" 
+            android:title="Text Size"
             android:dialogTitle="Text Size"/>
 
 </PreferenceScreen>

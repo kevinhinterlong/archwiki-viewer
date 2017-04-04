@@ -97,7 +97,7 @@ public class WikiActivity extends Activity implements OnClickListener {
 				.getDefaultSharedPreferences(getApplicationContext());
 
 		// due to a known bug(?), the size cannot be stored in an integer array
-		String fontSizePref = prefs.getString("listPref", "2");
+		String fontSizePref = prefs.getString(WikiPrefs.KEY_LIST_PREFERENCE, "2");
 		int fontSize = Integer.valueOf(fontSizePref);
 
 		// deprecated method must be used for consistency with variable
