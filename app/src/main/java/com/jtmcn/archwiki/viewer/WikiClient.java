@@ -12,12 +12,12 @@ import java.util.Stack;
 public class WikiClient extends WebViewClient {
 
 	protected static WeakReference<WebView> wrWeb;
-	static boolean pageFinished;
-	static WikiPage webpage;
+	private static boolean pageFinished;
+	private static WikiPage webpage;
 	private static Stack<String> histHtmlStack = new Stack<>();
 	private static Stack<String> histTitleStack = new Stack<>();
-	String myUrl;
-	String pageTitle;
+	private String myUrl;
+	private String pageTitle;
 
 	public WikiClient(WebView wikiViewer) {
 		wrWeb = new WeakReference<>(wikiViewer);
@@ -102,8 +102,7 @@ public class WikiClient extends WebViewClient {
 	}
 
 	public int histStackSize() {
-		int histSize = histHtmlStack.size();
-		return histSize;
+		return histHtmlStack.size();
 	}
 
 	public String getHistory() {
