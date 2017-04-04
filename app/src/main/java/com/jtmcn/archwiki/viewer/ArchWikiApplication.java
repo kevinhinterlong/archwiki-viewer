@@ -7,27 +7,27 @@ import android.app.Application;
  * Created by vishnu on 2/22/14.
  */
 public class ArchWikiApplication extends Application {
-    private String mCurrentUrl;
-    private String mCurrentTitle;
-    public static final ArchWikiApplication mApplication = new ArchWikiApplication();
+	public static final ArchWikiApplication mApplication = new ArchWikiApplication();
+	private String mCurrentUrl;
+	private String mCurrentTitle;
 
-    public String getCurrentUrl() {
-        return mCurrentUrl;
-    }
+	public static ArchWikiApplication getInstance() {
+		return mApplication;
+	}
 
-    public void setCurrentUrl(String currentUrl) {
-        mCurrentUrl = currentUrl;
-    }
+	public String getCurrentUrl() {
+		return mCurrentUrl;
+	}
 
-    public String getCurrentTitle() {
-        return mCurrentTitle;
-    }
+	public void setCurrentUrl(String currentUrl) {
+		mCurrentUrl = currentUrl;
+	}
 
-    public void setCurrentTitle(String currentTitle) {
-        mCurrentTitle = currentTitle;
-    }
+	public String getCurrentTitle() {
+		return mCurrentTitle;
+	}
 
-    public static ArchWikiApplication getInstance() {
-        return mApplication;
-    }
+	public void setCurrentTitle(String currentTitle) {
+		mCurrentTitle = currentTitle;
+	}
 }

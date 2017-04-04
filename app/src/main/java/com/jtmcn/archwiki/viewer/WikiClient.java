@@ -11,16 +11,34 @@ import java.util.Stack;
 
 public class WikiClient extends WebViewClient {
 
-	String myUrl;
-	String pageTitle;
+	protected static WeakReference<WebView> wrWeb;
 	static boolean pageFinished;
 	static WikiPageBuilder webpage;
-	protected static WeakReference<WebView> wrWeb;
 	private static Stack<String> histHtmlStack = new Stack<>();
 	private static Stack<String> histTitleStack = new Stack<>();
+	String myUrl;
+	String pageTitle;
 
 	public WikiClient(WebView wikiViewer) {
 		wrWeb = new WeakReference<>(wikiViewer);
+	}
+
+	/*
+	 * Manage page history
+	 */
+	public static void addHistory(String histHtml, String histTitle) {
+		histHtmlStack.push(histHtml);
+		histTitleStack.push(histTitle);
+	}
+
+	public static void loadWikiHtml(String wikiHtml) {
+		String urlStr = "https://wiki.archlinux.org/";
+		String mimeType = "text/html";
+		String encoding = "UTF-8";
+
+		// load the page in webview
+		wrWeb.get().loadDataWithBaseURL(urlStr, wikiHtml, mimeType, encoding,
+				null);
 	}
 
 	/*
@@ -41,7 +59,7 @@ public class WikiClient extends WebViewClient {
 
 			return false;
 		} else {
-			Utils.openLink(url,view.getContext());
+			Utils.openLink(url, view.getContext());
 			return true;
 		}
 	}
@@ -50,7 +68,7 @@ public class WikiClient extends WebViewClient {
 	 * Show Toast message on error. This is never called...?
 	 */
 	public void onReceivedError(WebView view, int errorCode,
-			String description, String failingUrl) {
+								String description, String failingUrl) {
 		Toast.makeText(view.getContext(), "Error: " + description,
 				Toast.LENGTH_SHORT).show();
 	}
@@ -74,14 +92,6 @@ public class WikiClient extends WebViewClient {
 	public void searchWiki(String searchUrl) {
 		new Read().execute(searchUrl);
 		WikiChromeClient.showProgress();
-	}
-
-	/*
-	 * Manage page history
-	 */
-	public static void addHistory(String histHtml, String histTitle) {
-		histHtmlStack.push(histHtml);
-		histTitleStack.push(histTitle);
 	}
 
 	public void resetStackSize() {
@@ -128,16 +138,6 @@ public class WikiClient extends WebViewClient {
 		loadWikiHtml(prevHtml);
 	}
 
-	public static void loadWikiHtml(String wikiHtml) {
-		String urlStr = "https://wiki.archlinux.org/";
-		String mimeType = "text/html";
-		String encoding = "UTF-8";
-
-		// load the page in webview
-		wrWeb.get().loadDataWithBaseURL(urlStr, wikiHtml, mimeType, encoding,
-				null);
-	}
-
 	/*
 	 * Background thread to download and manipulate page data.
 	 */
@@ -157,7 +157,7 @@ public class WikiClient extends WebViewClient {
 
 			String pageTitleData = webpage.getPageTitle();
 
-            ArchWikiApplication.getInstance().setCurrentTitle(pageTitleData);
+			ArchWikiApplication.getInstance().setCurrentTitle(pageTitleData);
 			loadWikiHtml(pageData);
 
 			addHistory(pageData, pageTitleData);

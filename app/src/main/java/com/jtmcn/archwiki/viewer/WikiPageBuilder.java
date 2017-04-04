@@ -15,14 +15,14 @@ public class WikiPageBuilder {
 
 	public WikiPageBuilder(String urlString) {
 		myUrl = urlString;
-        ArchWikiApplication.getInstance().setCurrentUrl(myUrl);
+		ArchWikiApplication.getInstance().setCurrentUrl(myUrl);
 		buildPage();
 	}
 
 	/*
 	 * buildPage will rerun twice after failure
 	 */
-	
+
 	private String buildPage() {
 
 		try {
@@ -67,7 +67,7 @@ public class WikiPageBuilder {
 				}
 				return null;
 			}
-			
+
 
 			System.out.println("titleStart: " + titleStart);
 			System.out.println("titleEnd: " + titleEnd);

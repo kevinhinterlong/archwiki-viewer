@@ -48,7 +48,7 @@ public class WikiPrefs extends PreferenceActivity implements
 	}
 
 	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
-			String key) {
+										  String key) {
 
 		listPreference.setSummary(listPreference.getEntry());
 
