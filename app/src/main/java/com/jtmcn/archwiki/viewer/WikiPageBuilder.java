@@ -1,5 +1,7 @@
 package com.jtmcn.archwiki.viewer;
 
+import android.util.Log;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -7,7 +9,14 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 public class WikiPageBuilder {
+	public static final String TAG = WikiPageBuilder.class.getSimpleName();
 	private static final int PAGE_RETRIES = 2;
+	public static final String LOCAL_CSS = "file:///android_asset/style.css";
+	public static final String HTML_HEAD_OPEN = "<head>";
+	public static final String HTML_HEAD_CLOSE = "</head>";
+	public static final String HTML_TITLE_OPEN = "<title>";
+	public static final String HTML_TITLE_CLOSE = "</title>";
+	public static final String DEFAULT_TITLE = " - ArchWiki";
 
 	private WikiPageBuilder() {
 
@@ -17,74 +26,65 @@ public class WikiPageBuilder {
 		return buildPage(stringUrl, PAGE_RETRIES);
 	}
 
-	/*
-	 * buildPage will rerun twice after failure
+	/**
+	 * Fetches a page from the wiki, extracts the title, and injects local css.
+	 * @param stringUrl url to download.
+	 * @param pageRetries number of times to retry while fetching page.
+	 * @return {@link WikiPage} containing downloaded page.
 	 */
 	private static WikiPage buildPage(String stringUrl, int pageRetries) {
+		StringBuilder stringBuilder = fetchUrl(stringUrl);
 
-		String pageString = fetchUrl(stringUrl);
-
-		while(pageString.isEmpty() && pageRetries > 0) {
-			pageString = fetchUrl(stringUrl);
+		while (stringBuilder.length() != 0 && pageRetries > 0) {
+			Log.d(TAG, "Page (" + stringUrl + ") was empty. Trying again.");
+			stringBuilder = fetchUrl(stringUrl);
 			pageRetries--;
 		}
 
-		StringBuilder htmlString = new StringBuilder();
-		htmlString.append(pageString);
-
 		// System.out.println(htmlString.substring(0, 100));
+		String pageTitle = getPageTitle(stringBuilder);
 
-		// start after <title>
-		int titleStart = (htmlString.indexOf("<title>") + 7);
-		// drop " - ArchWiki"
-		int titleEnd = (htmlString.indexOf("</title>", titleStart) - 11);
+		injectLocalCSS(stringBuilder, LOCAL_CSS);
+		String page = stringBuilder.toString();
 
-
-
-		String pageTitle = htmlString.substring(titleStart, titleEnd);
-
-		String page = injectLocalCSS(htmlString);
-
-		return new WikiPage(pageTitle,page);
+		return new WikiPage(pageTitle, page);
 
 	}
 
-	private static String injectLocalCSS(StringBuilder htmlString) {
-		int headStart = htmlString.indexOf("<head>");
-		int headEnd = htmlString.indexOf("</head>");
+	private static String getPageTitle(StringBuilder htmlString) {
+		try {
+			// start after <title>
+			int titleStart = (htmlString.indexOf(HTML_TITLE_OPEN) + HTML_TITLE_OPEN.length());
+			// drop DEFAULT_TITLE from page title
+			int titleEnd = (htmlString.indexOf(HTML_TITLE_CLOSE, titleStart) - DEFAULT_TITLE.length());
 
-		String head = "<head>" + "<link rel='stylesheet' href='file:///android_asset/style.css'>"
-				+ "<meta name='viewport' content='width=device-width, initial-scale=1.0, user-scalable=no'>";
-		return htmlString.replace(headStart, headEnd, head).toString();
+			return htmlString.substring(titleStart, titleEnd);
+		} catch (StringIndexOutOfBoundsException e) {
+			Log.d(TAG, "Failed to parse page title.", e);
+		}
+		return "Title";
 	}
 
-	public static String fetchUrl(String stringUrl) {
+	private static void injectLocalCSS(StringBuilder htmlString, String localCSSFilePath) {
+		try {
+			int headStart = htmlString.indexOf(HTML_HEAD_OPEN) + HTML_HEAD_OPEN.length();
+			int headEnd = htmlString.indexOf(HTML_HEAD_CLOSE);
+
+			String head = "<link rel='stylesheet' href='" + localCSSFilePath + "'>"
+					+ "<meta name='viewport' content='width=device-width, initial-scale=1.0, user-scalable=no'>";
+			htmlString.replace(headStart, headEnd, head);
+		} catch (StringIndexOutOfBoundsException e) {
+			Log.d(TAG, "Failed to inject local CSS.", e);
+		}
+	}
+
+	public static StringBuilder fetchUrl(String stringUrl) {
 		StringBuilder sb = new StringBuilder("");
 		try {
-			URL url = new URL(stringUrl);
-			HttpURLConnection urlConnection = (HttpURLConnection) url
-					.openConnection();
-
-			urlConnection.setReadTimeout(10000 /* milliseconds */);
-			urlConnection.setConnectTimeout(15000 /* milliseconds */);
-			urlConnection.setRequestMethod("GET");
-
-			BufferedReader in = new BufferedReader(new InputStreamReader(
-					urlConnection.getInputStream()), 8);// buffer 8k
-
-			String l = "";
-			String nl = System.getProperty("line.separator");
-
-			while ((l = in.readLine()) != null) {
-				sb.append(l).append(nl);
-			}
-
-			urlConnection.disconnect();
-			in.close();
-
+			sb = Utils.fetchURL(stringUrl);
 		} catch (IOException e) {
-
+			Log.d(TAG, "Failed while fetching (" + stringUrl + ") - ", e);
 		}
-		return sb.toString();
+		return sb;
 	}
 }
