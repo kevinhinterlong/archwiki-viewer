@@ -2,21 +2,17 @@ package com.jtmcn.archwiki.viewer;
 
 import android.util.Log;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 
 public class WikiPageBuilder {
 	public static final String TAG = WikiPageBuilder.class.getSimpleName();
-	private static final int PAGE_RETRIES = 0;
 	public static final String LOCAL_CSS = "file:///android_asset/style.css";
 	public static final String HTML_HEAD_OPEN = "<head>";
 	public static final String HTML_HEAD_CLOSE = "</head>";
 	public static final String HTML_TITLE_OPEN = "<title>";
 	public static final String HTML_TITLE_CLOSE = "</title>";
 	public static final String DEFAULT_TITLE = " - ArchWiki";
+	private static final int PAGE_RETRIES = 0;
 
 	private WikiPageBuilder() {
 
@@ -29,7 +25,7 @@ public class WikiPageBuilder {
 	/**
 	 * Fetches a page from the wiki, extracts the title, and injects local css.
 	 * @param stringUrl url to download.
-	 * @param pageRetries number of times to retry while fetching page.
+	 * @param pageRetries times to retry while fetching page.
 	 * @return {@link WikiPage} containing downloaded page.
 	 */
 	private static WikiPage buildPage(String stringUrl, int pageRetries) {
