@@ -10,7 +10,7 @@ import java.net.URL;
 
 public class WikiPageBuilder {
 	public static final String TAG = WikiPageBuilder.class.getSimpleName();
-	private static final int PAGE_RETRIES = 2;
+	private static final int PAGE_RETRIES = 0;
 	public static final String LOCAL_CSS = "file:///android_asset/style.css";
 	public static final String HTML_HEAD_OPEN = "<head>";
 	public static final String HTML_HEAD_CLOSE = "</head>";
@@ -52,17 +52,20 @@ public class WikiPageBuilder {
 	}
 
 	private static String getPageTitle(StringBuilder htmlString) {
+		// start after <title>
+		int titleStart = (htmlString.indexOf(HTML_TITLE_OPEN) + HTML_TITLE_OPEN.length());
+		// drop DEFAULT_TITLE from page title
+		int titleEnd = htmlString.indexOf(HTML_TITLE_CLOSE, titleStart);
 		try {
-			// start after <title>
-			int titleStart = (htmlString.indexOf(HTML_TITLE_OPEN) + HTML_TITLE_OPEN.length());
-			// drop DEFAULT_TITLE from page title
-			int titleEnd = (htmlString.indexOf(HTML_TITLE_CLOSE, titleStart) - DEFAULT_TITLE.length());
-
-			return htmlString.substring(titleStart, titleEnd);
+			if(htmlString.indexOf(DEFAULT_TITLE) > 0) { //If it's a normal title "Something - ArchWiki"
+				return htmlString.substring(titleStart, titleEnd - DEFAULT_TITLE.length());
+			} else { //else return "Something"
+				return htmlString.substring(titleStart,titleEnd);
+			}
 		} catch (StringIndexOutOfBoundsException e) {
 			Log.d(TAG, "Failed to parse page title.", e);
 		}
-		return "Title";
+		return "No title found";
 	}
 
 	private static void injectLocalCSS(StringBuilder htmlString, String localCSSFilePath) {
