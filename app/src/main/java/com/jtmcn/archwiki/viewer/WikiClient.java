@@ -1,31 +1,26 @@
 package com.jtmcn.archwiki.viewer;
 
-import java.lang.ref.WeakReference;
-import java.util.Stack;
-
-import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Toast;
 
+import java.lang.ref.WeakReference;
+import java.util.Stack;
+
 public class WikiClient extends WebViewClient {
 
 	String myUrl;
-	Context context;
 	String pageTitle;
 	static boolean pageFinished;
 	static WikiPageBuilder webpage;
-	static String savedPage;
 	protected static WeakReference<WebView> wrWeb;
-	private static Stack<String> histHtmlStack = new Stack<String>();
-	private static Stack<String> histTitleStack = new Stack<String>();
+	private static Stack<String> histHtmlStack = new Stack<>();
+	private static Stack<String> histTitleStack = new Stack<>();
 
 	public WikiClient(WebView wikiViewer) {
-		wrWeb = new WeakReference<WebView>(wikiViewer);
+		wrWeb = new WeakReference<>(wikiViewer);
 	}
 
 	/*
@@ -46,8 +41,7 @@ public class WikiClient extends WebViewClient {
 
 			return false;
 		} else {
-			Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-			view.getContext().startActivity(intent);
+			Utils.openLink(url,view.getContext());
 			return true;
 		}
 	}
