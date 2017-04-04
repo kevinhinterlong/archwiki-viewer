@@ -8,10 +8,10 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 public class WikiChromeClient extends WebChromeClient {
-
-	static ProgressBar progressBar;
-	static TextView tvTitle;
-	static ActionBar actionBar;
+	//// TODO: 4/3/2017 Fix memory leak 
+	private static ProgressBar progressBar;
+	private static TextView tvTitle;
+	private static ActionBar actionBar;
 
 	public WikiChromeClient(ProgressBar progressBar, TextView tvTitle, ActionBar actionBar) {
 		WikiChromeClient.progressBar = progressBar;
