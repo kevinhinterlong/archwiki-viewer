@@ -13,7 +13,7 @@ public class WikiClient extends WebViewClient {
 
 	protected static WeakReference<WebView> wrWeb;
 	static boolean pageFinished;
-	static WikiPageBuilder webpage;
+	static WikiPage webpage;
 	private static Stack<String> histHtmlStack = new Stack<>();
 	private static Stack<String> histTitleStack = new Stack<>();
 	String myUrl;
@@ -145,7 +145,7 @@ public class WikiClient extends WebViewClient {
 
 		@Override
 		protected String doInBackground(String... params) {
-			webpage = new WikiPageBuilder(params[0]); // url
+			webpage = WikiPageBuilder.getWikiPage(params[0]); // url
 			return null;
 		}
 

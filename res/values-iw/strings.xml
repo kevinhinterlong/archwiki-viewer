@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-  <string name="app_name">קורא ArchWiki</string>
-  <string name="app_label">קורא ArchWiki</string>
-  <string name="menu_settings">העדפות</string>
-  <string name="title_activity_wiki">קורא ArchWiki</string>
-  <string name="share">שתף קישור</string>
-  <string name="search">חיפוש</string>
-</resources>
