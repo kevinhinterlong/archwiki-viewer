@@ -10,7 +10,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -21,14 +20,19 @@ import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.jtmcn.archwiki.viewer.utils.AndroidUtils;
+
+import java.text.MessageFormat;
+
 @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
 public class WikiActivity extends Activity {
 
-	TextView tvTitle;
-	ProgressBar progressBar;
-	Button searchButton;
-	Button overflowButton;
-	Menu optionMenu;
+	public static final String QUERY_URL = "https://wiki.archlinux.org/index.php?&search={0}";
+	private TextView tvTitle;
+	private ProgressBar progressBar;
+	private Button searchButton;
+	private Button overflowButton;
+	private Menu optionMenu;
 	private WikiView wikiViewer;
 
 	@Override
@@ -59,8 +63,7 @@ public class WikiActivity extends Activity {
 				optionMenu.findItem(R.id.menu_search).collapseActionView();
 			}
 			String query = intent.getStringExtra(SearchManager.QUERY);
-			String searchUrl = "https://wiki.archlinux.org/index.php?&search="
-					+ query;
+			String searchUrl = MessageFormat.format(QUERY_URL, query);
 			wikiViewer.passSearch(searchUrl);
 		} else if (Intent.ACTION_VIEW.equals(intent.getAction())) {
 			final String url = intent.getDataString();
@@ -112,14 +115,18 @@ public class WikiActivity extends Activity {
 	}
 
 	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		MenuInflater inflater = getMenuInflater();
-		inflater.inflate(R.menu.options, menu);
+	public boolean onPrepareOptionsMenu(Menu menu) {
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
 			SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
 			SearchView searchView = (SearchView) menu.findItem(R.id.menu_search).getActionView();
 			searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
 		}
+		return super.onPrepareOptionsMenu(menu);
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		getMenuInflater().inflate(R.menu.options, menu);
 		optionMenu = menu;
 		return true;
 	}
@@ -135,7 +142,7 @@ public class WikiActivity extends Activity {
 				String url = ArchWikiApplication.getInstance().getCurrentUrl();
 				String title = ArchWikiApplication.getInstance().getCurrentTitle();
 				if (url != null && !url.isEmpty()) {
-					Utils.shareText(title, url, this);
+					AndroidUtils.shareText(title, url, this);
 				} else {
 					Toast.makeText(this, "Sorry, can't share this page!", Toast.LENGTH_SHORT).show();
 				}

@@ -8,12 +8,13 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 
 public class WikiView extends WebView {
+	public static final String START_PAGE_FILE = "file:///android_asset/startPage.html";
 	WikiClient wikiClient;
 
 	public WikiView(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		buildView();
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && !isInEditMode()) {
 			//this allows the webview to inject the css (otherwise it blocks it for security reasons)
 			getSettings().setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
 		}
@@ -22,7 +23,7 @@ public class WikiView extends WebView {
 	public void buildView() {
 		wikiClient = new WikiClient(this);
 		setWebViewClient(wikiClient);
-		loadUrl("file:///android_asset/startPage.html");
+		loadUrl(START_PAGE_FILE);
 	}
 
 	public void resetApplication() {
@@ -37,7 +38,7 @@ public class WikiView extends WebView {
 				&& (wikiClient.histStackSize() == 1)) {
 			// if there's only one entry load local html
 			wikiClient.resetStackSize();
-			loadUrl("file:///android_asset/startPage.html");
+			loadUrl(START_PAGE_FILE);
 			return true;
 		} else if ((keyCode == KeyEvent.KEYCODE_BACK)
 				&& (wikiClient.histStackSize() > 1)) {

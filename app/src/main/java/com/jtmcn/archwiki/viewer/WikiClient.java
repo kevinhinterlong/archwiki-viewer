@@ -1,16 +1,22 @@
 package com.jtmcn.archwiki.viewer;
 
+import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Toast;
 
+import com.jtmcn.archwiki.viewer.data.WikiPage;
+import com.jtmcn.archwiki.viewer.data.WikiPageBuilder;
+import com.jtmcn.archwiki.viewer.utils.AndroidUtils;
+
 import java.lang.ref.WeakReference;
 import java.util.Stack;
 
 public class WikiClient extends WebViewClient {
 
+	public static final String ARCHWIKI_BASE = "https://wiki.archlinux.org/";
 	protected static WeakReference<WebView> wrWeb;
 	private static boolean pageFinished;
 	private static WikiPage webpage;
@@ -32,12 +38,11 @@ public class WikiClient extends WebViewClient {
 	}
 
 	public static void loadWikiHtml(String wikiHtml) {
-		String urlStr = "https://wiki.archlinux.org/";
 		String mimeType = "text/html";
 		String encoding = "UTF-8";
 
 		// load the page in webview
-		wrWeb.get().loadDataWithBaseURL(urlStr, wikiHtml, mimeType, encoding,
+		wrWeb.get().loadDataWithBaseURL(ARCHWIKI_BASE, wikiHtml, mimeType, encoding,
 				null);
 	}
 
@@ -48,7 +53,7 @@ public class WikiClient extends WebViewClient {
 	@Override
 	public boolean shouldOverrideUrlLoading(WebView view, String url) {
 		myUrl = url;
-		if (myUrl.startsWith("https://wiki.archlinux.org/")) {
+		if (myUrl.startsWith(ARCHWIKI_BASE)) {
 			pageFinished = false;
 
 			wrWeb.get().stopLoading();
@@ -59,7 +64,7 @@ public class WikiClient extends WebViewClient {
 
 			return false;
 		} else {
-			Utils.openLink(url, view.getContext());
+			AndroidUtils.openLink(url, view.getContext());
 			return true;
 		}
 	}
@@ -121,13 +126,17 @@ public class WikiClient extends WebViewClient {
 	}
 
 	public void setPageTitle() {
-
-		if (histTitleStack.size() > 0)
+		if (histTitleStack.size() > 0) {
 			pageTitle = histTitleStack.elementAt(histTitleStack.size() - 1);
-		else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
+		} else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
 			pageTitle = null;
-		else
-			pageTitle = ArchWikiApplication.getInstance().getApplicationContext().getString(R.string.app_name);
+		} else {
+			ArchWikiApplication instance = ArchWikiApplication.getInstance();
+			if(instance != null) {
+				Context context = ArchWikiApplication.getInstance().getApplicationContext();
+				pageTitle = context.getString(R.string.app_name);
+			}
+		}
 
 		WikiChromeClient.setTvTitle(pageTitle);
 	}
@@ -154,8 +163,7 @@ public class WikiClient extends WebViewClient {
 
 			String pageData = webpage.getHtmlString();
 
-			ArchWikiApplication.getInstance().setCurrentTitle(webpage.getPageTitle());
-			ArchWikiApplication.getInstance().setCurrentUrl(webpage.getPageUrl());
+			//ArchWikiApplication.getInstance().setCurrentTitle(pageTitleData);
 			loadWikiHtml(pageData);
 
 			addHistory(pageData, webpage.getPageTitle());

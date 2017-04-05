@@ -1,6 +1,8 @@
-package com.jtmcn.archwiki.viewer;
+package com.jtmcn.archwiki.viewer.data;
 
 import android.util.Log;
+
+import com.jtmcn.archwiki.viewer.utils.NetworkUtils;
 
 import java.io.IOException;
 
@@ -12,31 +14,22 @@ public class WikiPageBuilder {
 	public static final String HTML_TITLE_OPEN = "<title>";
 	public static final String HTML_TITLE_CLOSE = "</title>";
 	public static final String DEFAULT_TITLE = " - ArchWiki";
-	private static final int PAGE_RETRIES = 0;
 
 	private WikiPageBuilder() {
 
 	}
 
 	public static WikiPage getWikiPage(String stringUrl) {
-		return buildPage(stringUrl, PAGE_RETRIES);
+		return buildPage(stringUrl);
 	}
 
 	/**
 	 * Fetches a page from the wiki, extracts the title, and injects local css.
-	 *
 	 * @param stringUrl   url to download.
-	 * @param pageRetries times to retry while fetching page.
 	 * @return {@link WikiPage} containing downloaded page.
 	 */
-	private static WikiPage buildPage(String stringUrl, int pageRetries) {
+	private static WikiPage buildPage(String stringUrl) {
 		StringBuilder stringBuilder = fetchUrl(stringUrl);
-
-		while (stringBuilder.length() != 0 && pageRetries > 0) {
-			Log.d(TAG, "Page (" + stringUrl + ") was empty. Trying again.");
-			stringBuilder = fetchUrl(stringUrl);
-			pageRetries--;
-		}
 
 		// System.out.println(htmlString.substring(0, 100));
 		String pageTitle = getPageTitle(stringBuilder);
@@ -51,16 +44,10 @@ public class WikiPageBuilder {
 	private static String getPageTitle(StringBuilder htmlString) {
 		// start after <title>
 		int titleStart = (htmlString.indexOf(HTML_TITLE_OPEN) + HTML_TITLE_OPEN.length());
-		// drop DEFAULT_TITLE from page title
 		int titleEnd = htmlString.indexOf(HTML_TITLE_CLOSE, titleStart);
-		try {
-			if (htmlString.indexOf(DEFAULT_TITLE) > 0) { //If it's a normal title "Something - ArchWiki"
-				return htmlString.substring(titleStart, titleEnd - DEFAULT_TITLE.length());
-			} else { //else return "Something"
-				return htmlString.substring(titleStart, titleEnd);
-			}
-		} catch (StringIndexOutOfBoundsException e) {
-			Log.d(TAG, "Failed to parse page title.", e);
+		if(titleStart > 0) { // drop DEFAULT_TITLE from page title
+			String title = htmlString.substring(titleStart, titleEnd);
+			return title.replace(DEFAULT_TITLE,"");
 		}
 		return "No title found";
 	}
@@ -70,9 +57,9 @@ public class WikiPageBuilder {
 			int headStart = htmlString.indexOf(HTML_HEAD_OPEN) + HTML_HEAD_OPEN.length();
 			int headEnd = htmlString.indexOf(HTML_HEAD_CLOSE);
 
-			String head = "<link rel='stylesheet' href='" + localCSSFilePath + "'>"
+			String injectedHeadHtml = "<link rel='stylesheet' href='" + localCSSFilePath + "'>"
 					+ "<meta name='viewport' content='width=device-width, initial-scale=1.0, user-scalable=no'>";
-			htmlString.replace(headStart, headEnd, head);
+			htmlString.replace(headStart, headEnd, injectedHeadHtml);
 		} catch (StringIndexOutOfBoundsException e) {
 			Log.d(TAG, "Failed to inject local CSS.", e);
 		}
@@ -81,7 +68,7 @@ public class WikiPageBuilder {
 	public static StringBuilder fetchUrl(String stringUrl) {
 		StringBuilder sb = new StringBuilder("");
 		try {
-			sb = Utils.fetchURL(stringUrl);
+			sb = NetworkUtils.fetchURL(stringUrl);
 		} catch (IOException e) {
 			Log.d(TAG, "Failed while fetching (" + stringUrl + ") - ", e);
 		}
