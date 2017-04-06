@@ -1,6 +1,6 @@
 archwiki-viewer
 ===============
-..
+A simple viewer for the Arch Linux Wiki online. Page content is formatted for optimal mobile viewing.
 
 License
 =======
