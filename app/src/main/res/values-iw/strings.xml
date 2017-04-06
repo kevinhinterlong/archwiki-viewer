@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="app_name">קורא ArchWiki</string>
+  <string name="menu_settings">העדפות</string>
+  <string name="share">שתף קישור</string>
+  <string name="search">חיפוש</string>
+</resources>
