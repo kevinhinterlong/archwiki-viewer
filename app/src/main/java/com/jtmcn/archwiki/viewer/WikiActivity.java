@@ -25,8 +25,8 @@ import com.jtmcn.archwiki.viewer.utils.AndroidUtils;
 import java.text.MessageFormat;
 
 @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
-public class WikiActivity extends Activity {
-
+public class WikiActivity extends Activity implements OnClickListener {
+	//TODO also need to group all of these string constants
 	public static final String QUERY_URL = "https://wiki.archlinux.org/index.php?&search={0}";
 	private TextView tvTitle;
 	private ProgressBar progressBar;
@@ -139,6 +139,7 @@ public class WikiActivity extends Activity {
 				startActivityForResult(p, 0);
 				break;
 			case R.id.menu_share:
+				//TODO SHARING A LINK CURRENTLY CRASHES. NEED TO FIX USING A GLOBAL STATE AND THEN THIS SHOULD BE FINE
 				String url = ArchWikiApplication.getInstance().getCurrentUrl();
 				String title = ArchWikiApplication.getInstance().getCurrentTitle();
 				if (url != null && !url.isEmpty()) {
