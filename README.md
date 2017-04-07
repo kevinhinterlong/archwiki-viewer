@@ -2,6 +2,8 @@ archwiki-viewer
 ===============
 A simple viewer for the Arch Linux Wiki online. Page content is formatted for optimal mobile viewing.
 
+Check it out on the [Google Play Store](https://play.google.com/store/apps/details?id=com.jtmcn.archwiki.viewer)
+
 License
 =======
 Copyright 2014 jtmcn
