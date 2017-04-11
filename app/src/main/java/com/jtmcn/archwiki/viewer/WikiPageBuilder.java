@@ -24,7 +24,8 @@ public class WikiPageBuilder {
 
 	/**
 	 * Fetches a page from the wiki, extracts the title, and injects local css.
-	 * @param stringUrl url to download.
+	 *
+	 * @param stringUrl   url to download.
 	 * @param pageRetries times to retry while fetching page.
 	 * @return {@link WikiPage} containing downloaded page.
 	 */
@@ -43,7 +44,7 @@ public class WikiPageBuilder {
 		injectLocalCSS(stringBuilder, LOCAL_CSS);
 		String page = stringBuilder.toString();
 
-		return new WikiPage(pageTitle, page);
+		return new WikiPage(stringUrl, pageTitle, page);
 
 	}
 
@@ -53,10 +54,10 @@ public class WikiPageBuilder {
 		// drop DEFAULT_TITLE from page title
 		int titleEnd = htmlString.indexOf(HTML_TITLE_CLOSE, titleStart);
 		try {
-			if(htmlString.indexOf(DEFAULT_TITLE) > 0) { //If it's a normal title "Something - ArchWiki"
+			if (htmlString.indexOf(DEFAULT_TITLE) > 0) { //If it's a normal title "Something - ArchWiki"
 				return htmlString.substring(titleStart, titleEnd - DEFAULT_TITLE.length());
 			} else { //else return "Something"
-				return htmlString.substring(titleStart,titleEnd);
+				return htmlString.substring(titleStart, titleEnd);
 			}
 		} catch (StringIndexOutOfBoundsException e) {
 			Log.d(TAG, "Failed to parse page title.", e);

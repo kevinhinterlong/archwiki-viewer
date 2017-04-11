@@ -154,12 +154,11 @@ public class WikiClient extends WebViewClient {
 
 			String pageData = webpage.getHtmlString();
 
-			String pageTitleData = webpage.getPageTitle();
-
-			ArchWikiApplication.getInstance().setCurrentTitle(pageTitleData);
+			ArchWikiApplication.getInstance().setCurrentTitle(webpage.getPageTitle());
+			ArchWikiApplication.getInstance().setCurrentUrl(webpage.getPageUrl());
 			loadWikiHtml(pageData);
 
-			addHistory(pageData, pageTitleData);
+			addHistory(pageData, webpage.getPageTitle());
 
 		}
 

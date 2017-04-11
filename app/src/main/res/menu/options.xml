@@ -1,17 +1,22 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
 
     <item
-        android:id="@+id/menu_settings"
-        android:orderInCategory="100"
-        android:showAsAction="always"
-        android:title="@string/menu_settings"/>
+        android:id="@+id/menu_search"
+        android:icon="@drawable/ic_search_grey_400_24dp"
+        android:title="@string/search"
+        android:showAsAction="always|collapseActionView"
+        android:actionViewClass="android.widget.SearchView"
+        />
     <item
         android:id="@+id/menu_share"
-        android:showAsAction="always"
         android:title="@string/share"/>
 
     <item
+        android:id="@+id/menu_settings"
+        android:title="@string/menu_settings"/>
+
+    <item
         android:id="@+id/exit"
-        android:title="Exit"/>
+        android:title="@string/exit"/>
 
 </menu>
