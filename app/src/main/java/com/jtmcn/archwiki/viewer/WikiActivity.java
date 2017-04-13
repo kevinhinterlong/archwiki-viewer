@@ -22,7 +22,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
-public class WikiActivity extends Activity implements OnClickListener {
+public class WikiActivity extends Activity {
 
 	TextView tvTitle;
 	ProgressBar progressBar;
@@ -74,18 +74,7 @@ public class WikiActivity extends Activity implements OnClickListener {
 		progressBar = (ProgressBar) findViewById(R.id.ProgressBar);
 
 		WikiChromeClient wikiChrome;
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-			wikiChrome = new WikiChromeClient(progressBar, null, getActionBar());
-		} else {
-			searchButton = (Button) findViewById(R.id.search);
-			searchButton.setOnClickListener(this);
-
-			overflowButton = (Button) findViewById(R.id.overflow);
-			overflowButton.setOnClickListener(this);
-
-			tvTitle = (TextView) findViewById(R.id.title);
-			wikiChrome = new WikiChromeClient(progressBar, tvTitle, null);
-		}
+		wikiChrome = new WikiChromeClient(progressBar, null, getActionBar());
 
 		wikiViewer.setWebChromeClient(wikiChrome);
 	}
@@ -118,17 +107,6 @@ public class WikiActivity extends Activity implements OnClickListener {
 				break;
 			case 4:
 				webSettings.setTextSize(WebSettings.TextSize.LARGEST);
-				break;
-		}
-	}
-
-	public void onClick(View v) {
-		switch (v.getId()) {
-			case R.id.search:
-				onSearchRequested();
-				break;
-			case R.id.overflow:
-				openOptionsMenu();
 				break;
 		}
 	}

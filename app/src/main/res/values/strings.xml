@@ -4,5 +4,6 @@
     <string name="menu_settings">Preferences</string>
     <string name="share">Share Link</string>
     <string name="search">Search</string>
+    <string name="exit">Exit</string>
 
 </resources>
