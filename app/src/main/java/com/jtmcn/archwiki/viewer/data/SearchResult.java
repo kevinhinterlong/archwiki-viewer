@@ -23,7 +23,7 @@ public class SearchResult {
 
 	@Override
 	public String toString() {
-		final StringBuilder sb = new StringBuilder("SearchResult{");
+		StringBuilder sb = new StringBuilder("SearchResult{");
 		sb.append("title='").append(pageName).append('\'');
 		sb.append(", url='").append(pageUrl).append('\'');
 		sb.append('}');

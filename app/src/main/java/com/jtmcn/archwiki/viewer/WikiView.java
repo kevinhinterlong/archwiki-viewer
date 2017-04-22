@@ -7,8 +7,11 @@ import android.view.KeyEvent;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 
+import com.jtmcn.archwiki.viewer.data.WikiPage;
+
+import static com.jtmcn.archwiki.viewer.Constants.START_PAGE_FILE;
+
 public class WikiView extends WebView {
-	public static final String START_PAGE_FILE = "file:///android_asset/startPage.html";
 	WikiClient wikiClient;
 
 	public WikiView(Context context, AttributeSet attrs) {
@@ -32,17 +35,9 @@ public class WikiView extends WebView {
 
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
-		// Check if the key event was the Back button and if there's history
-		// history needs to be managed manually
-		if ((keyCode == KeyEvent.KEYCODE_BACK)
-				&& (wikiClient.histStackSize() == 1)) {
-			// if there's only one entry load local html
-			wikiClient.resetStackSize();
-			loadUrl(START_PAGE_FILE);
-			return true;
-		} else if ((keyCode == KeyEvent.KEYCODE_BACK)
-				&& (wikiClient.histStackSize() > 1)) {
-			wikiClient.goBackHistory();
+		// Check if the key event was the Back button
+		if (keyCode == KeyEvent.KEYCODE_BACK) {
+			loadLastWebPage();
 			return true;
 		} else {
 			// if there are zero entries exit application
@@ -50,8 +45,24 @@ public class WikiView extends WebView {
 		}
 	}
 
+	/**
+	 * Load the last webpage used on the for the wikiclient
+	 */
+	private void loadLastWebPage() {
+		if (wikiClient.histStackSize() == 1) {
+			// if there's only one entry load local html
+			wikiClient.resetStackSize();
+			loadUrl(START_PAGE_FILE);
+		} else if (wikiClient.histStackSize() > 1) {
+			wikiClient.goBackHistory();
+		}
+	}
+
 	public void passSearch(String searchUrl) {
 		wikiClient.searchWiki(searchUrl);
 	}
 
+	public WikiPage getCurrentWebPage() {
+		return wikiClient.getCurrentWebPage();
+	}
 }

@@ -1,6 +1,5 @@
 package com.jtmcn.archwiki.viewer;
 
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.SearchManager;
 import android.content.Context;
@@ -11,27 +10,19 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.View.OnClickListener;
 import android.webkit.WebSettings;
-import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.SearchView;
-import android.widget.TextView;
 import android.widget.Toast;
 
+import com.jtmcn.archwiki.viewer.data.WikiPage;
 import com.jtmcn.archwiki.viewer.utils.AndroidUtils;
 
 import java.text.MessageFormat;
 
-@TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
-public class WikiActivity extends Activity implements OnClickListener {
-	//TODO also need to group all of these string constants
-	public static final String QUERY_URL = "https://wiki.archlinux.org/index.php?&search={0}";
-	private TextView tvTitle;
-	private ProgressBar progressBar;
-	private Button searchButton;
-	private Button overflowButton;
+import static com.jtmcn.archwiki.viewer.Constants.QUERY_URL;
+
+public class WikiActivity extends Activity {
 	private Menu optionMenu;
 	private WikiView wikiViewer;
 
@@ -59,14 +50,14 @@ public class WikiActivity extends Activity implements OnClickListener {
 
 	private void handleIntent(Intent intent) {
 		if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
-			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
 				optionMenu.findItem(R.id.menu_search).collapseActionView();
 			}
 			String query = intent.getStringExtra(SearchManager.QUERY);
 			String searchUrl = MessageFormat.format(QUERY_URL, query);
 			wikiViewer.passSearch(searchUrl);
 		} else if (Intent.ACTION_VIEW.equals(intent.getAction())) {
-			final String url = intent.getDataString();
+			String url = intent.getDataString();
 			wikiViewer.wikiClient.shouldOverrideUrlLoading(wikiViewer, url);
 		}
 	}
@@ -74,7 +65,7 @@ public class WikiActivity extends Activity implements OnClickListener {
 	public void initializeUI() {
 		// associate xml variables
 		wikiViewer = (WikiView) findViewById(R.id.wvMain);
-		progressBar = (ProgressBar) findViewById(R.id.ProgressBar);
+		ProgressBar progressBar = (ProgressBar) findViewById(R.id.ProgressBar);
 
 		WikiChromeClient wikiChrome;
 		wikiChrome = new WikiChromeClient(progressBar, null, getActionBar());
@@ -140,16 +131,15 @@ public class WikiActivity extends Activity implements OnClickListener {
 				break;
 			case R.id.menu_share:
 				//TODO SHARING A LINK CURRENTLY CRASHES. NEED TO FIX USING A GLOBAL STATE AND THEN THIS SHOULD BE FINE
-				String url = ArchWikiApplication.getInstance().getCurrentUrl();
-				String title = ArchWikiApplication.getInstance().getCurrentTitle();
-				if (url != null && !url.isEmpty()) {
-					AndroidUtils.shareText(title, url, this);
+				WikiPage wikiPage = wikiViewer.getCurrentWebPage();
+				if (wikiPage != null && !wikiPage.getPageUrl().isEmpty()) {
+					AndroidUtils.shareText(wikiPage.getPageTitle(), wikiPage.getPageUrl(), this);
 				} else {
 					Toast.makeText(this, "Sorry, can't share this page!", Toast.LENGTH_SHORT).show();
 				}
 				break;
 			case R.id.exit:
-				this.finish();
+				finish();
 				break;
 		}
 		return true;

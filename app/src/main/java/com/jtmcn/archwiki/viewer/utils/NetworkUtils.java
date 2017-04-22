@@ -13,7 +13,8 @@ import java.util.Map;
  */
 
 public class NetworkUtils {
-	private static Map<URL,StringBuilder> downloadCache = new HashMap<>();
+	private static Map<URL, StringBuilder> downloadCache = new HashMap<>();
+
 	private NetworkUtils() {
 
 	}
@@ -25,7 +26,7 @@ public class NetworkUtils {
 	public static StringBuilder fetchURL(String stringUrl, boolean useCache) throws IOException {
 		StringBuilder sb = new StringBuilder("");
 		URL url = new URL(stringUrl);
-		if(useCache && downloadCache.containsKey(url)){
+		if (useCache && downloadCache.containsKey(url)) {
 			return new StringBuilder(downloadCache.get(url));
 		}
 		HttpURLConnection urlConnection = (HttpURLConnection) url
@@ -48,8 +49,8 @@ public class NetworkUtils {
 		urlConnection.disconnect();
 		in.close();
 
-		if(useCache) {
-			downloadCache.put(url,new StringBuilder(sb));
+		if (useCache) {
+			downloadCache.put(url, new StringBuilder(sb));
 		}
 		return sb;
 	}

@@ -14,15 +14,16 @@ import com.jtmcn.archwiki.viewer.utils.AndroidUtils;
 import java.lang.ref.WeakReference;
 import java.util.Stack;
 
-public class WikiClient extends WebViewClient {
+import static com.jtmcn.archwiki.viewer.Constants.ARCHWIKI_BASE;
+import static com.jtmcn.archwiki.viewer.Constants.TEXT_HTML_MIME;
+import static com.jtmcn.archwiki.viewer.Constants.UTF_8;
 
-	public static final String ARCHWIKI_BASE = "https://wiki.archlinux.org/";
+public class WikiClient extends WebViewClient {
 	protected static WeakReference<WebView> wrWeb;
 	private static boolean pageFinished;
 	private static WikiPage webpage;
-	private static Stack<String> histHtmlStack = new Stack<>();
-	private static Stack<String> histTitleStack = new Stack<>();
-	private String myUrl;
+	private static Stack<WikiPage> webpageStack = new Stack<>();
+	private String myUrl; //todo replace with WikiPage variable
 	private String pageTitle;
 
 	public WikiClient(WebView wikiViewer) {
@@ -32,18 +33,19 @@ public class WikiClient extends WebViewClient {
 	/*
 	 * Manage page history
 	 */
-	public static void addHistory(String histHtml, String histTitle) {
-		histHtmlStack.push(histHtml);
-		histTitleStack.push(histTitle);
+	public static void addHistory(WikiPage wikiPage) {
+		webpageStack.push(wikiPage);
 	}
 
 	public static void loadWikiHtml(String wikiHtml) {
-		String mimeType = "text/html";
-		String encoding = "UTF-8";
-
 		// load the page in webview
-		wrWeb.get().loadDataWithBaseURL(ARCHWIKI_BASE, wikiHtml, mimeType, encoding,
-				null);
+		wrWeb.get().loadDataWithBaseURL(
+				ARCHWIKI_BASE,
+				wikiHtml,
+				TEXT_HTML_MIME,
+				UTF_8,
+				null
+		);
 	}
 
 	/*
@@ -101,23 +103,21 @@ public class WikiClient extends WebViewClient {
 
 	public void resetStackSize() {
 		// called on local html page reload
-		histHtmlStack.removeAllElements();
-		histTitleStack.removeAllElements();
+		webpageStack.removeAllElements();
 		// pageTitle = null;
 	}
 
 	public int histStackSize() {
-		return histHtmlStack.size();
+		return webpageStack.size();
 	}
 
 	public String getHistory() {
 		// load the 2nd to last page
-		String loadHtml = histHtmlStack.elementAt(histHtmlStack.size() - 2);
+		WikiPage wikiPage = webpageStack.elementAt(webpageStack.size() - 2);
 
 		// remove the current page
-		histHtmlStack.remove(histHtmlStack.size() - 1);
-		histTitleStack.remove(histTitleStack.size() - 1);
-		return loadHtml;
+		webpageStack.remove(webpageStack.size() - 1);
+		return wikiPage.getHtmlString();
 	}
 
 	public String getPageTitle() {
@@ -126,13 +126,13 @@ public class WikiClient extends WebViewClient {
 	}
 
 	public void setPageTitle() {
-		if (histTitleStack.size() > 0) {
-			pageTitle = histTitleStack.elementAt(histTitleStack.size() - 1);
+		if (webpageStack.size() > 0) {
+			pageTitle = webpageStack.elementAt(webpageStack.size() - 1).getPageTitle();
 		} else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
 			pageTitle = null;
 		} else {
 			ArchWikiApplication instance = ArchWikiApplication.getInstance();
-			if(instance != null) {
+			if (instance != null) {
 				Context context = ArchWikiApplication.getInstance().getApplicationContext();
 				pageTitle = context.getString(R.string.app_name);
 			}
@@ -146,8 +146,13 @@ public class WikiClient extends WebViewClient {
 		loadWikiHtml(prevHtml);
 	}
 
+	public WikiPage getCurrentWebPage() {
+		return webpage;
+	}
+
 	/*
 	 * Background thread to download and manipulate page data.
+	 * todo create separate class for async task
 	 */
 	private static class Read extends AsyncTask<String, Integer, String> {
 
@@ -161,12 +166,9 @@ public class WikiClient extends WebViewClient {
 		protected void onPostExecute(String result) {
 			pageFinished = true;
 
-			String pageData = webpage.getHtmlString();
+			loadWikiHtml(webpage.getHtmlString());
 
-			//ArchWikiApplication.getInstance().setCurrentTitle(pageTitleData);
-			loadWikiHtml(pageData);
-
-			addHistory(pageData, webpage.getPageTitle());
+			addHistory(webpage);
 
 		}
 

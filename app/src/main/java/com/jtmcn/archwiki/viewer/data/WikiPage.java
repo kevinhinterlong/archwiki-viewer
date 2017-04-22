@@ -41,7 +41,7 @@ public class WikiPage {
 
 		WikiPage wikiPage = (WikiPage) o;
 
-		if(getPageTitle() == null || getHtmlString() == null) {
+		if (getPageTitle() == null || getHtmlString() == null) {
 			return false;
 		}
 

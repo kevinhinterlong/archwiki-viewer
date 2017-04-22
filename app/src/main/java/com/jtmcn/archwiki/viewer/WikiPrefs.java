@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
+
 //import android.webkit.WebSettings;
 //// TODO: 4/4/2017 change to new preference setup and remove deprecated calls
 public class WikiPrefs extends PreferenceActivity implements

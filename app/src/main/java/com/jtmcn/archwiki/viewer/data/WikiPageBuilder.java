@@ -25,7 +25,8 @@ public class WikiPageBuilder {
 
 	/**
 	 * Fetches a page from the wiki, extracts the title, and injects local css.
-	 * @param stringUrl   url to download.
+	 *
+	 * @param stringUrl url to download.
 	 * @return {@link WikiPage} containing downloaded page.
 	 */
 	private static WikiPage buildPage(String stringUrl) {
@@ -45,9 +46,9 @@ public class WikiPageBuilder {
 		// start after <title>
 		int titleStart = (htmlString.indexOf(HTML_TITLE_OPEN) + HTML_TITLE_OPEN.length());
 		int titleEnd = htmlString.indexOf(HTML_TITLE_CLOSE, titleStart);
-		if(titleStart > 0) { // drop DEFAULT_TITLE from page title
+		if (titleStart > 0) { // drop DEFAULT_TITLE from page title
 			String title = htmlString.substring(titleStart, titleEnd);
-			return title.replace(DEFAULT_TITLE,"");
+			return title.replace(DEFAULT_TITLE, "");
 		}
 		return "No title found";
 	}
