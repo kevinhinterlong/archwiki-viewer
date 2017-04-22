@@ -36,7 +36,7 @@ public class WikiView extends WebView {
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		// Check if the key event was the Back button
-		if (keyCode == KeyEvent.KEYCODE_BACK) {
+		if (keyCode == KeyEvent.KEYCODE_BACK && wikiClient.histStackSize() != 0) {
 			loadLastWebPage();
 			return true;
 		} else {

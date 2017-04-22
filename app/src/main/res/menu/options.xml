@@ -2,7 +2,7 @@
 
     <item
         android:id="@+id/menu_search"
-        android:icon="@drawable/ic_search_grey_400_24dp"
+        android:icon="@android:drawable/ic_menu_search"
         android:title="@string/search"
         android:showAsAction="always|collapseActionView"
         android:actionViewClass="android.widget.SearchView"

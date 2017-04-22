@@ -36,7 +36,7 @@ public class WikiPageBuilder {
 		// start after <title>
 		int titleStart = (htmlString.indexOf(HTML_TITLE_OPEN) + HTML_TITLE_OPEN.length());
 		int titleEnd = htmlString.indexOf(HTML_TITLE_CLOSE, titleStart);
-		if (titleStart > 0) { // drop DEFAULT_TITLE from page title
+		if (titleStart > 0 && titleEnd > titleStart) { // drop DEFAULT_TITLE from page title
 			String title = htmlString.substring(titleStart, titleEnd);
 			return title.replace(DEFAULT_TITLE, "");
 		}

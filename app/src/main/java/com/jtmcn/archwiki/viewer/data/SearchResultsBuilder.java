@@ -3,9 +3,7 @@ package com.jtmcn.archwiki.viewer.data;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
-import com.jtmcn.archwiki.viewer.utils.NetworkUtils;
 
-import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,19 +23,12 @@ public class SearchResultsBuilder {
 	private SearchResultsBuilder() {
 	}
 
-	public static List<SearchResult> search(String query) {
-		return search(query, DEFAULT_LIMIT);
+	public static String getSearchQuery(String query) {
+		return getSearchQuery(query,DEFAULT_LIMIT);
 	}
 
-	public static List<SearchResult> search(String query, int limit) {
-		String toFetch = MessageFormat.format(SEARCH_URL, String.valueOf(limit), query);
-		String result = "";
-		try {
-			result = NetworkUtils.fetchURL(toFetch).toString();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return parseSearchResults(result);
+	public static String getSearchQuery(String query, int limit) {
+		return MessageFormat.format(SEARCH_URL, String.valueOf(limit), query);
 	}
 
 	public static List<SearchResult> parseSearchResults(String jsonResult) {

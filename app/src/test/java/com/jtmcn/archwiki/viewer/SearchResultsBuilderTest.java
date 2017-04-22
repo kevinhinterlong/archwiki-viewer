@@ -30,9 +30,12 @@ public class SearchResultsBuilderTest {
 	}
 
 	@Test
-	public void networkSearch() throws Exception {
-		List<SearchResult> generated = SearchResultsBuilder.parseSearchResults(realResult);
-		assertEquals(generated,SearchResultsBuilder.search("arch",5));
+	public void getSearchQuery() {
+		String query = SearchResultsBuilder.getSearchQuery("arch");
+		assertEquals("https://wiki.archlinux.org/api.php?action=opensearch&format=json&formatversion=2&namespace=0&limit=10&suggest=true&search=arch",query);
+
+		String queryWithLength = SearchResultsBuilder.getSearchQuery("arch",9);
+		assertEquals("https://wiki.archlinux.org/api.php?action=opensearch&format=json&formatversion=2&namespace=0&limit=9&suggest=true&search=arch",queryWithLength);
 	}
 
 	@Test

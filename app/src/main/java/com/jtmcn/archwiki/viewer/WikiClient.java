@@ -1,6 +1,5 @@
 package com.jtmcn.archwiki.viewer;
 
-import android.os.Build;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Toast;
@@ -10,7 +9,6 @@ import com.jtmcn.archwiki.viewer.tasks.FetchWikiPage;
 import com.jtmcn.archwiki.viewer.tasks.OnProgressChange;
 import com.jtmcn.archwiki.viewer.utils.AndroidUtils;
 
-import java.lang.ref.WeakReference;
 import java.util.List;
 import java.util.Stack;
 
@@ -19,27 +17,27 @@ import static com.jtmcn.archwiki.viewer.Constants.TEXT_HTML_MIME;
 import static com.jtmcn.archwiki.viewer.Constants.UTF_8;
 
 public class WikiClient extends WebViewClient implements OnProgressChange<WikiPage> {
-	protected static WeakReference<WebView> wrWeb;
+	//// TODO: 4/22/2017 maybe give this class an interface to make changes on.
+	protected WebView webView;
 	private boolean pageFinished;
-	private static WikiPage webpage;
-	private static Stack<WikiPage> webpageStack = new Stack<>();
-	private String myUrl; //todo replace with WikiPage variable
-	private String pageTitle;
+	// todo let's create this class in the main activity and on startup push the main wiki page so everything is in the stack
+	private WikiPage currentWikiPage;
+	private Stack<WikiPage> webpageStack = new Stack<>();
 
 	public WikiClient(WebView wikiViewer) {
-		wrWeb = new WeakReference<>(wikiViewer);
+		webView = wikiViewer;
 	}
 
 	/*
 	 * Manage page history
 	 */
-	public static void addHistory(WikiPage wikiPage) {
+	public void addHistory(WikiPage wikiPage) {
 		webpageStack.push(wikiPage);
 	}
 
-	public static void loadWikiHtml(String wikiHtml) {
+	public void loadWikiHtml(String wikiHtml) {
 		// load the page in webview
-		wrWeb.get().loadDataWithBaseURL(
+		webView.loadDataWithBaseURL(
 				ARCHWIKI_BASE,
 				wikiHtml,
 				TEXT_HTML_MIME,
@@ -54,13 +52,12 @@ public class WikiClient extends WebViewClient implements OnProgressChange<WikiPa
 	 */
 	@Override
 	public boolean shouldOverrideUrlLoading(WebView view, String url) {
-		myUrl = url;
-		if (myUrl.startsWith(ARCHWIKI_BASE)) {
+		if (url.startsWith(ARCHWIKI_BASE)) {
 			pageFinished = false;
 
-			wrWeb.get().stopLoading();
+			webView.stopLoading();
 
-			new FetchWikiPage(this).execute(myUrl);
+			new FetchWikiPage(this).execute(url);
 
 			WikiChromeClient.showProgress();
 
@@ -83,7 +80,7 @@ public class WikiClient extends WebViewClient implements OnProgressChange<WikiPa
 	/*
 	 * When everything is done, turn off progress wheel. The boolean is
 	 * necessary for the progressBar to continue after initial
-	 * wrWeb.get().stopLoading();
+	 * webView.get().stopLoading();
 	 */
 	@Override
 	public void onPageFinished(WebView view, String url) {
@@ -105,7 +102,6 @@ public class WikiClient extends WebViewClient implements OnProgressChange<WikiPa
 	public void resetStackSize() {
 		// called on local html page reload
 		webpageStack.removeAllElements();
-		// pageTitle = null;
 	}
 
 	public int histStackSize() {
@@ -121,19 +117,13 @@ public class WikiClient extends WebViewClient implements OnProgressChange<WikiPa
 		return wikiPage.getHtmlString();
 	}
 
-	public String getPageTitle() {
-
-		return pageTitle;
-	}
-
 	public void setPageTitle() {
+		String pageTitle = null;
 		if (webpageStack.size() > 0) {
 			pageTitle = webpageStack.elementAt(webpageStack.size() - 1).getPageTitle();
-		} else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-			pageTitle = null;
 		}
 
-		WikiChromeClient.setTvTitle(pageTitle);
+		WikiChromeClient.setSubtitle(pageTitle);
 	}
 
 	public void goBackHistory() {
@@ -142,12 +132,12 @@ public class WikiClient extends WebViewClient implements OnProgressChange<WikiPa
 	}
 
 	public WikiPage getCurrentWebPage() {
-		return webpage;
+		return currentWikiPage;
 	}
 
 	@Override
 	public void onAdd(WikiPage wikiPage) {
-		webpage = wikiPage;
+		currentWikiPage = wikiPage;
 	}
 
 	@Override
@@ -157,8 +147,8 @@ public class WikiClient extends WebViewClient implements OnProgressChange<WikiPa
 
 	@Override
 	public void onProgressUpdate(int value) {
-		loadWikiHtml(webpage.getHtmlString());
-		addHistory(webpage);
+		loadWikiHtml(currentWikiPage.getHtmlString());
+		addHistory(currentWikiPage);
 		pageFinished = true;
 	}
 }

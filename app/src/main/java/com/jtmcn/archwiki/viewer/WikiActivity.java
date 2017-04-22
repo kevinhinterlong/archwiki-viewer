@@ -67,8 +67,7 @@ public class WikiActivity extends Activity {
 		wikiViewer = (WikiView) findViewById(R.id.wvMain);
 		ProgressBar progressBar = (ProgressBar) findViewById(R.id.ProgressBar);
 
-		WikiChromeClient wikiChrome;
-		wikiChrome = new WikiChromeClient(progressBar, null, getActionBar());
+		WikiChromeClient wikiChrome = new WikiChromeClient(progressBar, getActionBar());
 
 		wikiViewer.setWebChromeClient(wikiChrome);
 	}
@@ -85,34 +84,32 @@ public class WikiActivity extends Activity {
 
 		// deprecated method must be used for consistency with variable
 		// resolutions and dpi
-
+		//https://developer.android.com/reference/android/webkit/WebSettings.TextSize.html#NORMAL
 		switch (fontSize) {
 			case 0:
-				webSettings.setTextSize(WebSettings.TextSize.SMALLEST);
+				webSettings.setTextSize(WebSettings.TextSize.SMALLEST); //50%
 				break;
 			case 1:
-				webSettings.setTextSize(WebSettings.TextSize.SMALLER);
+				webSettings.setTextSize(WebSettings.TextSize.SMALLER); //75%
 				break;
 			case 2:
-				webSettings.setTextSize(WebSettings.TextSize.NORMAL);
+				webSettings.setTextSize(WebSettings.TextSize.NORMAL); //100%
 				break;
 			case 3:
-				webSettings.setTextSize(WebSettings.TextSize.LARGER);
+				webSettings.setTextSize(WebSettings.TextSize.LARGER); //150%
 				break;
 			case 4:
-				webSettings.setTextSize(WebSettings.TextSize.LARGEST);
+				webSettings.setTextSize(WebSettings.TextSize.LARGEST); //200%
 				break;
 		}
 	}
 
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-			SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-			SearchView searchView = (SearchView) menu.findItem(R.id.menu_search).getActionView();
-			searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-		}
-		return super.onPrepareOptionsMenu(menu);
+		SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+		SearchView searchView = (SearchView) menu.findItem(R.id.menu_search).getActionView();
+		searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+		return true;
 	}
 
 	@Override
@@ -130,7 +127,6 @@ public class WikiActivity extends Activity {
 				startActivityForResult(p, 0);
 				break;
 			case R.id.menu_share:
-				//TODO SHARING A LINK CURRENTLY CRASHES. NEED TO FIX USING A GLOBAL STATE AND THEN THIS SHOULD BE FINE
 				WikiPage wikiPage = wikiViewer.getCurrentWebPage();
 				if (wikiPage != null && !wikiPage.getPageUrl().isEmpty()) {
 					AndroidUtils.shareText(wikiPage.getPageTitle(), wikiPage.getPageUrl(), this);

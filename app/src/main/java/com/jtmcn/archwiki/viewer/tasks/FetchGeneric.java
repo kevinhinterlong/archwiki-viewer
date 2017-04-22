@@ -116,6 +116,7 @@ public class FetchGeneric<Result> extends AsyncTask<String, Integer, List<Result
 			toReturn = NetworkUtils.fetchURL(url);
 		} catch (IOException e) { //network exception
 			Log.d(TAG, "Could not connect to: " + url, e);
+			toReturn = new StringBuilder("Could not connect");
 		}
 
 		return toReturn;
