@@ -2,13 +2,10 @@ package com.jtmcn.archwiki.viewer.data;
 
 import android.util.Log;
 
-import com.jtmcn.archwiki.viewer.utils.NetworkUtils;
-
-import java.io.IOException;
+import static com.jtmcn.archwiki.viewer.Constants.LOCAL_CSS;
 
 public class WikiPageBuilder {
 	public static final String TAG = WikiPageBuilder.class.getSimpleName();
-	public static final String LOCAL_CSS = "file:///android_asset/style.css";
 	public static final String HTML_HEAD_OPEN = "<head>";
 	public static final String HTML_HEAD_CLOSE = "</head>";
 	public static final String HTML_TITLE_OPEN = "<title>";
@@ -19,30 +16,23 @@ public class WikiPageBuilder {
 
 	}
 
-	public static WikiPage getWikiPage(String stringUrl) {
-		return buildPage(stringUrl);
-	}
-
 	/**
 	 * Fetches a page from the wiki, extracts the title, and injects local css.
 	 *
 	 * @param stringUrl url to download.
+	 * @param html stringbuilder containing the html of the wikipage
 	 * @return {@link WikiPage} containing downloaded page.
 	 */
-	private static WikiPage buildPage(String stringUrl) {
-		StringBuilder stringBuilder = fetchUrl(stringUrl);
-
-		// System.out.println(htmlString.substring(0, 100));
-		String pageTitle = getPageTitle(stringBuilder);
-
-		injectLocalCSS(stringBuilder, LOCAL_CSS);
-		String page = stringBuilder.toString();
+	public static WikiPage buildPage(String stringUrl, StringBuilder html) {
+		String pageTitle = getPageTitle(html);
+		injectLocalCSS(html, LOCAL_CSS);
+		String page = html.toString();
 
 		return new WikiPage(stringUrl, pageTitle, page);
 
 	}
 
-	private static String getPageTitle(StringBuilder htmlString) {
+	public static String getPageTitle(StringBuilder htmlString) {
 		// start after <title>
 		int titleStart = (htmlString.indexOf(HTML_TITLE_OPEN) + HTML_TITLE_OPEN.length());
 		int titleEnd = htmlString.indexOf(HTML_TITLE_CLOSE, titleStart);
@@ -53,7 +43,7 @@ public class WikiPageBuilder {
 		return "No title found";
 	}
 
-	private static void injectLocalCSS(StringBuilder htmlString, String localCSSFilePath) {
+	public static void injectLocalCSS(StringBuilder htmlString, String localCSSFilePath) {
 		try {
 			int headStart = htmlString.indexOf(HTML_HEAD_OPEN) + HTML_HEAD_OPEN.length();
 			int headEnd = htmlString.indexOf(HTML_HEAD_CLOSE);
@@ -64,15 +54,5 @@ public class WikiPageBuilder {
 		} catch (StringIndexOutOfBoundsException e) {
 			Log.d(TAG, "Failed to inject local CSS.", e);
 		}
-	}
-
-	public static StringBuilder fetchUrl(String stringUrl) {
-		StringBuilder sb = new StringBuilder("");
-		try {
-			sb = NetworkUtils.fetchURL(stringUrl);
-		} catch (IOException e) {
-			Log.d(TAG, "Failed while fetching (" + stringUrl + ") - ", e);
-		}
-		return sb;
 	}
 }

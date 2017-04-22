@@ -1,26 +1,26 @@
 package com.jtmcn.archwiki.viewer;
 
-import android.content.Context;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Toast;
 
 import com.jtmcn.archwiki.viewer.data.WikiPage;
-import com.jtmcn.archwiki.viewer.data.WikiPageBuilder;
+import com.jtmcn.archwiki.viewer.tasks.FetchWikiPage;
+import com.jtmcn.archwiki.viewer.tasks.OnProgressChange;
 import com.jtmcn.archwiki.viewer.utils.AndroidUtils;
 
 import java.lang.ref.WeakReference;
+import java.util.List;
 import java.util.Stack;
 
 import static com.jtmcn.archwiki.viewer.Constants.ARCHWIKI_BASE;
 import static com.jtmcn.archwiki.viewer.Constants.TEXT_HTML_MIME;
 import static com.jtmcn.archwiki.viewer.Constants.UTF_8;
 
-public class WikiClient extends WebViewClient {
+public class WikiClient extends WebViewClient implements OnProgressChange<WikiPage> {
 	protected static WeakReference<WebView> wrWeb;
-	private static boolean pageFinished;
+	private boolean pageFinished;
 	private static WikiPage webpage;
 	private static Stack<WikiPage> webpageStack = new Stack<>();
 	private String myUrl; //todo replace with WikiPage variable
@@ -60,7 +60,7 @@ public class WikiClient extends WebViewClient {
 
 			wrWeb.get().stopLoading();
 
-			new Read().execute(myUrl);
+			new FetchWikiPage(this).execute(myUrl);
 
 			WikiChromeClient.showProgress();
 
@@ -88,8 +88,9 @@ public class WikiClient extends WebViewClient {
 	@Override
 	public void onPageFinished(WebView view, String url) {
 		super.onPageFinished(view, url);
-		if (pageFinished)
+		if (pageFinished) {
 			WikiChromeClient.hideProgress();
+		}
 		setPageTitle();
 	}
 
@@ -97,7 +98,7 @@ public class WikiClient extends WebViewClient {
 	 * Execute new thread to create search page
 	 */
 	public void searchWiki(String searchUrl) {
-		new Read().execute(searchUrl);
+		new FetchWikiPage(this).execute(searchUrl);
 		WikiChromeClient.showProgress();
 	}
 
@@ -130,12 +131,6 @@ public class WikiClient extends WebViewClient {
 			pageTitle = webpageStack.elementAt(webpageStack.size() - 1).getPageTitle();
 		} else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
 			pageTitle = null;
-		} else {
-			ArchWikiApplication instance = ArchWikiApplication.getInstance();
-			if (instance != null) {
-				Context context = ArchWikiApplication.getInstance().getApplicationContext();
-				pageTitle = context.getString(R.string.app_name);
-			}
 		}
 
 		WikiChromeClient.setTvTitle(pageTitle);
@@ -150,28 +145,20 @@ public class WikiClient extends WebViewClient {
 		return webpage;
 	}
 
-	/*
-	 * Background thread to download and manipulate page data.
-	 * todo create separate class for async task
-	 */
-	private static class Read extends AsyncTask<String, Integer, String> {
+	@Override
+	public void onAdd(WikiPage wikiPage) {
+		webpage = wikiPage;
+	}
 
-		@Override
-		protected String doInBackground(String... params) {
-			webpage = WikiPageBuilder.getWikiPage(params[0]); // url
-			return null;
-		}
-
-		@Override
-		protected void onPostExecute(String result) {
-			pageFinished = true;
-
-			loadWikiHtml(webpage.getHtmlString());
-
-			addHistory(webpage);
-
-		}
+	@Override
+	public void onFinish(List<WikiPage> results) {
 
 	}
 
+	@Override
+	public void onProgressUpdate(int value) {
+		loadWikiHtml(webpage.getHtmlString());
+		addHistory(webpage);
+		pageFinished = true;
+	}
 }
