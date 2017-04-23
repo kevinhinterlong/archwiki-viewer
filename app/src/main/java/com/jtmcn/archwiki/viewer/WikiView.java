@@ -9,15 +9,20 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 
 import com.jtmcn.archwiki.viewer.data.WikiPage;
+import com.jtmcn.archwiki.viewer.utils.AndroidUtils;
 
+import static com.jtmcn.archwiki.viewer.Constants.ARCHWIKI_MAIN;
+import static com.jtmcn.archwiki.viewer.Constants.ARCHWIKI_MAIN_TITLE;
 import static com.jtmcn.archwiki.viewer.Constants.START_PAGE_FILE;
 
 public class WikiView extends WebView {
 	public static final String TAG = WikiView.class.getSimpleName();
 	WikiClient wikiClient;
+	private final Context context;
 
 	public WikiView(Context context, AttributeSet attrs) {
 		super(context, attrs);
+		this.context = context;
 		buildView();
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && !isInEditMode()) {
 			//this allows the webview to inject the css (otherwise it blocks it for security reasons)
@@ -28,17 +33,18 @@ public class WikiView extends WebView {
 	public void buildView() {
 		wikiClient = new WikiClient(this);
 		setWebViewClient(wikiClient);
-		loadUrl(START_PAGE_FILE);
-	}
 
-	public void resetApplication() {
-		wikiClient.resetStackSize();
+		String html = AndroidUtils.readFileFromAssets(START_PAGE_FILE, context).toString();
+		WikiPage startPage = new WikiPage(ARCHWIKI_MAIN, ARCHWIKI_MAIN_TITLE, html);
+
+		wikiClient.addHistory(startPage);
+		loadUrl(START_PAGE_FILE);
 	}
 
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		// Check if the key event was the Back button
-		if (keyCode == KeyEvent.KEYCODE_BACK && wikiClient.histStackSize() != 0) {
+		if (keyCode == KeyEvent.KEYCODE_BACK && wikiClient.histStackSize() > 1) {
 			Log.d(TAG, "Handling back button press");
 			loadLastWebPage();
 			return true;
@@ -53,12 +59,13 @@ public class WikiView extends WebView {
 	 * Load the last webpage used on the for the wikiclient
 	 */
 	private void loadLastWebPage() {
-		if (wikiClient.histStackSize() == 1) {
-			// if there's only one entry load local html
-			wikiClient.resetStackSize();
-			loadUrl(START_PAGE_FILE);
-		} else if (wikiClient.histStackSize() > 1) {
+		if (wikiClient.histStackSize() > 1) {
 			wikiClient.goBackHistory();
+		}
+
+		if (wikiClient.histStackSize() == 1) {
+			Log.d(TAG, "Force loading start page");
+			loadUrl(START_PAGE_FILE);
 		}
 	}
 

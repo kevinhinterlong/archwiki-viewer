@@ -44,9 +44,6 @@ public class WikiActivity extends Activity implements OnProgressChange<List<Sear
 
 		initializeUI();
 
-		// reset historyStacks
-		wikiViewer.resetApplication();
-
 		Intent intent = getIntent();
 		handleIntent(intent);
 	}
@@ -123,7 +120,7 @@ public class WikiActivity extends Activity implements OnProgressChange<List<Sear
 		searchView.setOnQueryTextFocusChangeListener(new View.OnFocusChangeListener() {
 			@Override
 			public void onFocusChange(View v, boolean hasFocus) {
-				if(!hasFocus) {
+				if (!hasFocus) {
 					hideSearchView();
 				}
 			}
