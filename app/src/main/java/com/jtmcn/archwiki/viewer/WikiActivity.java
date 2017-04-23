@@ -21,8 +21,8 @@ import android.widget.Toast;
 import com.jtmcn.archwiki.viewer.data.SearchResult;
 import com.jtmcn.archwiki.viewer.data.SearchResultsBuilder;
 import com.jtmcn.archwiki.viewer.data.WikiPage;
+import com.jtmcn.archwiki.viewer.tasks.FetchGeneric;
 import com.jtmcn.archwiki.viewer.tasks.FetchSearchResults;
-import com.jtmcn.archwiki.viewer.tasks.OnProgressChange;
 import com.jtmcn.archwiki.viewer.utils.AndroidUtils;
 
 import java.text.MessageFormat;
@@ -30,7 +30,7 @@ import java.util.List;
 
 import static com.jtmcn.archwiki.viewer.Constants.QUERY_URL;
 
-public class WikiActivity extends Activity implements OnProgressChange<List<SearchResult>> {
+public class WikiActivity extends Activity implements FetchGeneric.OnFinish<List<SearchResult>> {
 	public static final String TAG = WikiActivity.class.getSimpleName();
 	private SearchView searchView;
 	private MenuItem searchMenuItem;
@@ -77,6 +77,9 @@ public class WikiActivity extends Activity implements OnProgressChange<List<Sear
 			String searchUrl = MessageFormat.format(QUERY_URL, query);
 			wikiViewer.passSearch(searchUrl);
 			hideSearchView();
+		} else if (Intent.ACTION_VIEW.equals(intent.getAction())) {
+			final String url = intent.getDataString();
+			wikiViewer.wikiClient.shouldOverrideUrlLoading(wikiViewer, url);
 		}
 	}
 
@@ -139,11 +142,12 @@ public class WikiActivity extends Activity implements OnProgressChange<List<Sear
 			public boolean onQueryTextChange(String newText) {
 				if (newText.isEmpty()) {
 					searchView.setSuggestionsAdapter(null);
+					return true;
 				} else {
 					String searchUrl = SearchResultsBuilder.getSearchQuery(newText);
 					new FetchSearchResults(WikiActivity.this).execute(searchUrl);
+					return false;
 				}
-				return false;
 			}
 		});
 
@@ -199,21 +203,12 @@ public class WikiActivity extends Activity implements OnProgressChange<List<Sear
 		return true;
 	}
 
-	@Override
-	public void onAdd(List<SearchResult> results) {
-
-	}
 
 	@Override
-	public void onFinish(List<List<SearchResult>> results) {
-		if (results.size() > 0) {
-			currentSuggestions = results.get(0);
+	public void onFinish(List<SearchResult> results) {
+		if (results != null) {
+			currentSuggestions = results;
 			searchView.setSuggestionsAdapter(SearchResultsAdapter.getCursorAdapter(this, currentSuggestions));
 		}
-	}
-
-	@Override
-	public void onProgressUpdate(int value) {
-
 	}
 }

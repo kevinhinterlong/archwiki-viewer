@@ -18,21 +18,11 @@ public class FetchSearchResults extends FetchGeneric<List<SearchResult>> {
 	};
 
 	/**
-	 * Fetches a list of urls and publishes progress on the {@link OnProgressChange} listener.
+	 * Fetches a list of urls and publishes progress on the {@link OnFinish} listener.
 	 *
-	 * @param onProgressChange The listener to be called when progress is ready.
-	 * @param blocking         Whether or not it should force all connections to be finished.
+	 * @param onFinish The listener to be called when progress is ready.
 	 */
-	public FetchSearchResults(OnProgressChange<List<SearchResult>> onProgressChange, boolean blocking) {
-		super(onProgressChange, mapper, blocking);
-	}
-
-	/**
-	 * Fetches a list of urls and publishes progress on the {@link OnProgressChange} listener.
-	 *
-	 * @param onProgressChange The listener to be called when progress is ready.
-	 */
-	public FetchSearchResults(OnProgressChange<List<SearchResult>> onProgressChange) {
-		super(onProgressChange, mapper, true);
+	public FetchSearchResults(OnFinish<List<SearchResult>> onFinish) {
+		super(onFinish, mapper);
 	}
 }

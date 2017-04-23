@@ -15,16 +15,11 @@ public class FetchWikiPage extends FetchGeneric<WikiPage> {
 	};
 
 	/**
-	 * Fetches a list of urls and publishes progress on the {@link OnProgressChange} listener.
+	 * Fetches a list of urls and publishes progress on the {@link OnFinish} listener.
 	 *
-	 * @param onProgressChange The listener to be called when progress is ready.
-	 * @param blocking         Whether or not it should force all connections to be finished.
+	 * @param onFinish The listener to be called when progress is ready.
 	 */
-	public FetchWikiPage(OnProgressChange<WikiPage> onProgressChange, boolean blocking) {
-		super(onProgressChange, wikiMapper, blocking);
-	}
-
-	public FetchWikiPage(OnProgressChange<WikiPage> onProgressChange) {
-		super(onProgressChange, wikiMapper, true);
+	public FetchWikiPage(OnFinish<WikiPage> onFinish) {
+		super(onFinish, wikiMapper);
 	}
 }

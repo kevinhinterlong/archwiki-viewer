@@ -14,9 +14,9 @@ import java.util.List;
  */
 
 public class SearchResultsAdapter {
-	private static final String[] columnNames = {"_id", "title", "url"};
-	private static final String[] from = {"title", "url"};
-	private static final int[] to = new int[]{android.R.id.text1, android.R.id.text2};
+	private static final String[] columnNames = {"_id", "title"};
+	private static final String[] from = {"title"};
+	private static final int[] to = new int[]{android.R.id.text1};
 
 	/**
 	 * https://stackoverflow.com/questions/11628172/converting-an-arrayadapter-to-cursoradapter-for-use-in-a-searchview/11628527#11628527
@@ -28,17 +28,16 @@ public class SearchResultsAdapter {
 		int id = 0;
 		MatrixCursor cursor = new MatrixCursor(columnNames);
 		for (SearchResult item : results) {
-			String[] temp = new String[3];
+			String[] temp = new String[2];
 			temp[0] = String.valueOf(id);
 			temp[1] = item.getPageName();
-			temp[2] = item.getPageUrl();
 
 			cursor.addRow(temp);
 			id++;
 		}
 		return new SimpleCursorAdapter(
 				context,
-				android.R.layout.simple_list_item_2,
+				android.R.layout.simple_list_item_1,
 				cursor,
 				from,
 				to,

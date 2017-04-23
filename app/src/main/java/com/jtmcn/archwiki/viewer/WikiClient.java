@@ -6,18 +6,17 @@ import android.webkit.WebViewClient;
 import android.widget.Toast;
 
 import com.jtmcn.archwiki.viewer.data.WikiPage;
+import com.jtmcn.archwiki.viewer.tasks.FetchGeneric;
 import com.jtmcn.archwiki.viewer.tasks.FetchWikiPage;
-import com.jtmcn.archwiki.viewer.tasks.OnProgressChange;
 import com.jtmcn.archwiki.viewer.utils.AndroidUtils;
 
-import java.util.List;
 import java.util.Stack;
 
 import static com.jtmcn.archwiki.viewer.Constants.ARCHWIKI_BASE;
 import static com.jtmcn.archwiki.viewer.Constants.TEXT_HTML_MIME;
 import static com.jtmcn.archwiki.viewer.Constants.UTF_8;
 
-public class WikiClient extends WebViewClient implements OnProgressChange<WikiPage> {
+public class WikiClient extends WebViewClient implements FetchGeneric.OnFinish<WikiPage> {
 	public static final String TAG = WikiClient.class.getSimpleName();
 	private WebView webView;
 	private boolean pageFinished;
@@ -128,18 +127,9 @@ public class WikiClient extends WebViewClient implements OnProgressChange<WikiPa
 	}
 
 	@Override
-	public void onAdd(WikiPage wikiPage) {
-		addHistory(wikiPage);
-	}
-
-	@Override
-	public void onFinish(List<WikiPage> results) {
+	public void onFinish(WikiPage results) {
+		addHistory(results);
 		loadWikiHtml(getCurrentWebPage());
 		pageFinished = true;
-	}
-
-	@Override
-	public void onProgressUpdate(int value) {
-
 	}
 }
