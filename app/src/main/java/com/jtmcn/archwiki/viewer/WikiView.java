@@ -3,6 +3,7 @@ package com.jtmcn.archwiki.viewer;
 import android.content.Context;
 import android.os.Build;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -12,6 +13,7 @@ import com.jtmcn.archwiki.viewer.data.WikiPage;
 import static com.jtmcn.archwiki.viewer.Constants.START_PAGE_FILE;
 
 public class WikiView extends WebView {
+	public static final String TAG = WikiView.class.getSimpleName();
 	WikiClient wikiClient;
 
 	public WikiView(Context context, AttributeSet attrs) {
@@ -37,10 +39,12 @@ public class WikiView extends WebView {
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		// Check if the key event was the Back button
 		if (keyCode == KeyEvent.KEYCODE_BACK && wikiClient.histStackSize() != 0) {
+			Log.d(TAG, "Handling back button press");
 			loadLastWebPage();
 			return true;
 		} else {
 			// if there are zero entries exit application
+			Log.d(TAG, "passing up back button press");
 			return super.onKeyDown(keyCode, event);
 		}
 	}
