@@ -48,8 +48,8 @@ public class WikiPageBuilder {
 			int headStart = htmlString.indexOf(HTML_HEAD_OPEN) + HTML_HEAD_OPEN.length();
 			int headEnd = htmlString.indexOf(HTML_HEAD_CLOSE);
 
-			String injectedHeadHtml = "<link rel='stylesheet' href='" + localCSSFilePath + "'>"
-					+ "<meta name='viewport' content='width=device-width, initial-scale=1.0, user-scalable=no'>";
+			String injectedHeadHtml = "<link rel='stylesheet' href='" + localCSSFilePath + "' />"
+					+ "<meta name='viewport' content='width=device-width, initial-scale=1.0, user-scalable=no' />";
 			htmlString.replace(headStart, headEnd, injectedHeadHtml);
 		} catch (StringIndexOutOfBoundsException e) {
 			Log.d(TAG, "Failed to inject local CSS.", e);
