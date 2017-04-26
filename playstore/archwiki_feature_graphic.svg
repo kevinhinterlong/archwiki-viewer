@@ -14,7 +14,7 @@
    width="1024"
    height="500"
    id="svg2424"
-   sodipodi:docname="archlinux-logo-dark-scalable.518881f04ca9.svg"
+   sodipodi:docname="archwiki_feature_graphic.svg"
    inkscape:version="0.92.1 r15371">
   <metadata
      id="metadata34">
@@ -24,7 +24,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -38,12 +38,12 @@
      inkscape:pageopacity="0"
      inkscape:pageshadow="2"
      inkscape:window-width="2560"
-     inkscape:window-height="1330"
+     inkscape:window-height="1348"
      id="namedview32"
      showgrid="false"
      inkscape:snap-text-baseline="true"
      inkscape:zoom="1"
-     inkscape:cx="680.01966"
+     inkscape:cx="467.51966"
      inkscape:cy="-8.5347617"
      inkscape:window-x="-12"
      inkscape:window-y="-12"
@@ -122,7 +122,7 @@
      y="0.00390625" />
   <g
      id="g4809"
-     transform="translate(-8.05e-6,-52)">
+     transform="matrix(0.96761132,0,0,0.96761132,16.582996,-15.90284)">
     <path
        d="m 324.60268,184.8483 c -14.59026,-0.024 -26.69869,2.96785 -31.38063,4.59997 l -4.82052,26.02449 c -0.0101,0.096 23.99086,-6.40069 34.56281,-6.01776 17.50417,0.62892 19.11518,6.68989 18.80947,14.87113 0.29837,0.47851 -4.51612,-7.39214 -19.66016,-7.65611 -19.10523,-0.32955 -46.06811,6.76456 -46.0312,35.6025 -0.51506,32.43836 24.23098,41.98079 41.08467,42.1559 15.15162,-0.2759 22.259,-5.73811 26.15051,-8.66432 5.11288,-5.34592 10.96238,-10.72182 16.54099,-17.17113 -5.27868,9.5909 -9.855,16.22194 -14.61909,21.29848 v 4.28491 l 23.03135,-3.87531 0.1576,-62.60371 c -0.23331,-8.86057 5.08263,-42.76663 -43.82574,-42.84904 z m -3.3082,54.50651 c 9.54664,0.13098 20.49483,4.83648 20.51083,16.16289 0.0493,10.30214 -12.90517,15.84087 -21.33,15.75332 -8.42842,-0.0875 -19.61068,-6.62377 -19.66016,-16.66701 0.16139,-8.97756 10.54544,-15.48027 20.47933,-15.2492 z"
        id="path2284"
