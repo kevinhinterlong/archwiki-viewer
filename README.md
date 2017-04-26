@@ -1,4 +1,4 @@
-<img src="playstore/archwiki_feature_graphic.png"/>
+<img src="playstore/archwiki_feature_graphic.png" height="200"/>
 
 ArchWiki Viewer
 ===============
@@ -10,9 +10,7 @@ A simple viewer for the Arch Linux Wiki. Page content is formatted for optimal m
 
 ## Screenshots
 
-<img src="playstore/screen1.png" width="170"/>
-<img src="playstore/screen2.png" width="170"/>
-<img src="playstore/screen3.png" width="170"/>
+<img src="playstore/screen1.png" width="170"/> <img src="playstore/screen2.png" width="170"/> <img src="playstore/screen3.png" width="170"/>
 
 
 ## License
