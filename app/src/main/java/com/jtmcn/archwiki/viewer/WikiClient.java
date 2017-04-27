@@ -6,8 +6,8 @@ import android.webkit.WebViewClient;
 import android.widget.Toast;
 
 import com.jtmcn.archwiki.viewer.data.WikiPage;
+import com.jtmcn.archwiki.viewer.tasks.Fetch;
 import com.jtmcn.archwiki.viewer.tasks.FetchGeneric;
-import com.jtmcn.archwiki.viewer.tasks.FetchWikiPage;
 import com.jtmcn.archwiki.viewer.utils.AndroidUtils;
 
 import java.util.Stack;
@@ -56,7 +56,7 @@ public class WikiClient extends WebViewClient implements FetchGeneric.OnFinish<W
 
 			webView.stopLoading();
 
-			new FetchWikiPage(this).execute(url);
+			Fetch.page(this).execute(url);
 
 			WikiChromeClient.showProgress();
 
@@ -94,7 +94,7 @@ public class WikiClient extends WebViewClient implements FetchGeneric.OnFinish<W
 	 * Execute new thread to create search page
 	 */
 	public void searchWiki(String searchUrl) {
-		new FetchWikiPage(this).execute(searchUrl);
+		Fetch.page(this).execute(searchUrl);
 		WikiChromeClient.showProgress();
 	}
 

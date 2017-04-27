@@ -22,7 +22,7 @@ public class FetchGeneric<Result> extends AsyncTask<String, Integer, Result> {
 	/**
 	 * Fetches a list of urls and publishes progress on the {@link OnFinish} listener.
 	 *
-	 * @param onFinish The listener to be called when progress is ready.
+	 * @param onFinish The function to be called when the result is ready.
 	 * @param mapper   The function to map from the url and downloaded page to the desired type.
 	 */
 	public FetchGeneric(
@@ -62,6 +62,7 @@ public class FetchGeneric<Result> extends AsyncTask<String, Integer, Result> {
 			toReturn = NetworkUtils.fetchURL(url);
 		} catch (IOException e) { //network exception
 			Log.w(TAG, "Could not connect to: " + url, e);
+			//// TODO: this should probably return a localizable string from resources
 			toReturn = new StringBuilder("Could not connect");
 		}
 

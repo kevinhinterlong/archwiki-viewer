@@ -21,8 +21,8 @@ import android.widget.Toast;
 import com.jtmcn.archwiki.viewer.data.SearchResult;
 import com.jtmcn.archwiki.viewer.data.SearchResultsBuilder;
 import com.jtmcn.archwiki.viewer.data.WikiPage;
+import com.jtmcn.archwiki.viewer.tasks.Fetch;
 import com.jtmcn.archwiki.viewer.tasks.FetchGeneric;
-import com.jtmcn.archwiki.viewer.tasks.FetchSearchResults;
 import com.jtmcn.archwiki.viewer.utils.AndroidUtils;
 
 import java.text.MessageFormat;
@@ -145,7 +145,7 @@ public class WikiActivity extends Activity implements FetchGeneric.OnFinish<List
 					return true;
 				} else {
 					String searchUrl = SearchResultsBuilder.getSearchQuery(newText);
-					new FetchSearchResults(WikiActivity.this).execute(searchUrl);
+					Fetch.search(WikiActivity.this).execute(searchUrl);
 					return false;
 				}
 			}
@@ -193,6 +193,7 @@ public class WikiActivity extends Activity implements FetchGeneric.OnFinish<List
 				if (wikiPage != null) {
 					AndroidUtils.shareText(wikiPage.getPageTitle(), wikiPage.getPageUrl(), this);
 				} else {
+					Log.w(TAG, "Failed to share current page " + wikiViewer.getUrl());
 					Toast.makeText(this, "Sorry, can't share this page!", Toast.LENGTH_SHORT).show();
 				}
 				break;
