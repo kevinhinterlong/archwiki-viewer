@@ -7,27 +7,27 @@ import com.jtmcn.archwiki.viewer.utils.NetworkUtils;
 
 import java.io.IOException;
 
-public class FetchGeneric<Result> extends AsyncTask<String, Integer, Result> {
+public class FetchUrl<Result> extends AsyncTask<String, Integer, Result> {
 	public interface OnFinish<Result> {
 		void onFinish(Result results);
 	}
-	public interface FetchGenericMapper<T,R> {
-		R mapTo(String url, T t);
+	public interface FetchGenericMapper<R> {
+		R mapTo(String url, StringBuilder sb);
 	}
 
-	public static final String TAG = FetchGeneric.class.getSimpleName();
+	public static final String TAG = FetchUrl.class.getSimpleName();
 	private OnFinish<Result> onFinish;
-	private FetchGenericMapper<StringBuilder, Result> mapper;
+	private FetchGenericMapper<Result> mapper;
 
 	/**
-	 * Fetches a list of urls and publishes progress on the {@link OnFinish} listener.
+	 * Fetches the first url and notifies the {@link OnFinish} listener.
 	 *
 	 * @param onFinish The function to be called when the result is ready.
 	 * @param mapper   The function to map from the url and downloaded page to the desired type.
 	 */
-	public FetchGeneric(
+	public FetchUrl(
 			OnFinish<Result> onFinish,
-			FetchGenericMapper<StringBuilder, Result> mapper
+			FetchGenericMapper<Result> mapper
 	) {
 		this.onFinish = onFinish;
 		this.mapper = mapper;
@@ -35,9 +35,9 @@ public class FetchGeneric<Result> extends AsyncTask<String, Integer, Result> {
 
 	@Override
 	protected Result doInBackground(String... params) {
-		String url = params[0];
-		StringBuilder toAdd = getItem(url);
-		if (toAdd != null) {
+		if(params.length >= 1) {
+			String url = params[0];
+			StringBuilder toAdd = getItem(url);
 			return mapper.mapTo(url, toAdd);
 		}
 		return null;
@@ -52,7 +52,7 @@ public class FetchGeneric<Result> extends AsyncTask<String, Integer, Result> {
 	}
 
 	/**
-	 * Fetches a list of movies from the URL
+	 * Fetches a url and returns what was downloaded or null
 	 *
 	 * @param url to query
 	 */
@@ -62,8 +62,6 @@ public class FetchGeneric<Result> extends AsyncTask<String, Integer, Result> {
 			toReturn = NetworkUtils.fetchURL(url);
 		} catch (IOException e) { //network exception
 			Log.w(TAG, "Could not connect to: " + url, e);
-			//// TODO: this should probably return a localizable string from resources
-			toReturn = new StringBuilder("Could not connect");
 		}
 
 		return toReturn;

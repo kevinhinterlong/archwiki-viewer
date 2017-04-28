@@ -22,7 +22,7 @@ import com.jtmcn.archwiki.viewer.data.SearchResult;
 import com.jtmcn.archwiki.viewer.data.SearchResultsBuilder;
 import com.jtmcn.archwiki.viewer.data.WikiPage;
 import com.jtmcn.archwiki.viewer.tasks.Fetch;
-import com.jtmcn.archwiki.viewer.tasks.FetchGeneric;
+import com.jtmcn.archwiki.viewer.tasks.FetchUrl;
 import com.jtmcn.archwiki.viewer.utils.AndroidUtils;
 
 import java.text.MessageFormat;
@@ -30,7 +30,7 @@ import java.util.List;
 
 import static com.jtmcn.archwiki.viewer.Constants.QUERY_URL;
 
-public class WikiActivity extends Activity implements FetchGeneric.OnFinish<List<SearchResult>> {
+public class WikiActivity extends Activity implements FetchUrl.OnFinish<List<SearchResult>> {
 	public static final String TAG = WikiActivity.class.getSimpleName();
 	private SearchView searchView;
 	private MenuItem searchMenuItem;

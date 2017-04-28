@@ -17,7 +17,7 @@ public class WikiPageBuilder {
 	}
 
 	/**
-	 * Fetches a page from the wiki, extracts the title, and injects local css.
+	 * Builds a page containing the title, url, and injects local css.
 	 *
 	 * @param stringUrl url to download.
 	 * @param html stringbuilder containing the html of the wikipage
@@ -40,19 +40,21 @@ public class WikiPageBuilder {
 			String title = htmlString.substring(titleStart, titleEnd);
 			return title.replace(DEFAULT_TITLE, "");
 		}
+		//should probably be defined somewhere else or passed as a parameter
 		return "No title found";
 	}
 
-	public static void injectLocalCSS(StringBuilder htmlString, String localCSSFilePath) {
-		try {
-			int headStart = htmlString.indexOf(HTML_HEAD_OPEN) + HTML_HEAD_OPEN.length();
-			int headEnd = htmlString.indexOf(HTML_HEAD_CLOSE);
+	public static boolean injectLocalCSS(StringBuilder htmlString, String localCSSFilePath) {
+		int headStart = htmlString.indexOf(HTML_HEAD_OPEN) + HTML_HEAD_OPEN.length();
+		int headEnd = htmlString.indexOf(HTML_HEAD_CLOSE, headStart);
 
+		if(headStart > 0 && headEnd > headStart) {
 			String injectedHeadHtml = "<link rel='stylesheet' href='" + localCSSFilePath + "' />"
 					+ "<meta name='viewport' content='width=device-width, initial-scale=1.0, user-scalable=no' />";
 			htmlString.replace(headStart, headEnd, injectedHeadHtml);
-		} catch (StringIndexOutOfBoundsException e) {
-			Log.d(TAG, "Failed to inject local CSS.", e);
+			return true;
 		}
+
+		return false;
 	}
 }

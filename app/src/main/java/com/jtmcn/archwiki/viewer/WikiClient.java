@@ -7,7 +7,7 @@ import android.widget.Toast;
 
 import com.jtmcn.archwiki.viewer.data.WikiPage;
 import com.jtmcn.archwiki.viewer.tasks.Fetch;
-import com.jtmcn.archwiki.viewer.tasks.FetchGeneric;
+import com.jtmcn.archwiki.viewer.tasks.FetchUrl;
 import com.jtmcn.archwiki.viewer.utils.AndroidUtils;
 
 import java.util.Stack;
@@ -16,7 +16,7 @@ import static com.jtmcn.archwiki.viewer.Constants.ARCHWIKI_BASE;
 import static com.jtmcn.archwiki.viewer.Constants.TEXT_HTML_MIME;
 import static com.jtmcn.archwiki.viewer.Constants.UTF_8;
 
-public class WikiClient extends WebViewClient implements FetchGeneric.OnFinish<WikiPage> {
+public class WikiClient extends WebViewClient implements FetchUrl.OnFinish<WikiPage> {
 	public static final String TAG = WikiClient.class.getSimpleName();
 	private WebView webView;
 	private boolean pageFinished;

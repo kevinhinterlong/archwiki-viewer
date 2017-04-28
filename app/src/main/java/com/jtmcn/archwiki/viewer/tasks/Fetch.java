@@ -12,16 +12,16 @@ import java.util.List;
  */
 
 public class Fetch {
-	public static final FetchGeneric.FetchGenericMapper<StringBuilder, List<SearchResult>> SEARCH_RESULTS_MAPPER =
-			new FetchGeneric.FetchGenericMapper<StringBuilder, List<SearchResult>>() {
+	public static final FetchUrl.FetchGenericMapper<List<SearchResult>> SEARCH_RESULTS_MAPPER =
+			new FetchUrl.FetchGenericMapper<List<SearchResult>>() {
 				@Override
 				public List<SearchResult> mapTo(String url, StringBuilder stringBuilder) {
 					return SearchResultsBuilder.parseSearchResults(stringBuilder.toString());
 				}
 			};
 
-	public static final FetchGeneric.FetchGenericMapper<StringBuilder, WikiPage> WIKIPAGE_MAPPER =
-			new FetchGeneric.FetchGenericMapper<StringBuilder, WikiPage>() {
+	public static final FetchUrl.FetchGenericMapper<WikiPage> WIKIPAGE_MAPPER =
+			new FetchUrl.FetchGenericMapper<WikiPage>() {
 				@Override
 				public WikiPage mapTo(String url, StringBuilder sb) {
 					return WikiPageBuilder.buildPage(url, sb);
@@ -32,12 +32,12 @@ public class Fetch {
 
 	}
 
-	public static FetchGeneric<List<SearchResult>> search(FetchGeneric.OnFinish<List<SearchResult>> onFinish) {
-		return new FetchGeneric<>(onFinish, SEARCH_RESULTS_MAPPER);
+	public static FetchUrl<List<SearchResult>> search(FetchUrl.OnFinish<List<SearchResult>> onFinish) {
+		return new FetchUrl<>(onFinish, SEARCH_RESULTS_MAPPER);
 	}
 
-	public static FetchGeneric<WikiPage> page(FetchGeneric.OnFinish<WikiPage> onFinish) {
-		return new FetchGeneric<>(onFinish, WIKIPAGE_MAPPER);
+	public static FetchUrl<WikiPage> page(FetchUrl.OnFinish<WikiPage> onFinish) {
+		return new FetchUrl<>(onFinish, WIKIPAGE_MAPPER);
 	}
 
 }
