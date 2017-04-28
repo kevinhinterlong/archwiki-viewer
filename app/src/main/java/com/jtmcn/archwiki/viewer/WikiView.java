@@ -3,17 +3,28 @@ package com.jtmcn.archwiki.viewer;
 import android.content.Context;
 import android.os.Build;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 
+import com.jtmcn.archwiki.viewer.data.WikiPage;
+import com.jtmcn.archwiki.viewer.utils.AndroidUtils;
+
+import static com.jtmcn.archwiki.viewer.Constants.ARCHWIKI_MAIN;
+import static com.jtmcn.archwiki.viewer.Constants.ARCHWIKI_MAIN_TITLE;
+import static com.jtmcn.archwiki.viewer.Constants.START_PAGE_FILE;
+
 public class WikiView extends WebView {
+	public static final String TAG = WikiView.class.getSimpleName();
 	WikiClient wikiClient;
+	private final Context context;
 
 	public WikiView(Context context, AttributeSet attrs) {
 		super(context, attrs);
+		this.context = context;
 		buildView();
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && !isInEditMode()) {
 			//this allows the webview to inject the css (otherwise it blocks it for security reasons)
 			getSettings().setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
 		}
@@ -22,30 +33,39 @@ public class WikiView extends WebView {
 	public void buildView() {
 		wikiClient = new WikiClient(this);
 		setWebViewClient(wikiClient);
-		loadUrl("file:///android_asset/startPage.html");
-	}
 
-	public void resetApplication() {
-		wikiClient.resetStackSize();
+		String html = AndroidUtils.readFileFromAssets(START_PAGE_FILE, context).toString();
+		WikiPage startPage = new WikiPage(ARCHWIKI_MAIN, ARCHWIKI_MAIN_TITLE, html);
+
+		wikiClient.addHistory(startPage);
+		loadUrl(START_PAGE_FILE);
 	}
 
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
-		// Check if the key event was the Back button and if there's history
-		// history needs to be managed manually
-		if ((keyCode == KeyEvent.KEYCODE_BACK)
-				&& (wikiClient.histStackSize() == 1)) {
-			// if there's only one entry load local html
-			wikiClient.resetStackSize();
-			loadUrl("file:///android_asset/startPage.html");
-			return true;
-		} else if ((keyCode == KeyEvent.KEYCODE_BACK)
-				&& (wikiClient.histStackSize() > 1)) {
-			wikiClient.goBackHistory();
+		// Check if the key event was the Back button
+		if (keyCode == KeyEvent.KEYCODE_BACK && wikiClient.histStackSize() > 1) {
+			Log.d(TAG, "Handling back button press");
+			loadLastWebPage();
 			return true;
 		} else {
 			// if there are zero entries exit application
+			Log.d(TAG, "passing up back button press");
 			return super.onKeyDown(keyCode, event);
+		}
+	}
+
+	/**
+	 * Load the last webpage used on the for the wikiclient
+	 */
+	private void loadLastWebPage() {
+		if (wikiClient.histStackSize() > 1) {
+			wikiClient.goBackHistory();
+		}
+
+		if (wikiClient.histStackSize() == 1) {
+			Log.d(TAG, "Force loading start page");
+			loadUrl(START_PAGE_FILE);
 		}
 	}
 
@@ -53,4 +73,7 @@ public class WikiView extends WebView {
 		wikiClient.searchWiki(searchUrl);
 	}
 
+	public WikiPage getCurrentWebPage() {
+		return wikiClient.getCurrentWebPage();
+	}
 }

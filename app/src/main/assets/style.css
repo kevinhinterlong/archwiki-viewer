@@ -445,11 +445,13 @@ table.mw_metadata ul.metadata-langlist {
 }
 
 .mw-content-ltr ul,.mw-content-rtl .mw-content-ltr ul {
+	word-wrap: break-word;
 	margin: 0.3em 0 0 1.6em;
 	padding: 0
 }
 
 .mw-content-rtl ul,.mw-content-ltr .mw-content-rtl ul {
+	word-wrap: break-word;
 	margin: 0.3em 1.6em 0 0;
 	padding: 0
 }
@@ -1181,6 +1183,10 @@ table.rimage {
 	padding: 0
 }
 
+#bodyContent {
+    word-wrap: break-word;
+}
+
 #bodyContent a.extiw,#bodyContent a.extiw:active {
 	color: #36b
 }
@@ -1512,7 +1518,7 @@ div#globalWrapper {
 }
 
 div#content { /*border: 1px solid #ccc*/
-	
+
 }
 
 #p-logo {

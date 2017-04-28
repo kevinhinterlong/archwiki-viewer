@@ -9,42 +9,48 @@ import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.webkit.WebSettings;
-import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.SearchView;
-import android.widget.TextView;
 import android.widget.Toast;
 
-@TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
-public class WikiActivity extends Activity {
+import com.jtmcn.archwiki.viewer.data.SearchResult;
+import com.jtmcn.archwiki.viewer.data.SearchResultsBuilder;
+import com.jtmcn.archwiki.viewer.data.WikiPage;
+import com.jtmcn.archwiki.viewer.tasks.Fetch;
+import com.jtmcn.archwiki.viewer.tasks.FetchUrl;
+import com.jtmcn.archwiki.viewer.utils.AndroidUtils;
 
-	TextView tvTitle;
-	ProgressBar progressBar;
-	Button searchButton;
-	Button overflowButton;
-	Menu optionMenu;
+import java.util.List;
+
+import static com.jtmcn.archwiki.viewer.Constants.QUERY_URL;
+
+public class WikiActivity extends Activity implements FetchUrl.OnFinish<List<SearchResult>> {
+	public static final String TAG = WikiActivity.class.getSimpleName();
+	private SearchView searchView;
+	private MenuItem searchMenuItem;
 	private WikiView wikiViewer;
+	private List<SearchResult> currentSuggestions;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.wiki_layout);
 
-		Intent intent = getIntent();
-
 		initializeUI();
-		setWebSettings();
 
-		// reset historyStacks
-		wikiViewer.resetApplication();
-
+		Intent intent = getIntent();
 		handleIntent(intent);
+	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+		setWebSettings();
 	}
 
 	@Override
@@ -53,30 +59,27 @@ public class WikiActivity extends Activity {
 		handleIntent(intent);
 	}
 
+	public void initializeUI() {
+		// associate xml variables
+		wikiViewer = (WikiView) findViewById(R.id.wvMain);
+		ProgressBar progressBar = (ProgressBar) findViewById(R.id.ProgressBar);
+
+		WikiChromeClient wikiChrome = new WikiChromeClient(progressBar, getActionBar());
+
+		wikiViewer.setWebChromeClient(wikiChrome);
+
+	}
+
 	private void handleIntent(Intent intent) {
 		if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
-			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-				optionMenu.findItem(R.id.menu_search).collapseActionView();
-			}
 			String query = intent.getStringExtra(SearchManager.QUERY);
-			String searchUrl = "https://wiki.archlinux.org/index.php?&search="
-					+ query;
+			String searchUrl = String.format(QUERY_URL, query);
 			wikiViewer.passSearch(searchUrl);
+			hideSearchView();
 		} else if (Intent.ACTION_VIEW.equals(intent.getAction())) {
 			final String url = intent.getDataString();
 			wikiViewer.wikiClient.shouldOverrideUrlLoading(wikiViewer, url);
 		}
-	}
-
-	public void initializeUI() {
-		// associate xml variables
-		wikiViewer = (WikiView) findViewById(R.id.wvMain);
-		progressBar = (ProgressBar) findViewById(R.id.ProgressBar);
-
-		WikiChromeClient wikiChrome;
-		wikiChrome = new WikiChromeClient(progressBar, null, getActionBar());
-
-		wikiViewer.setWebChromeClient(wikiChrome);
 	}
 
 	public void setWebSettings() {
@@ -91,36 +94,90 @@ public class WikiActivity extends Activity {
 
 		// deprecated method must be used for consistency with variable
 		// resolutions and dpi
-
+		//https://developer.android.com/reference/android/webkit/WebSettings.TextSize.html#NORMAL
 		switch (fontSize) {
 			case 0:
-				webSettings.setTextSize(WebSettings.TextSize.SMALLEST);
+				webSettings.setTextSize(WebSettings.TextSize.SMALLEST); //50%
 				break;
 			case 1:
-				webSettings.setTextSize(WebSettings.TextSize.SMALLER);
+				webSettings.setTextSize(WebSettings.TextSize.SMALLER); //75%
 				break;
 			case 2:
-				webSettings.setTextSize(WebSettings.TextSize.NORMAL);
+				webSettings.setTextSize(WebSettings.TextSize.NORMAL); //100%
 				break;
 			case 3:
-				webSettings.setTextSize(WebSettings.TextSize.LARGER);
+				webSettings.setTextSize(WebSettings.TextSize.LARGER); //150%
 				break;
 			case 4:
-				webSettings.setTextSize(WebSettings.TextSize.LARGEST);
+				webSettings.setTextSize(WebSettings.TextSize.LARGEST); //200%
 				break;
 		}
 	}
 
 	@Override
+	public boolean onPrepareOptionsMenu(Menu menu) {
+		SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+		searchMenuItem = menu.findItem(R.id.menu_search);
+		final SearchView searchView = (SearchView) searchMenuItem.getActionView();
+		searchView.setOnQueryTextFocusChangeListener(new View.OnFocusChangeListener() {
+			@Override
+			public void onFocusChange(View v, boolean hasFocus) {
+				if (!hasFocus) {
+					hideSearchView();
+				}
+			}
+		});
+		searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+		this.searchView = searchView;
+		searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+			@Override
+			public boolean onQueryTextSubmit(String query) {
+				String searchUrl = String.format(QUERY_URL, query);
+				wikiViewer.passSearch(searchUrl);
+				return false;
+			}
+
+			@Override
+			public boolean onQueryTextChange(String newText) {
+				if (newText.isEmpty()) {
+					searchView.setSuggestionsAdapter(null);
+					return true;
+				} else {
+					String searchUrl = SearchResultsBuilder.getSearchQuery(newText);
+					Fetch.search(WikiActivity.this, searchUrl);
+					return false;
+				}
+			}
+		});
+
+		searchView.setOnSuggestionListener(new SearchView.OnSuggestionListener() {
+			@Override
+			public boolean onSuggestionSelect(int position) {
+				return false;
+			}
+
+			@Override
+			public boolean onSuggestionClick(int position) {
+				SearchResult searchResult = currentSuggestions.get(position);
+				Log.d(TAG, "Opening " + searchResult.getPageName());
+				wikiViewer.wikiClient.shouldOverrideUrlLoading(wikiViewer, searchResult.getPageUrl());
+				hideSearchView();
+				return true;
+			}
+		});
+		return true;
+	}
+
+	@TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
+	public void hideSearchView() {
+		searchMenuItem.collapseActionView();
+		//pass control back to the wikiview
+		wikiViewer.requestFocus();
+	}
+
+	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		MenuInflater inflater = getMenuInflater();
-		inflater.inflate(R.menu.options, menu);
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-			SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-			SearchView searchView = (SearchView) menu.findItem(R.id.menu_search).getActionView();
-			searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-		}
-		optionMenu = menu;
+		getMenuInflater().inflate(R.menu.options, menu);
 		return true;
 	}
 
@@ -128,32 +185,30 @@ public class WikiActivity extends Activity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 			case R.id.menu_settings:
-				Intent p = new Intent("com.jtmcn.archwiki.viewer.WIKIPREFS");
-				startActivityForResult(p, 0);
+				startActivity(new Intent(this, WikiPrefs.class));
 				break;
 			case R.id.menu_share:
-				String url = ArchWikiApplication.getInstance().getCurrentUrl();
-				String title = ArchWikiApplication.getInstance().getCurrentTitle();
-				if (url != null && !url.isEmpty()) {
-					Utils.shareText(title, url, this);
+				WikiPage wikiPage = wikiViewer.getCurrentWebPage();
+				if (wikiPage != null) {
+					AndroidUtils.shareText(wikiPage.getPageTitle(), wikiPage.getPageUrl(), this);
 				} else {
+					Log.w(TAG, "Failed to share current page " + wikiViewer.getUrl());
 					Toast.makeText(this, "Sorry, can't share this page!", Toast.LENGTH_SHORT).show();
 				}
 				break;
 			case R.id.exit:
-				this.finish();
+				finish();
 				break;
 		}
 		return true;
 	}
 
-	/*
-	 * Activity needs to be reloaded if the font size is changed. This isn't
-	 * ideal because it also reloads when nothing changes.
-	 */
+
 	@Override
-	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		super.onActivityResult(requestCode, resultCode, data);
-		setWebSettings();
+	public void onFinish(List<SearchResult> results) {
+		if (results != null) {
+			currentSuggestions = results;
+			searchView.setSuggestionsAdapter(SearchResultsAdapter.getCursorAdapter(this, currentSuggestions));
+		}
 	}
 }
