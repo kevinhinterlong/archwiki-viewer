@@ -4,9 +4,9 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import static com.jtmcn.archwiki.viewer.Constants.ARCHWIKI_BASE;
 
@@ -16,19 +16,19 @@ import static com.jtmcn.archwiki.viewer.Constants.ARCHWIKI_BASE;
 
 public class SearchResultsBuilder {
 	public static final String SEARCH_URL = ARCHWIKI_BASE + "api.php?action=opensearch" +
-			"&format=json&formatversion=2&namespace=0&limit={0}" +
-			"&suggest=true&search={1}";
+			"&format=json&formatversion=2&namespace=0&limit=%d" +
+			"&suggest=true&search=%s";
 	private static final int DEFAULT_LIMIT = 10;
 
 	private SearchResultsBuilder() {
 	}
 
 	public static String getSearchQuery(String query) {
-		return getSearchQuery(query,DEFAULT_LIMIT);
+		return getSearchQuery(query, DEFAULT_LIMIT);
 	}
 
 	public static String getSearchQuery(String query, int limit) {
-		return MessageFormat.format(SEARCH_URL, String.valueOf(limit), query);
+		return String.format(SEARCH_URL, limit, query);
 	}
 
 	public static List<SearchResult> parseSearchResults(String jsonResult) {

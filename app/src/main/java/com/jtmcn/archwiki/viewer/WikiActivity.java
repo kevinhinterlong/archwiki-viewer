@@ -25,7 +25,6 @@ import com.jtmcn.archwiki.viewer.tasks.Fetch;
 import com.jtmcn.archwiki.viewer.tasks.FetchUrl;
 import com.jtmcn.archwiki.viewer.utils.AndroidUtils;
 
-import java.text.MessageFormat;
 import java.util.List;
 
 import static com.jtmcn.archwiki.viewer.Constants.QUERY_URL;
@@ -74,7 +73,7 @@ public class WikiActivity extends Activity implements FetchUrl.OnFinish<List<Sea
 	private void handleIntent(Intent intent) {
 		if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
 			String query = intent.getStringExtra(SearchManager.QUERY);
-			String searchUrl = MessageFormat.format(QUERY_URL, query);
+			String searchUrl = String.format(QUERY_URL, query);
 			wikiViewer.passSearch(searchUrl);
 			hideSearchView();
 		} else if (Intent.ACTION_VIEW.equals(intent.getAction())) {
@@ -133,7 +132,7 @@ public class WikiActivity extends Activity implements FetchUrl.OnFinish<List<Sea
 		searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
 			@Override
 			public boolean onQueryTextSubmit(String query) {
-				String searchUrl = MessageFormat.format(QUERY_URL, query);
+				String searchUrl = String.format(QUERY_URL, query);
 				wikiViewer.passSearch(searchUrl);
 				return false;
 			}

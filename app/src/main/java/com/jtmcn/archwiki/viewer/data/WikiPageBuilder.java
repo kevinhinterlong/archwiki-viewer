@@ -1,7 +1,5 @@
 package com.jtmcn.archwiki.viewer.data;
 
-import java.text.MessageFormat;
-
 import static com.jtmcn.archwiki.viewer.Constants.LOCAL_CSS;
 
 public class WikiPageBuilder {
@@ -10,7 +8,7 @@ public class WikiPageBuilder {
 	public static final String HTML_HEAD_CLOSE = "</head>";
 	public static final String HTML_TITLE_OPEN = "<title>";
 	public static final String HTML_TITLE_CLOSE = "</title>";
-	public static final String HEAD_TO_INJECT = "<link rel='stylesheet' href='{0}' />"
+	public static final String HEAD_TO_INJECT = "<link rel='stylesheet' href='%s' />"
 			+ "<meta name='viewport' content='width=device-width, initial-scale=1.0, user-scalable=no' />";
 	public static final String DEFAULT_TITLE = " - ArchWiki";
 
@@ -51,7 +49,7 @@ public class WikiPageBuilder {
 		int headEnd = htmlString.indexOf(HTML_HEAD_CLOSE, headStart);
 
 		if (headStart > 0 && headEnd > headStart) {
-			String injectedHeadHtml = MessageFormat.format(HEAD_TO_INJECT, localCSSFilePath);
+			String injectedHeadHtml = String.format(HEAD_TO_INJECT, localCSSFilePath);
 			htmlString.replace(headStart, headEnd, injectedHeadHtml);
 			return true;
 		}
