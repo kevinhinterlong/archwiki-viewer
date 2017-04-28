@@ -56,7 +56,7 @@ public class WikiClient extends WebViewClient implements FetchUrl.OnFinish<WikiP
 
 			webView.stopLoading();
 
-			Fetch.page(this).execute(url);
+			Fetch.page(this, url);
 
 			WikiChromeClient.showProgress();
 
@@ -94,7 +94,7 @@ public class WikiClient extends WebViewClient implements FetchUrl.OnFinish<WikiP
 	 * Execute new thread to create search page
 	 */
 	public void searchWiki(String searchUrl) {
-		Fetch.page(this).execute(searchUrl);
+		Fetch.page(this, searchUrl);
 		WikiChromeClient.showProgress();
 	}
 

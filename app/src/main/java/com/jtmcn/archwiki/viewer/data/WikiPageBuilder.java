@@ -1,6 +1,6 @@
 package com.jtmcn.archwiki.viewer.data;
 
-import android.util.Log;
+import java.text.MessageFormat;
 
 import static com.jtmcn.archwiki.viewer.Constants.LOCAL_CSS;
 
@@ -10,6 +10,8 @@ public class WikiPageBuilder {
 	public static final String HTML_HEAD_CLOSE = "</head>";
 	public static final String HTML_TITLE_OPEN = "<title>";
 	public static final String HTML_TITLE_CLOSE = "</title>";
+	public static final String HEAD_TO_INJECT = "<link rel='stylesheet' href='{0}' />"
+			+ "<meta name='viewport' content='width=device-width, initial-scale=1.0, user-scalable=no' />";
 	public static final String DEFAULT_TITLE = " - ArchWiki";
 
 	private WikiPageBuilder() {
@@ -20,7 +22,7 @@ public class WikiPageBuilder {
 	 * Builds a page containing the title, url, and injects local css.
 	 *
 	 * @param stringUrl url to download.
-	 * @param html stringbuilder containing the html of the wikipage
+	 * @param html      stringbuilder containing the html of the wikipage
 	 * @return {@link WikiPage} containing downloaded page.
 	 */
 	public static WikiPage buildPage(String stringUrl, StringBuilder html) {
@@ -40,7 +42,7 @@ public class WikiPageBuilder {
 			String title = htmlString.substring(titleStart, titleEnd);
 			return title.replace(DEFAULT_TITLE, "");
 		}
-		//should probably be defined somewhere else or passed as a parameter
+		//todo should probably be handled somewhere else or passed as a parameter
 		return "No title found";
 	}
 
@@ -48,9 +50,8 @@ public class WikiPageBuilder {
 		int headStart = htmlString.indexOf(HTML_HEAD_OPEN) + HTML_HEAD_OPEN.length();
 		int headEnd = htmlString.indexOf(HTML_HEAD_CLOSE, headStart);
 
-		if(headStart > 0 && headEnd > headStart) {
-			String injectedHeadHtml = "<link rel='stylesheet' href='" + localCSSFilePath + "' />"
-					+ "<meta name='viewport' content='width=device-width, initial-scale=1.0, user-scalable=no' />";
+		if (headStart > 0 && headEnd > headStart) {
+			String injectedHeadHtml = MessageFormat.format(HEAD_TO_INJECT, localCSSFilePath);
 			htmlString.replace(headStart, headEnd, injectedHeadHtml);
 			return true;
 		}

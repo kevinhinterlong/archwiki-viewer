@@ -145,7 +145,7 @@ public class WikiActivity extends Activity implements FetchUrl.OnFinish<List<Sea
 					return true;
 				} else {
 					String searchUrl = SearchResultsBuilder.getSearchQuery(newText);
-					Fetch.search(WikiActivity.this).execute(searchUrl);
+					Fetch.search(WikiActivity.this, searchUrl);
 					return false;
 				}
 			}

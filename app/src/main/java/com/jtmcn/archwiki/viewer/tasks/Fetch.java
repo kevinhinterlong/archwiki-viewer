@@ -1,5 +1,7 @@
 package com.jtmcn.archwiki.viewer.tasks;
 
+import android.os.AsyncTask;
+
 import com.jtmcn.archwiki.viewer.data.SearchResult;
 import com.jtmcn.archwiki.viewer.data.SearchResultsBuilder;
 import com.jtmcn.archwiki.viewer.data.WikiPage;
@@ -32,12 +34,18 @@ public class Fetch {
 
 	}
 
-	public static FetchUrl<List<SearchResult>> search(FetchUrl.OnFinish<List<SearchResult>> onFinish) {
-		return new FetchUrl<>(onFinish, SEARCH_RESULTS_MAPPER);
+	public static AsyncTask<String, Void, List<SearchResult>> search(
+			FetchUrl.OnFinish<List<SearchResult>> onFinish,
+			String url
+	) {
+		return new FetchUrl<>(onFinish, SEARCH_RESULTS_MAPPER).execute(url);
 	}
 
-	public static FetchUrl<WikiPage> page(FetchUrl.OnFinish<WikiPage> onFinish) {
-		return new FetchUrl<>(onFinish, WIKIPAGE_MAPPER);
+	public static AsyncTask<String, Void, WikiPage> page(
+			FetchUrl.OnFinish<WikiPage> onFinish,
+			String url
+	) {
+		return new FetchUrl<>(onFinish, WIKIPAGE_MAPPER).execute(url);
 	}
 
 }

@@ -7,10 +7,11 @@ import com.jtmcn.archwiki.viewer.utils.NetworkUtils;
 
 import java.io.IOException;
 
-public class FetchUrl<Result> extends AsyncTask<String, Integer, Result> {
+public class FetchUrl<Result> extends AsyncTask<String, Void, Result> {
 	public interface OnFinish<Result> {
 		void onFinish(Result results);
 	}
+
 	public interface FetchGenericMapper<R> {
 		R mapTo(String url, StringBuilder sb);
 	}
@@ -25,17 +26,14 @@ public class FetchUrl<Result> extends AsyncTask<String, Integer, Result> {
 	 * @param onFinish The function to be called when the result is ready.
 	 * @param mapper   The function to map from the url and downloaded page to the desired type.
 	 */
-	public FetchUrl(
-			OnFinish<Result> onFinish,
-			FetchGenericMapper<Result> mapper
-	) {
+	public FetchUrl(OnFinish<Result> onFinish, FetchGenericMapper<Result> mapper) {
 		this.onFinish = onFinish;
 		this.mapper = mapper;
 	}
 
 	@Override
 	protected Result doInBackground(String... params) {
-		if(params.length >= 1) {
+		if (params.length >= 1) {
 			String url = params[0];
 			StringBuilder toAdd = getItem(url);
 			return mapper.mapTo(url, toAdd);
