@@ -11,16 +11,13 @@ import android.webkit.WebView;
 import com.jtmcn.archwiki.viewer.data.WikiPage;
 
 import static com.jtmcn.archwiki.viewer.Constants.ARCHWIKI_MAIN;
-import static com.jtmcn.archwiki.viewer.Constants.START_PAGE_FILE;
 
 public class WikiView extends WebView {
 	public static final String TAG = WikiView.class.getSimpleName();
 	WikiClient wikiClient;
-	private final Context context;
 
 	public WikiView(Context context, AttributeSet attrs) {
 		super(context, attrs);
-		this.context = context;
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && !isInEditMode()) {
 			//this allows the webview to inject the css (otherwise it blocks it for security reasons)
 			getSettings().setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
