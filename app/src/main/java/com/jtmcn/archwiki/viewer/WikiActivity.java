@@ -46,6 +46,7 @@ public class WikiActivity extends Activity implements FetchUrl.OnFinish<List<Sea
 
 		WikiChromeClient wikiChrome = new WikiChromeClient(progressBar, getActionBar());
 		wikiViewer.setWebChromeClient(wikiChrome);
+		wikiViewer.buildView();
 
 		handleIntent(getIntent());
 	}

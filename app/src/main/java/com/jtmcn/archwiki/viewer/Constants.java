@@ -14,6 +14,5 @@ public class Constants {
 	public static final String QUERY_URL = ARCHWIKI_BASE + "index.php?&search=%s";
 
 	public static final String ASSETS_FOLDER = "file:///android_asset/";
-	public static final String START_PAGE_FILE = ASSETS_FOLDER + "startPage.html";
 	public static final String LOCAL_CSS = ASSETS_FOLDER + "style.css";
 }
