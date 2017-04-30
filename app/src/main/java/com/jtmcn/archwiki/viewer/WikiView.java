@@ -9,21 +9,15 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 
 import com.jtmcn.archwiki.viewer.data.WikiPage;
-import com.jtmcn.archwiki.viewer.utils.AndroidUtils;
 
 import static com.jtmcn.archwiki.viewer.Constants.ARCHWIKI_MAIN;
-import static com.jtmcn.archwiki.viewer.Constants.ARCHWIKI_MAIN_TITLE;
-import static com.jtmcn.archwiki.viewer.Constants.START_PAGE_FILE;
 
 public class WikiView extends WebView {
 	public static final String TAG = WikiView.class.getSimpleName();
 	WikiClient wikiClient;
-	private final Context context;
 
 	public WikiView(Context context, AttributeSet attrs) {
 		super(context, attrs);
-		this.context = context;
-		buildView();
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && !isInEditMode()) {
 			//this allows the webview to inject the css (otherwise it blocks it for security reasons)
 			getSettings().setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
@@ -34,11 +28,7 @@ public class WikiView extends WebView {
 		wikiClient = new WikiClient(this);
 		setWebViewClient(wikiClient);
 
-		String html = AndroidUtils.readFileFromAssets(START_PAGE_FILE, context).toString();
-		WikiPage startPage = new WikiPage(ARCHWIKI_MAIN, ARCHWIKI_MAIN_TITLE, html);
-
-		wikiClient.addHistory(startPage);
-		loadUrl(START_PAGE_FILE);
+		wikiClient.shouldOverrideUrlLoading(this, ARCHWIKI_MAIN);
 	}
 
 	@Override
@@ -61,11 +51,6 @@ public class WikiView extends WebView {
 	private void loadLastWebPage() {
 		if (wikiClient.histStackSize() > 1) {
 			wikiClient.goBackHistory();
-		}
-
-		if (wikiClient.histStackSize() == 1) {
-			Log.d(TAG, "Force loading start page");
-			loadUrl(START_PAGE_FILE);
 		}
 	}
 

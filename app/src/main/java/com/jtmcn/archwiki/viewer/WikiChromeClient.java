@@ -16,15 +16,21 @@ public class WikiChromeClient extends WebChromeClient {
 	}
 
 	public static void showProgress() {
-		progressBar.setVisibility(View.VISIBLE);
+		if(progressBar != null) {
+			progressBar.setVisibility(View.VISIBLE);
+		}
 	}
 
 	public static void hideProgress() {
-		progressBar.setVisibility(View.GONE);
+		if (progressBar != null) {
+			progressBar.setVisibility(View.GONE);
+		}
 	}
 
 	public static void setSubtitle(String title) {
-		actionBar.setSubtitle(title);
+		if (actionBar != null) {
+			actionBar.setSubtitle(title);
+		}
 	}
 
 }
