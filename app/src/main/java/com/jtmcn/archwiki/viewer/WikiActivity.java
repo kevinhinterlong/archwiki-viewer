@@ -1,6 +1,5 @@
 package com.jtmcn.archwiki.viewer;
 
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.SearchManager;
 import android.content.Context;
@@ -41,10 +40,14 @@ public class WikiActivity extends Activity implements FetchUrl.OnFinish<List<Sea
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.wiki_layout);
 
-		initializeUI();
+		// associate xml variables
+		wikiViewer = (WikiView) findViewById(R.id.wvMain);
+		ProgressBar progressBar = (ProgressBar) findViewById(R.id.ProgressBar);
 
-		Intent intent = getIntent();
-		handleIntent(intent);
+		WikiChromeClient wikiChrome = new WikiChromeClient(progressBar, getActionBar());
+		wikiViewer.setWebChromeClient(wikiChrome);
+
+		handleIntent(getIntent());
 	}
 
 	@Override
@@ -55,19 +58,7 @@ public class WikiActivity extends Activity implements FetchUrl.OnFinish<List<Sea
 
 	@Override
 	protected void onNewIntent(Intent intent) {
-		setIntent(intent);
 		handleIntent(intent);
-	}
-
-	public void initializeUI() {
-		// associate xml variables
-		wikiViewer = (WikiView) findViewById(R.id.wvMain);
-		ProgressBar progressBar = (ProgressBar) findViewById(R.id.ProgressBar);
-
-		WikiChromeClient wikiChrome = new WikiChromeClient(progressBar, getActionBar());
-
-		wikiViewer.setWebChromeClient(wikiChrome);
-
 	}
 
 	private void handleIntent(Intent intent) {
@@ -88,12 +79,13 @@ public class WikiActivity extends Activity implements FetchUrl.OnFinish<List<Sea
 		SharedPreferences prefs = PreferenceManager
 				.getDefaultSharedPreferences(getApplicationContext());
 
-		// due to a known bug(?), the size cannot be stored in an integer array
-		String fontSizePref = prefs.getString(WikiPrefs.KEY_LIST_PREFERENCE, "2");
+		// https://stackoverflow.com/questions/11346916/listpreference-use-string-array-as-entry-and-integer-array-as-entry-values-does
+		// the value of this preference must be parsed as a string
+		// todo make a settings utils class to wrap this
+		String fontSizePref = prefs.getString(WikiPrefs.KEY_TEXT_SIZE, "2");
 		int fontSize = Integer.valueOf(fontSizePref);
 
-		// deprecated method must be used for consistency with variable
-		// resolutions and dpi
+		// deprecated method must be used until Android API 14
 		//https://developer.android.com/reference/android/webkit/WebSettings.TextSize.html#NORMAL
 		switch (fontSize) {
 			case 0:
@@ -168,11 +160,11 @@ public class WikiActivity extends Activity implements FetchUrl.OnFinish<List<Sea
 		return true;
 	}
 
-	@TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
 	public void hideSearchView() {
-		searchMenuItem.collapseActionView();
-		//pass control back to the wikiview
-		wikiViewer.requestFocus();
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+			searchMenuItem.collapseActionView();
+		}
+		wikiViewer.requestFocus(); //pass control back to the wikiview
 	}
 
 	@Override

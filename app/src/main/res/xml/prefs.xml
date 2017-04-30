@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     android:key="applicationPreference"
-    android:title="Preferences" >
+    android:title="@string/preferences" >
 
         <ListPreference
             android:defaultValue="2"
-            android:entries="@array/fontSize"
-            android:entryValues="@array/fontSizeValue"
-            android:key="listPref"
-
-            android:title="Text Size"
-            android:dialogTitle="Text Size"/>
+            android:entries="@array/fontSizeTitles"
+            android:entryValues="@array/fontSizeValues"
+            android:key="textSize"
+            android:title="@string/text_size_preference"
+            android:dialogTitle="@string/text_size_preference"/>
 
 </PreferenceScreen>
