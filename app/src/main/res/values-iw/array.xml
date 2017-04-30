@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-  <string-array name="fontSize">
-    <item>הכי קטן</item>
-    <item>קטן</item>
-    <item>רגיל</item>
-    <item>גדול</item>
-    <item>הגי גדול</item>
-  </string-array>
+
+    <string-array name="fontSizeTitles">
+        <item>הכי קטן</item>
+        <item>קטן</item>
+        <item>רגיל</item>
+        <item>גדול</item>
+        <item>הגי גדול</item>
+    </string-array>
+
 </resources>

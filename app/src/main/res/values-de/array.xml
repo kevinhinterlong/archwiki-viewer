@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string-array name="fontSize">
+    <string-array name="fontSizeTitles">
         <item>Smallest</item>
         <item>Smaller</item>
         <item>Normal</item>

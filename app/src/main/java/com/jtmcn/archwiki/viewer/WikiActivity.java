@@ -1,6 +1,5 @@
 package com.jtmcn.archwiki.viewer;
 
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.SearchManager;
 import android.content.Context;
@@ -161,12 +160,11 @@ public class WikiActivity extends Activity implements FetchUrl.OnFinish<List<Sea
 		return true;
 	}
 
-	@TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
 	public void hideSearchView() {
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
 			searchMenuItem.collapseActionView();
-			wikiViewer.requestFocus(); //pass control back to the wikiview
 		}
+		wikiViewer.requestFocus(); //pass control back to the wikiview
 	}
 
 	@Override
