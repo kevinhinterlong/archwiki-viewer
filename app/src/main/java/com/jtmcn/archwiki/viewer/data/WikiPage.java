@@ -8,6 +8,13 @@ public class WikiPage {
 	private final String pageTitle;
 	private final String htmlString;
 
+	/**
+	 * Store the url, title, and html of a page on the wiki.
+	 *
+	 * @param pageUrl    the string url on the wiki.
+	 * @param pageTitle  the title of the page on the wiki.
+	 * @param htmlString the html which should be shown to represent the page.
+	 */
 	public WikiPage(String pageUrl, String pageTitle, String htmlString) {
 		this.pageUrl = pageUrl;
 		this.pageTitle = pageTitle;
@@ -32,28 +39,5 @@ public class WikiPage {
 		sb.append("title='").append(pageTitle).append('\'');
 		sb.append('}');
 		return sb.toString();
-	}
-
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) return true;
-		if (!(o instanceof WikiPage)) return false;
-
-		WikiPage wikiPage = (WikiPage) o;
-
-		if (getPageTitle() == null || getHtmlString() == null) {
-			return false;
-		}
-
-		return getPageTitle().equals(wikiPage.getPageTitle()) &&
-				getHtmlString().equals(wikiPage.getHtmlString());
-
-	}
-
-	@Override
-	public int hashCode() {
-		int result = getPageTitle() != null ? getPageTitle().hashCode() : 0;
-		result = 31 * result + (getHtmlString() != null ? getHtmlString().hashCode() : 0);
-		return result;
 	}
 }
