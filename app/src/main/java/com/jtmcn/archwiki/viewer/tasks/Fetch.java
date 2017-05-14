@@ -10,20 +10,20 @@ import com.jtmcn.archwiki.viewer.data.WikiPageBuilder;
 import java.util.List;
 
 /**
- * Created by kevin on 4/26/2017.
+ * Wrapper for {@link FetchUrl} which gives an easy to use interface
+ * for fetching {@link SearchResult} and {@link WikiPage}.
  */
-
 public class Fetch {
-	public static final FetchUrl.FetchGenericMapper<List<SearchResult>> SEARCH_RESULTS_MAPPER =
-			new FetchUrl.FetchGenericMapper<List<SearchResult>>() {
+	public static final FetchUrl.FetchUrlMapper<List<SearchResult>> SEARCH_RESULTS_MAPPER =
+			new FetchUrl.FetchUrlMapper<List<SearchResult>>() {
 				@Override
 				public List<SearchResult> mapTo(String url, StringBuilder stringBuilder) {
 					return SearchResultsBuilder.parseSearchResults(stringBuilder.toString());
 				}
 			};
 
-	public static final FetchUrl.FetchGenericMapper<WikiPage> WIKIPAGE_MAPPER =
-			new FetchUrl.FetchGenericMapper<WikiPage>() {
+	public static final FetchUrl.FetchUrlMapper<WikiPage> WIKIPAGE_MAPPER =
+			new FetchUrl.FetchUrlMapper<WikiPage>() {
 				@Override
 				public WikiPage mapTo(String url, StringBuilder sb) {
 					return WikiPageBuilder.buildPage(url, sb);
@@ -34,6 +34,13 @@ public class Fetch {
 
 	}
 
+	/**
+	 * Fetches a {@link List<SearchResult>} from the url.
+	 *
+	 * @param onFinish The listener called when search results are ready.
+	 * @param url      The url to fetch the search results from.
+	 * @return the async task fetching the data.
+	 */
 	public static AsyncTask<String, Void, List<SearchResult>> search(
 			FetchUrl.OnFinish<List<SearchResult>> onFinish,
 			String url
@@ -41,6 +48,13 @@ public class Fetch {
 		return new FetchUrl<>(onFinish, SEARCH_RESULTS_MAPPER).execute(url);
 	}
 
+	/**
+	 * Fetches a {@link WikiPage} from the url.
+	 *
+	 * @param onFinish The listener called when the page is ready.
+	 * @param url      The url to fetch the page from.
+	 * @return the async task fetching the data.
+	 */
 	public static AsyncTask<String, Void, WikiPage> page(
 			FetchUrl.OnFinish<WikiPage> onFinish,
 			String url

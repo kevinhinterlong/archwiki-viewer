@@ -9,20 +9,34 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by kevin on 4/4/2017.
+ * Utility class for performing basic network tasks.
  */
-
 public class NetworkUtils {
-	private static Map<URL, StringBuilder> downloadCache = new HashMap<>();
+	private static final Map<URL, StringBuilder> downloadCache = new HashMap<>();
 
 	private NetworkUtils() {
 
 	}
 
+	/**
+	 * Fetches a url with caching.
+	 *
+	 * @param stringUrl url to be fetched.
+	 * @return the string that was fetched.
+	 * @throws IOException on network failure.
+	 */
 	public static StringBuilder fetchURL(String stringUrl) throws IOException {
 		return fetchURL(stringUrl, true);
 	}
 
+	/**
+	 * Fetches a url with optional caching.
+	 *
+	 * @param stringUrl url to be fetched.
+	 * @param useCache  whether or not it should return a cached value.
+	 * @return the string that was fetched.
+	 * @throws IOException on network failure.
+	 */
 	public static StringBuilder fetchURL(String stringUrl, boolean useCache) throws IOException {
 		StringBuilder sb = new StringBuilder("");
 		URL url = new URL(stringUrl);
@@ -49,9 +63,7 @@ public class NetworkUtils {
 		urlConnection.disconnect();
 		in.close();
 
-		if (useCache) {
-			downloadCache.put(url, new StringBuilder(sb));
-		}
+		downloadCache.put(url, new StringBuilder(sb));
 		return sb;
 	}
 }
