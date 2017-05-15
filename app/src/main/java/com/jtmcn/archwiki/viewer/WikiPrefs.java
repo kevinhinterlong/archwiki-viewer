@@ -5,6 +5,9 @@ import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 
+/**
+ * The {@link PreferenceActivity} to change settings for the application.
+ */
 public class WikiPrefs extends PreferenceActivity {
 	public static final String KEY_TEXT_SIZE = "textSize";
 
@@ -18,6 +21,9 @@ public class WikiPrefs extends PreferenceActivity {
 	}
 
 
+	/**
+	 * Loads the activities preferences into the fragment.
+	 */
 	public static class ApplicationPreferenceFragment extends PreferenceFragment {
 		@Override
 		public void onCreate(Bundle bundle) {

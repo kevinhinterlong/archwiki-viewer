@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 
+import static com.jtmcn.archwiki.viewer.Constants.TEXT_PLAIN_MIME;
+
 /**
  * Utilities class for Android specific actions.
  */
@@ -25,7 +27,7 @@ public class AndroidUtils {
 		intent.setAction(Intent.ACTION_SEND);
 		intent.putExtra(Intent.EXTRA_TITLE, title);
 		intent.putExtra(Intent.EXTRA_TEXT, message);
-		intent.setType("text/plain");
+		intent.setType(TEXT_PLAIN_MIME);
 		context.startActivity(intent);
 	}
 
