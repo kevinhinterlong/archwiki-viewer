@@ -7,6 +7,7 @@ import static com.jtmcn.archwiki.viewer.Constants.LOCAL_CSS;
  * html fetched from the ArchWiki.
  */
 public class WikiPageBuilder {
+	//NOTE: spaces are allowed in "<head>"/etc, but parsing this way should be fine
 	public static final String HTML_HEAD_OPEN = "<head>";
 	public static final String HTML_HEAD_CLOSE = "</head>";
 	public static final String HTML_TITLE_OPEN = "<title>";
@@ -62,7 +63,7 @@ public class WikiPageBuilder {
 		int headStart = htmlString.indexOf(HTML_HEAD_OPEN) + HTML_HEAD_OPEN.length();
 		int headEnd = htmlString.indexOf(HTML_HEAD_CLOSE, headStart);
 
-		if (headStart > 0 && headEnd > headStart) {
+		if (headStart > 0 && headEnd >= headStart) {
 			String injectedHeadHtml = String.format(HEAD_TO_INJECT, localCSSFilePath);
 			htmlString.replace(headStart, headEnd, injectedHeadHtml);
 			return true;

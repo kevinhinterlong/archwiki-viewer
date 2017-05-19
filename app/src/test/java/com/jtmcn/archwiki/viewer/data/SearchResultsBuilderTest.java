@@ -1,4 +1,4 @@
-package com.jtmcn.archwiki.viewer;
+package com.jtmcn.archwiki.viewer.data;
 
 import com.jtmcn.archwiki.viewer.data.SearchResult;
 import com.jtmcn.archwiki.viewer.data.SearchResultsBuilder;
