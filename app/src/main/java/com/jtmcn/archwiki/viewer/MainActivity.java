@@ -26,8 +26,8 @@ import com.jtmcn.archwiki.viewer.utils.AndroidUtils;
 
 import java.util.List;
 
-public class WikiActivity extends Activity implements FetchUrl.OnFinish<List<SearchResult>> {
-	public static final String TAG = WikiActivity.class.getSimpleName();
+public class MainActivity extends Activity implements FetchUrl.OnFinish<List<SearchResult>> {
+	public static final String TAG = MainActivity.class.getSimpleName();
 	private SearchView searchView;
 	private MenuItem searchMenuItem;
 	private WikiView wikiViewer;
@@ -82,7 +82,7 @@ public class WikiActivity extends Activity implements FetchUrl.OnFinish<List<Sea
 		// https://stackoverflow.com/questions/11346916/listpreference-use-string-array-as-entry-and-integer-array-as-entry-values-does
 		// the value of this preference must be parsed as a string
 		// todo make a settings utils class to wrap this
-		String fontSizePref = prefs.getString(WikiPrefs.KEY_TEXT_SIZE, "2");
+		String fontSizePref = prefs.getString(WikiPrefsActivity.KEY_TEXT_SIZE, "2");
 		int fontSize = Integer.valueOf(fontSizePref);
 
 		// deprecated method must be used until Android API 14
@@ -135,7 +135,7 @@ public class WikiActivity extends Activity implements FetchUrl.OnFinish<List<Sea
 					return true;
 				} else {
 					String searchUrl = SearchResultsBuilder.getSearchQuery(newText);
-					Fetch.search(WikiActivity.this, searchUrl);
+					Fetch.search(MainActivity.this, searchUrl);
 					return false;
 				}
 			}
@@ -176,7 +176,7 @@ public class WikiActivity extends Activity implements FetchUrl.OnFinish<List<Sea
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 			case R.id.menu_settings:
-				startActivity(new Intent(this, WikiPrefs.class));
+				startActivity(new Intent(this, WikiPrefsActivity.class));
 				break;
 			case R.id.menu_share:
 				WikiPage wikiPage = wikiViewer.getCurrentWebPage();

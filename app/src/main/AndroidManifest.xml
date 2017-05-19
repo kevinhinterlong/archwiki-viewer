@@ -10,7 +10,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".WikiActivity"
+            android:name=".MainActivity"
             android:configChanges="orientation|screenSize"
             android:exported="true"
             android:label="@string/app_name"
@@ -38,7 +38,7 @@
                 android:resource="@xml/searchable" />
         </activity>
         <activity
-            android:name=".WikiPrefs"
+            android:name=".WikiPrefsActivity"
             android:label="@string/app_name">
             <!-- android:theme="@android:style/Theme.Holo.Light" --> 
             

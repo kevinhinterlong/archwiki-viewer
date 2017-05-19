@@ -8,7 +8,7 @@ import android.preference.PreferenceManager;
 /**
  * The {@link PreferenceActivity} to change settings for the application.
  */
-public class WikiPrefs extends PreferenceActivity {
+public class WikiPrefsActivity extends PreferenceActivity {
 	public static final String KEY_TEXT_SIZE = "textSize";
 
 	@Override
@@ -29,7 +29,8 @@ public class WikiPrefs extends PreferenceActivity {
 		public void onCreate(Bundle bundle) {
 			super.onCreate(bundle);
 
-			//sets default values if they haven't been set before
+			// sets default values if they haven't been set before
+			// I think some people do this in a custom Application class
 			PreferenceManager.setDefaultValues(getActivity(), R.xml.prefs, false);
 
 			addPreferencesFromResource(R.xml.prefs);
