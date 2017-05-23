@@ -5,7 +5,10 @@ import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 
-public class WikiPrefs extends PreferenceActivity {
+/**
+ * The {@link PreferenceActivity} to change settings for the application.
+ */
+public class WikiPrefsActivity extends PreferenceActivity {
 	public static final String KEY_TEXT_SIZE = "textSize";
 
 	@Override
@@ -18,12 +21,16 @@ public class WikiPrefs extends PreferenceActivity {
 	}
 
 
+	/**
+	 * Loads the activities preferences into the fragment.
+	 */
 	public static class ApplicationPreferenceFragment extends PreferenceFragment {
 		@Override
 		public void onCreate(Bundle bundle) {
 			super.onCreate(bundle);
 
-			//sets default values if they haven't been set before
+			// sets default values if they haven't been set before
+			// I think some people do this in a custom Application class
 			PreferenceManager.setDefaultValues(getActivity(), R.xml.prefs, false);
 
 			addPreferencesFromResource(R.xml.prefs);

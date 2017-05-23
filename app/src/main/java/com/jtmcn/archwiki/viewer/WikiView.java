@@ -11,6 +11,7 @@ import android.webkit.WebView;
 import com.jtmcn.archwiki.viewer.data.WikiPage;
 
 import static com.jtmcn.archwiki.viewer.Constants.ARCHWIKI_MAIN;
+import static com.jtmcn.archwiki.viewer.Constants.ARCHWIKI_SEARCH_URL;
 
 public class WikiView extends WebView {
 	public static final String TAG = WikiView.class.getSimpleName();
@@ -24,40 +25,43 @@ public class WikiView extends WebView {
 		}
 	}
 
+	/**
+	 * Initializes the wiki client and loads the main page.
+	 */
 	public void buildView() {
 		wikiClient = new WikiClient(this);
 		setWebViewClient(wikiClient);
-
 		wikiClient.shouldOverrideUrlLoading(this, ARCHWIKI_MAIN);
 	}
 
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
-		// Check if the key event was the Back button
-		if (keyCode == KeyEvent.KEYCODE_BACK && wikiClient.histStackSize() > 1) {
-			Log.d(TAG, "Handling back button press");
-			loadLastWebPage();
+		if (keyCode == KeyEvent.KEYCODE_BACK && wikiClient.getHistoryStackSize() > 1) {
+			Log.d(TAG, "Loading previous page.");
+			wikiClient.goBackHistory();
 			return true;
 		} else {
-			// if there are zero entries exit application
-			Log.d(TAG, "passing up back button press");
+			Log.d(TAG, "Passing up button press.");
 			return super.onKeyDown(keyCode, event);
 		}
 	}
 
 	/**
-	 * Load the last webpage used on the for the wikiclient
+	 * Performs a search against the wiki.
+	 *
+	 * @param query the text to search for.
 	 */
-	private void loadLastWebPage() {
-		if (wikiClient.histStackSize() > 1) {
-			wikiClient.goBackHistory();
-		}
+	public void passSearch(String query) {
+		Log.d(TAG, "Searching for " + query);
+		String searchUrl = String.format(ARCHWIKI_SEARCH_URL, query);
+		wikiClient.shouldOverrideUrlLoading(this, searchUrl);
 	}
 
-	public void passSearch(String searchUrl) {
-		wikiClient.searchWiki(searchUrl);
-	}
-
+	/**
+	 * Returns the current {@link WikiPage} being shown or null.
+	 *
+	 * @return current wiki page being shown.
+	 */
 	public WikiPage getCurrentWebPage() {
 		return wikiClient.getCurrentWebPage();
 	}

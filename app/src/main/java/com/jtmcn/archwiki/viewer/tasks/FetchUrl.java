@@ -7,18 +7,33 @@ import com.jtmcn.archwiki.viewer.utils.NetworkUtils;
 
 import java.io.IOException;
 
+/**
+ * Fetches a url, maps it to a {@link Result}, and returns it.
+ *
+ * @param <Result> The type which the fetched url's text will be mapped to.
+ */
 public class FetchUrl<Result> extends AsyncTask<String, Void, Result> {
+	/**
+	 * A listener which is called when {@link Result} is ready.
+	 *
+	 * @param <Result> the type of object which has been created.
+	 */
 	public interface OnFinish<Result> {
-		void onFinish(Result results);
+		void onFinish(Result result);
 	}
 
-	public interface FetchGenericMapper<R> {
+	/**
+	 * Maps the url and fetched text to {@link R}
+	 *
+	 * @param <R> The type which the text will be mapped to.
+	 */
+	public interface FetchUrlMapper<R> {
 		R mapTo(String url, StringBuilder sb);
 	}
 
-	public static final String TAG = FetchUrl.class.getSimpleName();
+	private static final String TAG = FetchUrl.class.getSimpleName();
 	private OnFinish<Result> onFinish;
-	private FetchGenericMapper<Result> mapper;
+	private FetchUrlMapper<Result> mapper;
 
 	/**
 	 * Fetches the first url and notifies the {@link OnFinish} listener.
@@ -26,7 +41,7 @@ public class FetchUrl<Result> extends AsyncTask<String, Void, Result> {
 	 * @param onFinish The function to be called when the result is ready.
 	 * @param mapper   The function to map from the url and downloaded page to the desired type.
 	 */
-	public FetchUrl(OnFinish<Result> onFinish, FetchGenericMapper<Result> mapper) {
+	public FetchUrl(OnFinish<Result> onFinish, FetchUrlMapper<Result> mapper) {
 		this.onFinish = onFinish;
 		this.mapper = mapper;
 	}

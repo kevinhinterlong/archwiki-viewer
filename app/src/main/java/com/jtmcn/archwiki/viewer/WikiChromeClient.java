@@ -6,7 +6,7 @@ import android.webkit.WebChromeClient;
 import android.widget.ProgressBar;
 
 public class WikiChromeClient extends WebChromeClient {
-	//// TODO: 4/3/2017 Fix memory leak 
+	//// TODO: 4/3/2017 Fix memory leak, maybe remove this class?
 	private static ProgressBar progressBar;
 	private static ActionBar actionBar;
 

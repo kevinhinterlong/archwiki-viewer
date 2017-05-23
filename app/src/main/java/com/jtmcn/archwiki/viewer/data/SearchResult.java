@@ -1,13 +1,18 @@
 package com.jtmcn.archwiki.viewer.data;
 
 /**
- * Created by kevin on 4/4/2017.
+ * A page on the wiki which only knows the name and url.
  */
-
 public class SearchResult {
 	private final String pageName;
 	private final String pageUrl;
 
+	/**
+	 * Create a search result.
+	 *
+	 * @param pageName the name of the page as shown on the wiki.
+	 * @param pageUrl  the string url on the wiki.
+	 */
 	public SearchResult(String pageName, String pageUrl) {
 		this.pageName = pageName;
 		this.pageUrl = pageUrl;
@@ -28,28 +33,5 @@ public class SearchResult {
 		sb.append(", url='").append(pageUrl).append('\'');
 		sb.append('}');
 		return sb.toString();
-	}
-
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
-
-		SearchResult that = (SearchResult) o;
-
-		if (getPageName() == null || getPageUrl() == null) {
-			return false;
-		}
-
-		return getPageName().equals(that.getPageName()) &&
-				getPageUrl().equals(that.getPageUrl());
-
-	}
-
-	@Override
-	public int hashCode() {
-		int result = getPageName().hashCode();
-		result = 31 * result + getPageUrl().hashCode();
-		return result;
 	}
 }

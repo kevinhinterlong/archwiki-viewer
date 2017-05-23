@@ -26,10 +26,8 @@ import com.jtmcn.archwiki.viewer.utils.AndroidUtils;
 
 import java.util.List;
 
-import static com.jtmcn.archwiki.viewer.Constants.QUERY_URL;
-
-public class WikiActivity extends Activity implements FetchUrl.OnFinish<List<SearchResult>> {
-	public static final String TAG = WikiActivity.class.getSimpleName();
+public class MainActivity extends Activity implements FetchUrl.OnFinish<List<SearchResult>> {
+	public static final String TAG = MainActivity.class.getSimpleName();
 	private SearchView searchView;
 	private MenuItem searchMenuItem;
 	private WikiView wikiViewer;
@@ -40,7 +38,6 @@ public class WikiActivity extends Activity implements FetchUrl.OnFinish<List<Sea
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.wiki_layout);
 
-		// associate xml variables
 		wikiViewer = (WikiView) findViewById(R.id.wvMain);
 		ProgressBar progressBar = (ProgressBar) findViewById(R.id.ProgressBar);
 
@@ -65,8 +62,7 @@ public class WikiActivity extends Activity implements FetchUrl.OnFinish<List<Sea
 	private void handleIntent(Intent intent) {
 		if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
 			String query = intent.getStringExtra(SearchManager.QUERY);
-			String searchUrl = String.format(QUERY_URL, query);
-			wikiViewer.passSearch(searchUrl);
+			wikiViewer.passSearch(query);
 			hideSearchView();
 		} else if (Intent.ACTION_VIEW.equals(intent.getAction())) {
 			final String url = intent.getDataString();
@@ -74,6 +70,9 @@ public class WikiActivity extends Activity implements FetchUrl.OnFinish<List<Sea
 		}
 	}
 
+	/**
+	 * Update the font size used in the webview.
+	 */
 	public void setWebSettings() {
 		WebSettings webSettings = wikiViewer.getSettings();
 
@@ -83,11 +82,11 @@ public class WikiActivity extends Activity implements FetchUrl.OnFinish<List<Sea
 		// https://stackoverflow.com/questions/11346916/listpreference-use-string-array-as-entry-and-integer-array-as-entry-values-does
 		// the value of this preference must be parsed as a string
 		// todo make a settings utils class to wrap this
-		String fontSizePref = prefs.getString(WikiPrefs.KEY_TEXT_SIZE, "2");
+		String fontSizePref = prefs.getString(WikiPrefsActivity.KEY_TEXT_SIZE, "2");
 		int fontSize = Integer.valueOf(fontSizePref);
 
 		// deprecated method must be used until Android API 14
-		//https://developer.android.com/reference/android/webkit/WebSettings.TextSize.html#NORMAL
+		// https://developer.android.com/reference/android/webkit/WebSettings.TextSize.html#NORMAL
 		switch (fontSize) {
 			case 0:
 				webSettings.setTextSize(WebSettings.TextSize.SMALLEST); //50%
@@ -125,8 +124,7 @@ public class WikiActivity extends Activity implements FetchUrl.OnFinish<List<Sea
 		searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
 			@Override
 			public boolean onQueryTextSubmit(String query) {
-				String searchUrl = String.format(QUERY_URL, query);
-				wikiViewer.passSearch(searchUrl);
+				wikiViewer.passSearch(query);
 				return false;
 			}
 
@@ -137,7 +135,7 @@ public class WikiActivity extends Activity implements FetchUrl.OnFinish<List<Sea
 					return true;
 				} else {
 					String searchUrl = SearchResultsBuilder.getSearchQuery(newText);
-					Fetch.search(WikiActivity.this, searchUrl);
+					Fetch.search(MainActivity.this, searchUrl);
 					return false;
 				}
 			}
@@ -152,7 +150,7 @@ public class WikiActivity extends Activity implements FetchUrl.OnFinish<List<Sea
 			@Override
 			public boolean onSuggestionClick(int position) {
 				SearchResult searchResult = currentSuggestions.get(position);
-				Log.d(TAG, "Opening " + searchResult.getPageName());
+				Log.d(TAG, "Opening '" + searchResult.getPageName() + "' from search suggestion.");
 				wikiViewer.wikiClient.shouldOverrideUrlLoading(wikiViewer, searchResult.getPageUrl());
 				hideSearchView();
 				return true;
@@ -178,13 +176,13 @@ public class WikiActivity extends Activity implements FetchUrl.OnFinish<List<Sea
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 			case R.id.menu_settings:
-				startActivity(new Intent(this, WikiPrefs.class));
+				startActivity(new Intent(this, WikiPrefsActivity.class));
 				break;
 			case R.id.menu_share:
 				WikiPage wikiPage = wikiViewer.getCurrentWebPage();
 				if (wikiPage != null) {
 					AndroidUtils.shareText(wikiPage.getPageTitle(), wikiPage.getPageUrl(), this);
-				} else {
+				} else { //// TODO: 5/14/2017 either make sure this never happens or localize the strings
 					Log.w(TAG, "Failed to share current page " + wikiViewer.getUrl());
 					Toast.makeText(this, "Sorry, can't share this page!", Toast.LENGTH_SHORT).show();
 				}
@@ -199,9 +197,7 @@ public class WikiActivity extends Activity implements FetchUrl.OnFinish<List<Sea
 
 	@Override
 	public void onFinish(List<SearchResult> results) {
-		if (results != null) {
-			currentSuggestions = results;
-			searchView.setSuggestionsAdapter(SearchResultsAdapter.getCursorAdapter(this, currentSuggestions));
-		}
+		currentSuggestions = results;
+		searchView.setSuggestionsAdapter(SearchResultsAdapter.getCursorAdapter(this, currentSuggestions));
 	}
 }

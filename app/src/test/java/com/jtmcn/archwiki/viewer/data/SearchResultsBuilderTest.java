@@ -1,4 +1,4 @@
-package com.jtmcn.archwiki.viewer;
+package com.jtmcn.archwiki.viewer.data;
 
 import com.jtmcn.archwiki.viewer.data.SearchResult;
 import com.jtmcn.archwiki.viewer.data.SearchResultsBuilder;
@@ -9,11 +9,8 @@ import java.util.List;
 
 import static junit.framework.Assert.assertEquals;
 
-/**
- * Created by kevin on 4/4/2017.
- */
 public class SearchResultsBuilderTest {
-	private static String realResult = "[\"arch\", [\"Arch-based Distros\", \"Arch-based distributions\", \"Arch-chroot\", \"Arch32\", \"Arch64 FAQ\"],\n" +
+	private final String realResult = "[\"arch\", [\"Arch-based Distros\", \"Arch-based distributions\", \"Arch-chroot\", \"Arch32\", \"Arch64 FAQ\"],\n" +
 			"\t[\"\", \"\", \"\", \"\", \"\"],\n" +
 			"\t[\"https://wiki.archlinux.org/index.php/Arch-based_Distros\", \"https://wiki.archlinux.org/index.php/Arch-based_distributions\", \"https://wiki.archlinux.org/index.php/Arch-chroot\", \"https://wiki.archlinux.org/index.php/Arch32\", \"https://wiki.archlinux.org/index.php/Arch64_FAQ\"]\n" +
 			"]";
