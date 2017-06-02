@@ -17,8 +17,8 @@ import static com.jtmcn.archwiki.viewer.Constants.UTF_8;
 
 public class WikiClient extends WebViewClient implements FetchUrl.OnFinish<WikiPage> {
 	public static final String TAG = WikiClient.class.getSimpleName();
-	private WebView webView;
-	private Stack<WikiPage> webpageStack = new Stack<>();
+	private final WebView webView;
+	private final Stack<WikiPage> webpageStack = new Stack<>();
 
 	public WikiClient(WebView wikiViewer) {
 		webView = wikiViewer;
@@ -60,6 +60,7 @@ public class WikiClient extends WebViewClient implements FetchUrl.OnFinish<WikiP
 	 */
 	@Override
 	public boolean shouldOverrideUrlLoading(WebView view, String url) {
+		// deprecated until min api 21 is used
 		if (url.startsWith(ARCHWIKI_BASE)) {
 			webView.stopLoading();
 			Fetch.page(this, url);

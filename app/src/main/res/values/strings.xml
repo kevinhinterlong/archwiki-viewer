@@ -5,6 +5,5 @@
     <string name="share">Share Link</string>
     <string name="search">Search</string>
     <string name="exit">Exit</string>
-    <string name="preferences">Preferences</string>
     <string name="text_size_preference">Text Size</string>
 </resources>

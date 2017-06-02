@@ -5,7 +5,6 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -51,7 +50,7 @@ public class MainActivity extends Activity implements FetchUrl.OnFinish<List<Sea
 	@Override
 	protected void onResume() {
 		super.onResume();
-		setWebSettings();
+		updateWebSettings();
 	}
 
 	@Override
@@ -60,6 +59,10 @@ public class MainActivity extends Activity implements FetchUrl.OnFinish<List<Sea
 	}
 
 	private void handleIntent(Intent intent) {
+		if (intent == null) {
+			return;
+		}
+
 		if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
 			String query = intent.getStringExtra(SearchManager.QUERY);
 			wikiViewer.passSearch(query);
@@ -73,7 +76,7 @@ public class MainActivity extends Activity implements FetchUrl.OnFinish<List<Sea
 	/**
 	 * Update the font size used in the webview.
 	 */
-	public void setWebSettings() {
+	public void updateWebSettings() {
 		WebSettings webSettings = wikiViewer.getSettings();
 
 		SharedPreferences prefs = PreferenceManager
@@ -85,6 +88,7 @@ public class MainActivity extends Activity implements FetchUrl.OnFinish<List<Sea
 		String fontSizePref = prefs.getString(WikiPrefsActivity.KEY_TEXT_SIZE, "2");
 		int fontSize = Integer.valueOf(fontSizePref);
 
+		//todo this setting should be changed to a slider, remove deprecated call
 		// deprecated method must be used until Android API 14
 		// https://developer.android.com/reference/android/webkit/WebSettings.TextSize.html#NORMAL
 		switch (fontSize) {
@@ -160,9 +164,7 @@ public class MainActivity extends Activity implements FetchUrl.OnFinish<List<Sea
 	}
 
 	public void hideSearchView() {
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-			searchMenuItem.collapseActionView();
-		}
+		searchMenuItem.collapseActionView();
 		wikiViewer.requestFocus(); //pass control back to the wikiview
 	}
 
