@@ -53,7 +53,7 @@ public class NetworkUtils {
 		BufferedReader in = new BufferedReader(new InputStreamReader(
 				urlConnection.getInputStream()), 8);// buffer 8k
 
-		String line = "";
+		String line;
 		String lineSeparator = System.getProperty("line.separator");
 
 		while ((line = in.readLine()) != null) {

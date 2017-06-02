@@ -32,8 +32,8 @@ public class FetchUrl<Result> extends AsyncTask<String, Void, Result> {
 	}
 
 	private static final String TAG = FetchUrl.class.getSimpleName();
-	private OnFinish<Result> onFinish;
-	private FetchUrlMapper<Result> mapper;
+	private final OnFinish<Result> onFinish;
+	private final FetchUrlMapper<Result> mapper;
 
 	/**
 	 * Fetches the first url and notifies the {@link OnFinish} listener.
