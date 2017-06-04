@@ -70,11 +70,12 @@ public class FetchUrl<Result> extends AsyncTask<String, Void, Result> {
 	 * @param url to query
 	 */
 	private StringBuilder getItem(String url) {
-		StringBuilder toReturn = null;
+		StringBuilder toReturn;
 		try {
 			toReturn = NetworkUtils.fetchURL(url);
 		} catch (IOException e) { //network exception
 			Log.w(TAG, "Could not connect to: " + url, e);
+			toReturn = new StringBuilder();
 		}
 
 		return toReturn;

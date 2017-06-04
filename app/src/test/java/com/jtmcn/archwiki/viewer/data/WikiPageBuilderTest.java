@@ -20,6 +20,11 @@ public class WikiPageBuilderTest {
 	}
 
 	@Test
+	public void getEmptyTitle() throws Exception {
+		assertEquals("No title found", WikiPageBuilder.getPageTitle(new StringBuilder("")));
+	}
+
+	@Test
 	public void injectLocalCSS() throws Exception {
 		StringBuilder head = new StringBuilder(WikiPageBuilder.HTML_HEAD_OPEN)
 				.append(WikiPageBuilder.HTML_HEAD_CLOSE);
