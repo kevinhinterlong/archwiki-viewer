@@ -1,5 +1,6 @@
 package com.jtmcn.archwiki.viewer;
 
+import android.app.ActionBar;
 import android.content.Context;
 import android.os.Build;
 import android.util.AttributeSet;
@@ -7,6 +8,7 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.widget.ProgressBar;
 
 import com.jtmcn.archwiki.viewer.data.WikiPage;
 
@@ -15,10 +17,12 @@ import static com.jtmcn.archwiki.viewer.Constants.ARCHWIKI_SEARCH_URL;
 
 public class WikiView extends WebView {
 	public static final String TAG = WikiView.class.getSimpleName();
+	private Context context;
 	WikiClient wikiClient;
 
 	public WikiView(Context context, AttributeSet attrs) {
 		super(context, attrs);
+		this.context = context;
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && !isInEditMode()) {
 			//this allows the webview to inject the css (otherwise it blocks it for security reasons)
 			getSettings().setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
@@ -28,8 +32,8 @@ public class WikiView extends WebView {
 	/**
 	 * Initializes the wiki client and loads the main page.
 	 */
-	public void buildView() {
-		wikiClient = new WikiClient(this);
+	public void buildView(ProgressBar progressBar, ActionBar actionBar) {
+		wikiClient = new WikiClient(progressBar, actionBar, this);
 		setWebViewClient(wikiClient);
 		wikiClient.shouldOverrideUrlLoading(this, ARCHWIKI_MAIN);
 	}

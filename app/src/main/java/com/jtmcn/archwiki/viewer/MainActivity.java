@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.widget.ProgressBar;
 import android.widget.SearchView;
@@ -40,10 +41,9 @@ public class MainActivity extends Activity implements FetchUrl.OnFinish<List<Sea
 		wikiViewer = (WikiView) findViewById(R.id.wvMain);
 		ProgressBar progressBar = (ProgressBar) findViewById(R.id.ProgressBar);
 
-		WikiChromeClient wikiChrome = new WikiChromeClient(progressBar, getActionBar());
-		wikiViewer.setWebChromeClient(wikiChrome);
-		wikiViewer.buildView();
+		wikiViewer.buildView(progressBar, getActionBar());
 
+		wikiViewer.setWebChromeClient(new WebChromeClient());
 		handleIntent(getIntent());
 	}
 
