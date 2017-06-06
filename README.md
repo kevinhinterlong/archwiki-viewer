@@ -10,6 +10,10 @@ A simple viewer for the Arch Linux Wiki. Page content is formatted for optimal m
 
 <img src="playstore/screen1.png" width="170"/> <img src="playstore/screen2.png" width="170"/> <img src="playstore/screen3.png" width="170"/> <img src="playstore/screen4.png" width="170"/> <img src="playstore/screen5.png" width="170"/>
 
+## Contributions
+All contributions are welcome, don't forget to ask if you need help.
+
+Comments and tests are highly encouraged.
 
 ## License
 This project is licensed under the Apache License, Version 2.0

@@ -1,8 +1,11 @@
 package com.jtmcn.archwiki.viewer;
 
+import android.app.ActionBar;
 import android.util.Log;
+import android.view.View;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.ProgressBar;
 
 import com.jtmcn.archwiki.viewer.data.WikiPage;
 import com.jtmcn.archwiki.viewer.tasks.Fetch;
@@ -19,8 +22,12 @@ public class WikiClient extends WebViewClient implements FetchUrl.OnFinish<WikiP
 	public static final String TAG = WikiClient.class.getSimpleName();
 	private final WebView webView;
 	private final Stack<WikiPage> webpageStack = new Stack<>();
+	private final ProgressBar progressBar;
+	private final ActionBar actionBar;
 
-	public WikiClient(WebView wikiViewer) {
+	public WikiClient(ProgressBar progressBar, ActionBar actionBar, WebView wikiViewer) {
+		this.progressBar = progressBar;
+		this.actionBar = actionBar;
 		webView = wikiViewer;
 	}
 
@@ -46,8 +53,8 @@ public class WikiClient extends WebViewClient implements FetchUrl.OnFinish<WikiP
 				null
 		);
 
-		WikiChromeClient.setSubtitle(wikiPage.getPageTitle());
-		WikiChromeClient.hideProgress();
+		setSubtitle(wikiPage.getPageTitle());
+		hideProgress();
 	}
 
 	/**
@@ -64,12 +71,26 @@ public class WikiClient extends WebViewClient implements FetchUrl.OnFinish<WikiP
 		if (url.startsWith(ARCHWIKI_BASE)) {
 			webView.stopLoading();
 			Fetch.page(this, url);
-			WikiChromeClient.showProgress();
+			showProgress();
 
 			return false;
 		} else {
 			AndroidUtils.openLink(url, view.getContext());
 			return true;
+		}
+	}
+
+	public void showProgress() {
+		progressBar.setVisibility(View.VISIBLE);
+	}
+
+	public void hideProgress() {
+		progressBar.setVisibility(View.GONE);
+	}
+
+	public void setSubtitle(String title) {
+		if (actionBar != null) {
+			actionBar.setSubtitle(title);
 		}
 	}
 
