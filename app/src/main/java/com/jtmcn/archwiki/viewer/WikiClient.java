@@ -1,6 +1,6 @@
 package com.jtmcn.archwiki.viewer;
 
-import android.app.ActionBar;
+import android.support.v7.app.ActionBar;
 import android.util.Log;
 import android.view.View;
 import android.webkit.WebView;
@@ -70,7 +70,7 @@ public class WikiClient extends WebViewClient implements FetchUrl.OnFinish<WikiP
 		// deprecated until min api 21 is used
 		if (url.startsWith(ARCHWIKI_BASE)) {
 			webView.stopLoading();
-			Fetch.page(this, url);
+			Fetch.page(this, url, true);
 			showProgress();
 
 			return false;
@@ -125,5 +125,15 @@ public class WikiClient extends WebViewClient implements FetchUrl.OnFinish<WikiP
 	public void onFinish(WikiPage results) {
 		addHistory(results);
 		loadWikiHtml(getCurrentWebPage());
+	}
+
+	public void refreshPage() {
+		String url = getCurrentWebPage().getPageUrl();
+		Fetch.page(new FetchUrl.OnFinish<WikiPage>() {
+			@Override
+			public void onFinish(WikiPage wikiPage) {
+				loadWikiHtml(wikiPage);
+			}
+		}, url, false);
 	}
 }

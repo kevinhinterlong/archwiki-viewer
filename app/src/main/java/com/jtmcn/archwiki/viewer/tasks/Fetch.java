@@ -57,7 +57,8 @@ public class Fetch {
 	 */
 	public static AsyncTask<String, Void, WikiPage> page(
 			FetchUrl.OnFinish<WikiPage> onFinish,
-			String url
+			String url,
+			boolean caching
 	) {
 		return new FetchUrl<>(onFinish, WIKIPAGE_MAPPER).execute(url);
 	}

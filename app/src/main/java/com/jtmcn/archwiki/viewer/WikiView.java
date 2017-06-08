@@ -1,6 +1,6 @@
 package com.jtmcn.archwiki.viewer;
 
-import android.app.ActionBar;
+import android.support.v7.app.ActionBar;
 import android.content.Context;
 import android.os.Build;
 import android.util.AttributeSet;
@@ -68,5 +68,9 @@ public class WikiView extends WebView {
 	 */
 	public WikiPage getCurrentWebPage() {
 		return wikiClient.getCurrentWebPage();
+	}
+
+	public void refreshPage() {
+		wikiClient.refreshPage();
 	}
 }
