@@ -3,7 +3,7 @@ package com.jtmcn.archwiki.viewer;
 import android.content.Context;
 import android.database.MatrixCursor;
 import android.support.v4.widget.CursorAdapter;
-import android.widget.SimpleCursorAdapter;
+import android.support.v4.widget.SimpleCursorAdapter;
 
 import com.jtmcn.archwiki.viewer.data.SearchResult;
 
@@ -25,7 +25,7 @@ public class SearchResultsAdapter {
 	 * @param results the results to be placed in the adapter.
 	 * @return the adapter.
 	 */
-	public static SimpleCursorAdapter getCursorAdapter(Context context, List<SearchResult> results) {
+	public static CursorAdapter getCursorAdapter(Context context, List<SearchResult> results) {
 		int id = 0;
 		MatrixCursor cursor = new MatrixCursor(columnNames);
 		for (SearchResult item : results) {

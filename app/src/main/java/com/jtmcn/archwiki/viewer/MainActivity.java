@@ -1,20 +1,21 @@
 package com.jtmcn.archwiki.viewer;
 
-import android.app.Activity;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
+import android.support.v4.view.MenuItemCompat;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SearchView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.widget.ProgressBar;
-import android.widget.SearchView;
 import android.widget.Toast;
 
 import com.jtmcn.archwiki.viewer.data.SearchResult;
@@ -23,27 +24,46 @@ import com.jtmcn.archwiki.viewer.data.WikiPage;
 import com.jtmcn.archwiki.viewer.tasks.Fetch;
 import com.jtmcn.archwiki.viewer.tasks.FetchUrl;
 import com.jtmcn.archwiki.viewer.utils.AndroidUtils;
+import com.jtmcn.archwiki.viewer.utils.SettingsUtils;
 
 import java.util.List;
 
-public class MainActivity extends Activity implements FetchUrl.OnFinish<List<SearchResult>> {
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
+public class MainActivity extends AppCompatActivity implements FetchUrl.OnFinish<List<SearchResult>> {
 	public static final String TAG = MainActivity.class.getSimpleName();
 	private SearchView searchView;
 	private MenuItem searchMenuItem;
-	private WikiView wikiViewer;
+	@BindView(R.id.wiki_view) WikiView wikiViewer;
+	@BindView(R.id.refresh_layout) SwipeRefreshLayout swipeRefreshLayout;
+	@BindView(R.id.search_toolbar) Toolbar toolbar;
 	private List<SearchResult> currentSuggestions;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.wiki_layout);
+		ButterKnife.bind(this);
 
-		wikiViewer = (WikiView) findViewById(R.id.wvMain);
-		ProgressBar progressBar = (ProgressBar) findViewById(R.id.ProgressBar);
+		setSupportActionBar(toolbar);
+		ActionBar supportActionBar = getSupportActionBar();
+		if (supportActionBar != null) {
+			supportActionBar.setDisplayShowHomeEnabled(true);
+			supportActionBar.setLogo(R.drawable.ic_launcher);
+			supportActionBar.setDisplayUseLogoEnabled(true);
+		}
+		swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+			@Override
+			public void onRefresh() {
+				wikiViewer.refreshPage();
+				swipeRefreshLayout.setRefreshing(false);
+			}
+		});
 
-		wikiViewer.buildView(progressBar, getActionBar());
+		ProgressBar progressBar = ButterKnife.findById(this, R.id.progress_bar);
+		wikiViewer.buildView(progressBar, supportActionBar);
 
-		wikiViewer.setWebChromeClient(new WebChromeClient());
 		handleIntent(getIntent());
 	}
 
@@ -78,15 +98,7 @@ public class MainActivity extends Activity implements FetchUrl.OnFinish<List<Sea
 	 */
 	public void updateWebSettings() {
 		WebSettings webSettings = wikiViewer.getSettings();
-
-		SharedPreferences prefs = PreferenceManager
-				.getDefaultSharedPreferences(getApplicationContext());
-
-		// https://stackoverflow.com/questions/11346916/listpreference-use-string-array-as-entry-and-integer-array-as-entry-values-does
-		// the value of this preference must be parsed as a string
-		// todo make a settings utils class to wrap this
-		String fontSizePref = prefs.getString(WikiPrefsActivity.KEY_TEXT_SIZE, "2");
-		int fontSize = Integer.valueOf(fontSizePref);
+		int fontSize = SettingsUtils.getFontSize(this);
 
 		//todo this setting should be changed to a slider, remove deprecated call
 		// deprecated method must be used until Android API 14
@@ -114,17 +126,16 @@ public class MainActivity extends Activity implements FetchUrl.OnFinish<List<Sea
 	public boolean onPrepareOptionsMenu(Menu menu) {
 		SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
 		searchMenuItem = menu.findItem(R.id.menu_search);
-		final SearchView searchView = (SearchView) searchMenuItem.getActionView();
+		searchView = (SearchView) MenuItemCompat.getActionView(searchMenuItem);
 		searchView.setOnQueryTextFocusChangeListener(new View.OnFocusChangeListener() {
 			@Override
 			public void onFocusChange(View v, boolean hasFocus) {
-				if (!hasFocus) {
+				if (!hasFocus && searchView.getQuery().length() == 0) {
 					hideSearchView();
 				}
 			}
 		});
 		searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-		this.searchView = searchView;
 		searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
 			@Override
 			public boolean onQueryTextSubmit(String query) {

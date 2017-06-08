@@ -13,3 +13,6 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}-keepnames class org.glassfish.** { *; }
+
+-keep class android.support.** { *; }
+-keep interface android.support.** { *; }
