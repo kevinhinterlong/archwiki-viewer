@@ -55,7 +55,7 @@ public class WikiPageBuilder {
 	 * Removes the contents within the head block of the html
 	 * and replaces it with the a reference to a local css file.
 	 *
-	 * @param htmlString The html of the page as a string.
+	 * @param htmlString       The html of the page as a string.
 	 * @param localCSSFilePath The path of the css file to inject.
 	 * @return true if the block was successfully replaced.
 	 */
