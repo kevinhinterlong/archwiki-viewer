@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
@@ -26,6 +25,7 @@ import com.jtmcn.archwiki.viewer.tasks.FetchUrl;
 import com.jtmcn.archwiki.viewer.utils.AndroidUtils;
 import com.jtmcn.archwiki.viewer.utils.SettingsUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -33,26 +33,21 @@ import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity implements FetchUrl.OnFinish<List<SearchResult>> {
 	public static final String TAG = MainActivity.class.getSimpleName();
-	private SearchView searchView;
-	private MenuItem searchMenuItem;
 	@BindView(R.id.wiki_view) WikiView wikiViewer;
 	@BindView(R.id.refresh_layout) SwipeRefreshLayout swipeRefreshLayout;
-	@BindView(R.id.search_toolbar) Toolbar toolbar;
+	@BindView(R.id.toolbar) Toolbar toolbar;
+	private SearchView searchView;
+	private MenuItem searchMenuItem;
 	private List<SearchResult> currentSuggestions;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.wiki_layout);
+		setContentView(R.layout.activity_main);
 		ButterKnife.bind(this);
 
 		setSupportActionBar(toolbar);
-		ActionBar supportActionBar = getSupportActionBar();
-		if (supportActionBar != null) {
-			supportActionBar.setDisplayShowHomeEnabled(true);
-			supportActionBar.setLogo(R.drawable.ic_launcher);
-			supportActionBar.setDisplayUseLogoEnabled(true);
-		}
+
 		swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
 			@Override
 			public void onRefresh() {
@@ -62,7 +57,7 @@ public class MainActivity extends AppCompatActivity implements FetchUrl.OnFinish
 		});
 
 		ProgressBar progressBar = ButterKnife.findById(this, R.id.progress_bar);
-		wikiViewer.buildView(progressBar, supportActionBar);
+		wikiViewer.buildView(progressBar, getSupportActionBar());
 
 		handleIntent(getIntent());
 	}
@@ -146,12 +141,12 @@ public class MainActivity extends AppCompatActivity implements FetchUrl.OnFinish
 			@Override
 			public boolean onQueryTextChange(String newText) {
 				if (newText.isEmpty()) {
-					searchView.setSuggestionsAdapter(null);
+					setCursorAdapter(new ArrayList<SearchResult>());
 					return true;
 				} else {
 					String searchUrl = SearchResultsBuilder.getSearchQuery(newText);
 					Fetch.search(MainActivity.this, searchUrl);
-					return false;
+					return true;
 				}
 			}
 		});
@@ -189,7 +184,7 @@ public class MainActivity extends AppCompatActivity implements FetchUrl.OnFinish
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 			case R.id.menu_settings:
-				startActivity(new Intent(this, WikiPrefsActivity.class));
+				startActivity(new Intent(this, PreferencesActivity.class));
 				break;
 			case R.id.menu_share:
 				WikiPage wikiPage = wikiViewer.getCurrentWebPage();
@@ -211,6 +206,12 @@ public class MainActivity extends AppCompatActivity implements FetchUrl.OnFinish
 	@Override
 	public void onFinish(List<SearchResult> results) {
 		currentSuggestions = results;
-		searchView.setSuggestionsAdapter(SearchResultsAdapter.getCursorAdapter(this, currentSuggestions));
+		setCursorAdapter(currentSuggestions);
+	}
+
+	private void setCursorAdapter(List<SearchResult> currentSuggestions) {
+		searchView.setSuggestionsAdapter(
+				SearchResultsAdapter.getCursorAdapter(this, currentSuggestions)
+		);
 	}
 }
