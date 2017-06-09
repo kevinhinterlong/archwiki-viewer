@@ -14,5 +14,8 @@
 #   public *;
 #}-keepnames class org.glassfish.** { *; }
 
--keep class android.support.** { *; }
--keep interface android.support.** { *; }
+-keep class android.support.v7.widget.SearchView { *; }
+
+-dontwarn butterknife.internal.**
+-keep class **$$ViewInjector { *; }
+-keepnames class * { @butterknife.InjectView *;}
