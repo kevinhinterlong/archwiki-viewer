@@ -1,8 +1,8 @@
 package com.jtmcn.archwiki.viewer;
 
-import android.support.v7.app.ActionBar;
 import android.content.Context;
 import android.os.Build;
+import android.support.v7.app.ActionBar;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -22,7 +22,6 @@ public class WikiView extends WebView {
 
 	public WikiView(Context context, AttributeSet attrs) {
 		super(context, attrs);
-		this.context = context;
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && !isInEditMode()) {
 			//this allows the webview to inject the css (otherwise it blocks it for security reasons)
 			getSettings().setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);

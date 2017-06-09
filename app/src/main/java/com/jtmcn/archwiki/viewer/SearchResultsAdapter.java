@@ -16,7 +16,7 @@ import java.util.List;
 public class SearchResultsAdapter {
 	private static final String[] columnNames = {"_id", "title"};
 	private static final String[] from = {"title"};
-	private static final int[] to = new int[]{android.R.id.text1};
+	private static final int[] to = new int[]{R.id.url};
 
 	/**
 	 * Creates a cursor adapter given a {@link List<SearchResult>}.
@@ -39,7 +39,7 @@ public class SearchResultsAdapter {
 
 		return new SimpleCursorAdapter(
 				context,
-				android.R.layout.simple_list_item_1,
+				R.layout.link_list_item,
 				cursor,
 				from,
 				to,
