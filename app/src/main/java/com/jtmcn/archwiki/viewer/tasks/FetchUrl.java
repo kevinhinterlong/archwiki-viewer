@@ -13,28 +13,9 @@ import java.io.IOException;
  * @param <Result> The type which the fetched url's text will be mapped to.
  */
 public class FetchUrl<Result> extends AsyncTask<String, Void, Result> {
-	/**
-	 * A listener which is called when {@link Result} is ready.
-	 *
-	 * @param <Result> the type of object which has been created.
-	 */
-	public interface OnFinish<Result> {
-		void onFinish(Result result);
-	}
-
-	/**
-	 * Maps the url and fetched text to {@link R}
-	 *
-	 * @param <R> The type which the text will be mapped to.
-	 */
-	public interface FetchUrlMapper<R> {
-		R mapTo(String url, StringBuilder sb);
-	}
-
 	private static final String TAG = FetchUrl.class.getSimpleName();
 	private final OnFinish<Result> onFinish;
 	private final FetchUrlMapper<Result> mapper;
-
 	/**
 	 * Fetches the first url and notifies the {@link OnFinish} listener.
 	 *
@@ -79,5 +60,23 @@ public class FetchUrl<Result> extends AsyncTask<String, Void, Result> {
 		}
 
 		return toReturn;
+	}
+
+	/**
+	 * A listener which is called when {@link Result} is ready.
+	 *
+	 * @param <Result> the type of object which has been created.
+	 */
+	public interface OnFinish<Result> {
+		void onFinish(Result result);
+	}
+
+	/**
+	 * Maps the url and fetched text to {@link R}
+	 *
+	 * @param <R> The type which the text will be mapped to.
+	 */
+	public interface FetchUrlMapper<R> {
+		R mapTo(String url, StringBuilder sb);
 	}
 }

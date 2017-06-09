@@ -17,8 +17,8 @@ import static com.jtmcn.archwiki.viewer.Constants.ARCHWIKI_SEARCH_URL;
 
 public class WikiView extends WebView {
 	public static final String TAG = WikiView.class.getSimpleName();
-	private Context context;
 	WikiClient wikiClient;
+	private Context context;
 
 	public WikiView(Context context, AttributeSet attrs) {
 		super(context, attrs);
