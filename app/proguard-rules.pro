@@ -13,3 +13,9 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}-keepnames class org.glassfish.** { *; }
+
+-keep class android.support.v7.widget.SearchView { *; }
+
+-dontwarn butterknife.internal.**
+-keep class **$$ViewInjector { *; }
+-keepnames class * { @butterknife.InjectView *;}

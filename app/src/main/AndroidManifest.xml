@@ -38,7 +38,7 @@
                 android:resource="@xml/searchable" />
         </activity>
         <activity
-            android:name=".WikiPrefsActivity"
+            android:name=".PreferencesActivity"
             android:label="@string/app_name">
             <!-- android:theme="@android:style/Theme.Holo.Light" --> 
             
