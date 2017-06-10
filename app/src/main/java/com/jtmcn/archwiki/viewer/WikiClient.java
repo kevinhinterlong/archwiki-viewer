@@ -49,7 +49,7 @@ public class WikiClient extends WebViewClient implements FetchUrl.OnFinish<WikiP
 	 *
 	 * @param wikiPage the page to be loaded.
 	 */
-	public void loadWikiHtml(final WikiPage wikiPage) {
+	public void loadWikiHtml(WikiPage wikiPage) {
 		webView.loadDataWithBaseURL(
 				wikiPage.getPageUrl(),
 				wikiPage.getHtmlString(),
@@ -59,7 +59,6 @@ public class WikiClient extends WebViewClient implements FetchUrl.OnFinish<WikiP
 		);
 
 		setSubtitle(wikiPage.getPageTitle());
-		hideProgress();
 	}
 
 	/**
@@ -88,14 +87,18 @@ public class WikiClient extends WebViewClient implements FetchUrl.OnFinish<WikiP
 	@Override
 	public void onPageFinished(WebView view, String url) {
 		super.onPageFinished(view, url);
+		Log.d(TAG, "Calling onPageFinished(view, url)");
 		final WikiPage currentWebPage = getCurrentWebPage();
+		// make sure we're loading the current page and that
+		// this page's url doesn't have an anchor (only on first page load)
 		if (url.equals(currentWebPage.getPageUrl())) {
 			new Handler().postDelayed(new Runnable() {
 				@Override
 				public void run() {
 					int scrollY = currentWebPage.setScrollPosition();
-					Log.d(TAG, "Restoring position at " + scrollY);
+					Log.d(TAG, "Restoring " + currentWebPage.getPageTitle() + " at " + scrollY);
 					webView.setScrollY(scrollY);
+					hideProgress();
 				}
 			}, 25);
 		}
@@ -152,7 +155,7 @@ public class WikiClient extends WebViewClient implements FetchUrl.OnFinish<WikiP
 	public void refreshPage() {
 		WikiPage currentWebPage = getCurrentWebPage();
 		currentWebPage.setScrollPosition(0);
-		
+
 		String url = currentWebPage.getPageUrl();
 		Fetch.page(new FetchUrl.OnFinish<WikiPage>() {
 			@Override

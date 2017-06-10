@@ -2,6 +2,7 @@ package com.jtmcn.archwiki.viewer;
 
 import android.content.Context;
 import android.os.Build;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -15,7 +16,7 @@ import com.jtmcn.archwiki.viewer.data.WikiPage;
 import static com.jtmcn.archwiki.viewer.Constants.ARCHWIKI_MAIN;
 import static com.jtmcn.archwiki.viewer.Constants.ARCHWIKI_SEARCH_URL;
 
-public class WikiView extends NestedWebView {
+public class WikiView extends NestedWebView implements SwipeRefreshLayout.OnRefreshListener {
 	public static final String TAG = WikiView.class.getSimpleName();
 	WikiClient wikiClient;
 	private Context context;
@@ -70,7 +71,9 @@ public class WikiView extends NestedWebView {
 		return wikiClient.getCurrentWebPage();
 	}
 
-	public void refreshPage() {
+	@Override
+	public void onRefresh() {
 		wikiClient.refreshPage();
+		stopLoading();
 	}
 }

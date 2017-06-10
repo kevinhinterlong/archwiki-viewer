@@ -15,10 +15,26 @@
         app:layout_scrollFlags="scroll|enterAlways"
         app:popupTheme="@style/AppTheme.PopupOverlay"/>
 
-    <LinearLayout
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="5dp"
-        android:background="@color/wikiBottomBar"
-        app:layout_scrollFlags="scroll|enterAlways"/>
+        android:layout_height="5dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="5dp"
+            android:background="@color/wikiBottomBar"
+            app:layout_scrollFlags="scroll|enterAlways"/>
+
+        <ProgressBar
+            android:id="@+id/progress_bar"
+            android:theme="@style/AppTheme.LinearProgress"
+            style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+            android:layout_width="match_parent"
+            android:layout_gravity="center"
+            android:layout_height="30dp"
+            android:visibility="gone"
+            android:indeterminate="true"/>
+
+    </FrameLayout>
 
 </android.support.design.widget.AppBarLayout>
