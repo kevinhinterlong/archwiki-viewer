@@ -8,6 +8,7 @@ import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
+import android.support.v7.widget.ShareActionProvider;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
@@ -15,7 +16,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.webkit.WebSettings;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import com.jtmcn.archwiki.viewer.data.SearchResult;
 import com.jtmcn.archwiki.viewer.data.SearchResultsBuilder;
@@ -36,6 +36,7 @@ public class MainActivity extends AppCompatActivity implements FetchUrl.OnFinish
 	@BindView(R.id.wiki_view) WikiView wikiViewer;
 	@BindView(R.id.refresh_layout) SwipeRefreshLayout swipeRefreshLayout;
 	@BindView(R.id.toolbar) Toolbar toolbar;
+	private ShareActionProvider shareActionProvider;
 	private SearchView searchView;
 	private MenuItem searchMenuItem;
 	private List<SearchResult> currentSuggestions;
@@ -176,7 +177,9 @@ public class MainActivity extends AppCompatActivity implements FetchUrl.OnFinish
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		getMenuInflater().inflate(R.menu.options, menu);
+		getMenuInflater().inflate(R.menu.menu, menu);
+		MenuItem share = menu.findItem(R.id.menu_share);
+		shareActionProvider = (ShareActionProvider) MenuItemCompat.getActionProvider(share);
 		return true;
 	}
 
@@ -188,12 +191,8 @@ public class MainActivity extends AppCompatActivity implements FetchUrl.OnFinish
 				break;
 			case R.id.menu_share:
 				WikiPage wikiPage = wikiViewer.getCurrentWebPage();
-				if (wikiPage != null) {
-					AndroidUtils.shareText(wikiPage.getPageTitle(), wikiPage.getPageUrl(), this);
-				} else { //// TODO: 5/14/2017 either make sure this never happens or localize the strings
-					Log.w(TAG, "Failed to share current page " + wikiViewer.getUrl());
-					Toast.makeText(this, "Sorry, can't share this page!", Toast.LENGTH_SHORT).show();
-				}
+				Intent intent = AndroidUtils.shareText(wikiPage.getPageTitle(), wikiPage.getPageUrl(), this);
+				shareActionProvider.setShareIntent(intent);
 				break;
 			case R.id.exit:
 				finish();

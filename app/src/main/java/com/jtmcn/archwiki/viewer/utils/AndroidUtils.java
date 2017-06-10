@@ -1,8 +1,12 @@
 package com.jtmcn.archwiki.viewer.utils;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.support.v4.app.ShareCompat;
+
+import com.jtmcn.archwiki.viewer.R;
 
 import static com.jtmcn.archwiki.viewer.Constants.TEXT_PLAIN_MIME;
 
@@ -18,17 +22,18 @@ public class AndroidUtils {
 	/**
 	 * Creates an intent to prompt the user for sharing text.
 	 *
-	 * @param title   The name of the text being stored.
-	 * @param message The message to be shared.
-	 * @param context The context needed to start the intent.
+	 * @param title    The name of the text being stored.
+	 * @param url      The url to be shared.
+	 * @param activity The current activity.
 	 */
-	public static void shareText(String title, String message, Context context) {
-		Intent intent = new Intent();
-		intent.setAction(Intent.ACTION_SEND);
-		intent.putExtra(Intent.EXTRA_TITLE, title);
-		intent.putExtra(Intent.EXTRA_TEXT, message);
-		intent.setType(TEXT_PLAIN_MIME);
-		context.startActivity(intent);
+	public static Intent shareText(String title, String url, Activity activity) {
+		return ShareCompat.IntentBuilder.from(activity)
+				.setSubject(title)
+				.setText(url)
+				.setStream(Uri.parse(url))
+				.setType(TEXT_PLAIN_MIME)
+				.setChooserTitle(R.string.share)
+				.getIntent();
 	}
 
 	/**

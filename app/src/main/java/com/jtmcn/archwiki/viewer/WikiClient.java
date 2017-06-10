@@ -1,5 +1,6 @@
 package com.jtmcn.archwiki.viewer;
 
+import android.os.Handler;
 import android.support.v7.app.ActionBar;
 import android.util.Log;
 import android.view.View;
@@ -35,8 +36,12 @@ public class WikiClient extends WebViewClient implements FetchUrl.OnFinish<WikiP
 	 * Manage page history
 	 */
 	public void addHistory(WikiPage wikiPage) {
+		if (webpageStack.size() > 0) {
+			Log.d(TAG, "Saving " + getCurrentWebPage().getPageTitle() + " at " + webView.getScrollY());
+			getCurrentWebPage().setScrollPosition(webView.getScrollY());
+		}
 		webpageStack.push(wikiPage);
-		Log.d(TAG, "Adding page " + wikiPage.getPageTitle() + ". Stack size= " + webpageStack.size());
+		Log.i(TAG, "Adding page " + wikiPage.getPageTitle() + ". Stack size= " + webpageStack.size());
 	}
 
 	/**
@@ -44,7 +49,7 @@ public class WikiClient extends WebViewClient implements FetchUrl.OnFinish<WikiP
 	 *
 	 * @param wikiPage the page to be loaded.
 	 */
-	public void loadWikiHtml(WikiPage wikiPage) {
+	public void loadWikiHtml(final WikiPage wikiPage) {
 		webView.loadDataWithBaseURL(
 				wikiPage.getPageUrl(),
 				wikiPage.getHtmlString(),
@@ -80,6 +85,22 @@ public class WikiClient extends WebViewClient implements FetchUrl.OnFinish<WikiP
 		}
 	}
 
+	@Override
+	public void onPageFinished(WebView view, String url) {
+		super.onPageFinished(view, url);
+		final WikiPage currentWebPage = getCurrentWebPage();
+		if (url.equals(currentWebPage.getPageUrl())) {
+			new Handler().postDelayed(new Runnable() {
+				@Override
+				public void run() {
+					int scrollY = currentWebPage.setScrollPosition();
+					Log.d(TAG, "Restoring position at " + scrollY);
+					webView.setScrollY(scrollY);
+				}
+			}, 25);
+		}
+	}
+
 	public void showProgress() {
 		progressBar.setVisibility(View.VISIBLE);
 	}
@@ -108,8 +129,9 @@ public class WikiClient extends WebViewClient implements FetchUrl.OnFinish<WikiP
 	 */
 	public void goBackHistory() {
 		WikiPage removed = webpageStack.pop();
-		Log.d(TAG, "Removing " + removed.getPageTitle() + " from stack");
-		loadWikiHtml(webpageStack.peek());
+		Log.i(TAG, "Removing " + removed.getPageTitle() + " from stack");
+		WikiPage newPage = webpageStack.peek();
+		loadWikiHtml(newPage);
 	}
 
 	/**
@@ -128,7 +150,10 @@ public class WikiClient extends WebViewClient implements FetchUrl.OnFinish<WikiP
 	}
 
 	public void refreshPage() {
-		String url = getCurrentWebPage().getPageUrl();
+		WikiPage currentWebPage = getCurrentWebPage();
+		currentWebPage.setScrollPosition(0);
+		
+		String url = currentWebPage.getPageUrl();
 		Fetch.page(new FetchUrl.OnFinish<WikiPage>() {
 			@Override
 			public void onFinish(WikiPage wikiPage) {

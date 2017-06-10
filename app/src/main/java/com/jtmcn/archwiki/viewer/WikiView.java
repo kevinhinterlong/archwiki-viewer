@@ -40,7 +40,8 @@ public class WikiView extends NestedWebView {
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if (keyCode == KeyEvent.KEYCODE_BACK && wikiClient.getHistoryStackSize() > 1) {
-			Log.d(TAG, "Loading previous page.");
+			Log.i(TAG, "Loading previous page.");
+			Log.d(TAG, "Position on page currently at " + getScrollY());
 			wikiClient.goBackHistory();
 			return true;
 		} else {
