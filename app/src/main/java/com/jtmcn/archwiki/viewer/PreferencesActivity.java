@@ -40,6 +40,16 @@ public class PreferencesActivity extends AppCompatActivity {
 		}
 	}
 
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+			case android.R.id.home:
+				onBackPressed();
+				break;
+		}
+		return true;
+	}
+
 	/**
 	 * Loads the activities preferences into the fragment.
 	 */
@@ -49,15 +59,5 @@ public class PreferencesActivity extends AppCompatActivity {
 			super.onCreate(bundle);
 			addPreferencesFromResource(R.xml.prefs);
 		}
-	}
-
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-			case android.R.id.home:
-				onBackPressed();
-				break;
-		}
-		return true;
 	}
 }

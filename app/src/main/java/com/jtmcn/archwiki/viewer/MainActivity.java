@@ -125,7 +125,7 @@ public class MainActivity extends AppCompatActivity implements FetchUrl.OnFinish
 		searchView.setOnQueryTextFocusChangeListener(new View.OnFocusChangeListener() {
 			@Override
 			public void onFocusChange(View v, boolean hasFocus) {
-				if (!hasFocus && searchView.getQuery().length() == 0) {
+				if (!hasFocus) {
 					hideSearchView();
 				}
 			}

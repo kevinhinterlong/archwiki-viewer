@@ -46,7 +46,7 @@ public class WikiClient extends WebViewClient implements FetchUrl.OnFinish<WikiP
 	 */
 	public void loadWikiHtml(WikiPage wikiPage) {
 		webView.loadDataWithBaseURL(
-				ARCHWIKI_BASE,
+				wikiPage.getPageUrl(),
 				wikiPage.getHtmlString(),
 				TEXT_HTML_MIME,
 				UTF_8,

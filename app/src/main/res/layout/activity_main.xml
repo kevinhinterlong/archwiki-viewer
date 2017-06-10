@@ -17,18 +17,11 @@
         android:layout_height="wrap_content"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <android.support.v4.widget.NestedScrollView
+        <com.jtmcn.archwiki.viewer.WikiView
+            android:id="@+id/wiki_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="fill_vertical"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior">
-
-            <com.jtmcn.archwiki.viewer.WikiView
-                android:id="@+id/wiki_view"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
-
-        </android.support.v4.widget.NestedScrollView>
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 
         <ProgressBar
             android:id="@+id/progress_bar"
