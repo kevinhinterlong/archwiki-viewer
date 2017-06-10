@@ -7,15 +7,15 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.webkit.WebSettings;
-import android.webkit.WebView;
 import android.widget.ProgressBar;
 
+import com.github.takahirom.webview_in_coodinator_layout.NestedWebView;
 import com.jtmcn.archwiki.viewer.data.WikiPage;
 
 import static com.jtmcn.archwiki.viewer.Constants.ARCHWIKI_MAIN;
 import static com.jtmcn.archwiki.viewer.Constants.ARCHWIKI_SEARCH_URL;
 
-public class WikiView extends WebView {
+public class WikiView extends NestedWebView {
 	public static final String TAG = WikiView.class.getSimpleName();
 	WikiClient wikiClient;
 	private Context context;
