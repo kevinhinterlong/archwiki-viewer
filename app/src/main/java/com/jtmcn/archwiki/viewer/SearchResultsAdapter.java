@@ -1,7 +1,9 @@
 package com.jtmcn.archwiki.viewer;
 
+import android.app.SearchManager;
 import android.content.Context;
 import android.database.MatrixCursor;
+import android.provider.BaseColumns;
 import android.support.v4.widget.CursorAdapter;
 import android.support.v4.widget.SimpleCursorAdapter;
 
@@ -14,8 +16,8 @@ import java.util.List;
  * list the search results for a {@link android.widget.SearchView}
  */
 public class SearchResultsAdapter {
-	private static final String[] columnNames = {"_id", "title"};
-	private static final String[] from = {"title"};
+	private static final String[] columnNames = {BaseColumns._ID, SearchManager.SUGGEST_COLUMN_TEXT_1};
+	private static final String[] from = {SearchManager.SUGGEST_COLUMN_TEXT_1};
 	private static final int[] to = new int[]{R.id.url};
 
 	/**

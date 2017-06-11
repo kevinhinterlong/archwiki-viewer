@@ -176,9 +176,6 @@ public class MainActivity extends AppCompatActivity implements FetchUrl.OnFinish
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
-			case R.id.menu_settings:
-				startActivity(new Intent(this, PreferencesActivity.class));
-				break;
 			case R.id.menu_share:
 				WikiPage wikiPage = wikiViewer.getCurrentWebPage();
 				Intent intent = AndroidUtils.shareText(wikiPage.getPageTitle(), wikiPage.getPageUrl(), this);
@@ -186,6 +183,9 @@ public class MainActivity extends AppCompatActivity implements FetchUrl.OnFinish
 				break;
 			case R.id.refresh:
 				wikiViewer.onRefresh();
+				break;
+			case R.id.menu_settings:
+				startActivity(new Intent(this, PreferencesActivity.class));
 				break;
 			case R.id.exit:
 				finish();

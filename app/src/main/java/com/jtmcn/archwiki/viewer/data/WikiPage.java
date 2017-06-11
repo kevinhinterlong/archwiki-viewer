@@ -42,12 +42,12 @@ public class WikiPage {
 		return sb.toString();
 	}
 
-	public void setScrollPosition(int scrollPosition) {
-		this.scrollPosition = scrollPosition;
-	}
-
 	public int getScrollPosition() {
 		return scrollPosition;
+	}
+
+	public void setScrollPosition(int scrollPosition) {
+		this.scrollPosition = scrollPosition;
 	}
 
 	@Override

@@ -25,10 +25,10 @@ public class WikiClient extends WebViewClient implements FetchUrl.OnFinish<WikiP
 	public static final String TAG = WikiClient.class.getSimpleName();
 	private final WebView webView;
 	private final Stack<WikiPage> webpageStack = new Stack<>();
-	private Set<String> loadedUrls = new HashSet<>(); // this is used to see if we should restore the scroll position
-	private String lastLoadedUrl = null; //https://stackoverflow.com/questions/11601134/android-webview-function-onpagefinished-is-called-twice
 	private final ProgressBar progressBar;
 	private final ActionBar actionBar;
+	private Set<String> loadedUrls = new HashSet<>(); // this is used to see if we should restore the scroll position
+	private String lastLoadedUrl = null; //https://stackoverflow.com/questions/11601134/android-webview-function-onpagefinished-is-called-twice
 
 	public WikiClient(ProgressBar progressBar, ActionBar actionBar, WebView wikiViewer) {
 		this.progressBar = progressBar;
@@ -77,7 +77,6 @@ public class WikiClient extends WebViewClient implements FetchUrl.OnFinish<WikiP
 	public boolean shouldOverrideUrlLoading(WebView view, String url) {
 		// deprecated until min api 21 is used
 		if (url.startsWith(ARCHWIKI_BASE)) {
-			webView.stopLoading();
 			Fetch.page(this, url, true);
 			showProgress();
 
@@ -106,7 +105,7 @@ public class WikiClient extends WebViewClient implements FetchUrl.OnFinish<WikiP
 					}
 				}, 25);
 			}
-			
+
 			lastLoadedUrl = url;
 			hideProgress();
 		}
@@ -173,12 +172,16 @@ public class WikiClient extends WebViewClient implements FetchUrl.OnFinish<WikiP
 	public void refreshPage() {
 		lastLoadedUrl = null; // set to null if page should restore position, otherwise start at top of page
 		WikiPage currentWebPage = getCurrentWebPage();
-		currentWebPage.setScrollPosition(webView.getScrollY());
+		final int scrollPosition = currentWebPage.getScrollPosition();
 
 		String url = currentWebPage.getPageUrl();
+		showProgress();
 		Fetch.page(new FetchUrl.OnFinish<WikiPage>() {
 			@Override
 			public void onFinish(WikiPage wikiPage) {
+				webpageStack.pop();
+				webpageStack.push(wikiPage);
+				wikiPage.setScrollPosition(scrollPosition);
 				loadWikiHtml(wikiPage);
 			}
 		}, url, false);
