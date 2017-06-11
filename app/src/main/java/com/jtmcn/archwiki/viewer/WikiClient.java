@@ -77,6 +77,7 @@ public class WikiClient extends WebViewClient implements FetchUrl.OnFinish<WikiP
 	public boolean shouldOverrideUrlLoading(WebView view, String url) {
 		// deprecated until min api 21 is used
 		if (url.startsWith(ARCHWIKI_BASE)) {
+			webView.stopLoading();
 			Fetch.page(this, url, true);
 			showProgress();
 

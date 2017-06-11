@@ -41,7 +41,7 @@ public class SearchResultsAdapter {
 
 		return new SimpleCursorAdapter(
 				context,
-				R.layout.link_list_item,
+				R.layout.search_suggestions_list_item,
 				cursor,
 				from,
 				to,
