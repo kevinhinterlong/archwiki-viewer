@@ -18,6 +18,10 @@
         android:title="@string/menu_settings"/>
 
     <item
+        android:id="@+id/refresh"
+        android:title="@string/refresh"/>
+
+    <item
         android:id="@+id/exit"
         android:title="@string/exit"/>
 

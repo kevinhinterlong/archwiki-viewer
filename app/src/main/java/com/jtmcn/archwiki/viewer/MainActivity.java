@@ -184,6 +184,9 @@ public class MainActivity extends AppCompatActivity implements FetchUrl.OnFinish
 				Intent intent = AndroidUtils.shareText(wikiPage.getPageTitle(), wikiPage.getPageUrl(), this);
 				shareActionProvider.setShareIntent(intent);
 				break;
+			case R.id.refresh:
+				wikiViewer.onRefresh();
+				break;
 			case R.id.exit:
 				finish();
 				break;

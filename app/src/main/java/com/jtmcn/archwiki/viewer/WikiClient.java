@@ -96,7 +96,6 @@ public class WikiClient extends WebViewClient implements FetchUrl.OnFinish<WikiP
 		// make sure we're loading the current page and that
 		// this page's url doesn't have an anchor (only on first page load)
 		if (url.equals(currentWebPage.getPageUrl()) && !url.equals(lastLoadedUrl)) {
-			lastLoadedUrl = url;
 			if (!isFirstLoad(currentWebPage)) {
 				new Handler().postDelayed(new Runnable() {
 					@Override
@@ -104,10 +103,12 @@ public class WikiClient extends WebViewClient implements FetchUrl.OnFinish<WikiP
 						int scrollY = currentWebPage.getScrollPosition();
 						Log.d(TAG, "Restoring " + currentWebPage.getPageTitle() + " at " + scrollY);
 						webView.setScrollY(scrollY);
-						hideProgress();
 					}
 				}, 25);
 			}
+			
+			lastLoadedUrl = url;
+			hideProgress();
 		}
 	}
 
@@ -172,7 +173,7 @@ public class WikiClient extends WebViewClient implements FetchUrl.OnFinish<WikiP
 	public void refreshPage() {
 		lastLoadedUrl = null; // set to null if page should restore position, otherwise start at top of page
 		WikiPage currentWebPage = getCurrentWebPage();
-		currentWebPage.setScrollPosition(0);
+		currentWebPage.setScrollPosition(webView.getScrollY());
 
 		String url = currentWebPage.getPageUrl();
 		Fetch.page(new FetchUrl.OnFinish<WikiPage>() {
