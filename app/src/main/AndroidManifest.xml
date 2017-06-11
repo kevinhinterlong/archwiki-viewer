@@ -40,8 +40,6 @@
         <activity
             android:name=".PreferencesActivity"
             android:label="@string/app_name">
-            <!-- android:theme="@android:style/Theme.Holo.Light" --> 
-            
             <intent-filter>
                 <action android:name="com.jtmcn.archwiki.viewer.WIKIPREFS" />
 

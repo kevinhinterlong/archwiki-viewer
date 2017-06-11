@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.MenuItemCompat;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.ShareActionProvider;
@@ -34,7 +33,6 @@ import butterknife.ButterKnife;
 public class MainActivity extends AppCompatActivity implements FetchUrl.OnFinish<List<SearchResult>> {
 	public static final String TAG = MainActivity.class.getSimpleName();
 	@BindView(R.id.wiki_view) WikiView wikiViewer;
-	@BindView(R.id.refresh_layout) SwipeRefreshLayout swipeRefreshLayout;
 	@BindView(R.id.toolbar) Toolbar toolbar;
 	private ShareActionProvider shareActionProvider;
 	private SearchView searchView;
@@ -48,14 +46,6 @@ public class MainActivity extends AppCompatActivity implements FetchUrl.OnFinish
 		ButterKnife.bind(this);
 
 		setSupportActionBar(toolbar);
-
-		swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-			@Override
-			public void onRefresh() {
-				wikiViewer.refreshPage();
-				swipeRefreshLayout.setRefreshing(false);
-			}
-		});
 
 		ProgressBar progressBar = ButterKnife.findById(this, R.id.progress_bar);
 		wikiViewer.buildView(progressBar, getSupportActionBar());
@@ -186,13 +176,16 @@ public class MainActivity extends AppCompatActivity implements FetchUrl.OnFinish
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
-			case R.id.menu_settings:
-				startActivity(new Intent(this, PreferencesActivity.class));
-				break;
 			case R.id.menu_share:
 				WikiPage wikiPage = wikiViewer.getCurrentWebPage();
 				Intent intent = AndroidUtils.shareText(wikiPage.getPageTitle(), wikiPage.getPageUrl(), this);
 				shareActionProvider.setShareIntent(intent);
+				break;
+			case R.id.refresh:
+				wikiViewer.onRefresh();
+				break;
+			case R.id.menu_settings:
+				startActivity(new Intent(this, PreferencesActivity.class));
 				break;
 			case R.id.exit:
 				finish();

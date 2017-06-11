@@ -19,6 +19,7 @@
 -keep class android.support.v7.** { *; }
 -keep interface android.support.v7.** { *; }
 
+# butterknife
 -dontwarn butterknife.internal.**
 -keep class **$$ViewInjector { *; }
 -keepnames class * { @butterknife.InjectView *;}
