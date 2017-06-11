@@ -46,7 +46,23 @@ public class WikiPage {
 		this.scrollPosition = scrollPosition;
 	}
 
-	public int setScrollPosition() {
+	public int getScrollPosition() {
 		return scrollPosition;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof WikiPage)) return false;
+
+		WikiPage wikiPage = (WikiPage) o;
+
+		return getPageUrl() != null ? getPageUrl().equals(wikiPage.getPageUrl()) : wikiPage.getPageUrl() == null;
+
+	}
+
+	@Override
+	public int hashCode() {
+		return getPageUrl() != null ? getPageUrl().hashCode() : 0;
 	}
 }

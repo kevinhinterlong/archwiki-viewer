@@ -13,6 +13,8 @@ import com.jtmcn.archwiki.viewer.tasks.Fetch;
 import com.jtmcn.archwiki.viewer.tasks.FetchUrl;
 import com.jtmcn.archwiki.viewer.utils.AndroidUtils;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.Stack;
 
 import static com.jtmcn.archwiki.viewer.Constants.ARCHWIKI_BASE;
@@ -23,6 +25,8 @@ public class WikiClient extends WebViewClient implements FetchUrl.OnFinish<WikiP
 	public static final String TAG = WikiClient.class.getSimpleName();
 	private final WebView webView;
 	private final Stack<WikiPage> webpageStack = new Stack<>();
+	private Set<String> loadedUrls = new HashSet<>(); // this is used to see if we should restore the scroll position
+	private String lastLoadedUrl = null; //https://stackoverflow.com/questions/11601134/android-webview-function-onpagefinished-is-called-twice
 	private final ProgressBar progressBar;
 	private final ActionBar actionBar;
 
@@ -87,20 +91,32 @@ public class WikiClient extends WebViewClient implements FetchUrl.OnFinish<WikiP
 	@Override
 	public void onPageFinished(WebView view, String url) {
 		super.onPageFinished(view, url);
-		Log.d(TAG, "Calling onPageFinished(view, url)");
 		final WikiPage currentWebPage = getCurrentWebPage();
+		Log.d(TAG, "Calling onPageFinished(view, " + currentWebPage.getPageTitle() + ")");
 		// make sure we're loading the current page and that
 		// this page's url doesn't have an anchor (only on first page load)
-		if (url.equals(currentWebPage.getPageUrl())) {
-			new Handler().postDelayed(new Runnable() {
-				@Override
-				public void run() {
-					int scrollY = currentWebPage.setScrollPosition();
-					Log.d(TAG, "Restoring " + currentWebPage.getPageTitle() + " at " + scrollY);
-					webView.setScrollY(scrollY);
-					hideProgress();
-				}
-			}, 25);
+		if (url.equals(currentWebPage.getPageUrl()) && !url.equals(lastLoadedUrl)) {
+			lastLoadedUrl = url;
+			if (!isFirstLoad(currentWebPage)) {
+				new Handler().postDelayed(new Runnable() {
+					@Override
+					public void run() {
+						int scrollY = currentWebPage.getScrollPosition();
+						Log.d(TAG, "Restoring " + currentWebPage.getPageTitle() + " at " + scrollY);
+						webView.setScrollY(scrollY);
+						hideProgress();
+					}
+				}, 25);
+			}
+		}
+	}
+
+	private boolean isFirstLoad(WikiPage currentWebPage) {
+		if (loadedUrls.contains(currentWebPage.getPageUrl())) {
+			return false;
+		} else {
+			loadedUrls.add(currentWebPage.getPageUrl());
+			return true;
 		}
 	}
 
@@ -132,6 +148,7 @@ public class WikiClient extends WebViewClient implements FetchUrl.OnFinish<WikiP
 	 */
 	public void goBackHistory() {
 		WikiPage removed = webpageStack.pop();
+		loadedUrls.remove(removed.getPageUrl());
 		Log.i(TAG, "Removing " + removed.getPageTitle() + " from stack");
 		WikiPage newPage = webpageStack.peek();
 		loadWikiHtml(newPage);
@@ -153,6 +170,7 @@ public class WikiClient extends WebViewClient implements FetchUrl.OnFinish<WikiP
 	}
 
 	public void refreshPage() {
+		lastLoadedUrl = null; // set to null if page should restore position, otherwise start at top of page
 		WikiPage currentWebPage = getCurrentWebPage();
 		currentWebPage.setScrollPosition(0);
 
