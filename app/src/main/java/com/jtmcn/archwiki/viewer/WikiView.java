@@ -1,28 +1,28 @@
 package com.jtmcn.archwiki.viewer;
 
-import android.app.ActionBar;
 import android.content.Context;
 import android.os.Build;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.ActionBar;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.webkit.WebSettings;
-import android.webkit.WebView;
 import android.widget.ProgressBar;
 
+import com.github.takahirom.webview_in_coodinator_layout.NestedWebView;
 import com.jtmcn.archwiki.viewer.data.WikiPage;
 
 import static com.jtmcn.archwiki.viewer.Constants.ARCHWIKI_MAIN;
 import static com.jtmcn.archwiki.viewer.Constants.ARCHWIKI_SEARCH_URL;
 
-public class WikiView extends WebView {
+public class WikiView extends NestedWebView implements SwipeRefreshLayout.OnRefreshListener {
 	public static final String TAG = WikiView.class.getSimpleName();
 	WikiClient wikiClient;
 	private Context context;
 
 	public WikiView(Context context, AttributeSet attrs) {
 		super(context, attrs);
-		this.context = context;
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && !isInEditMode()) {
 			//this allows the webview to inject the css (otherwise it blocks it for security reasons)
 			getSettings().setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
@@ -41,7 +41,8 @@ public class WikiView extends WebView {
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if (keyCode == KeyEvent.KEYCODE_BACK && wikiClient.getHistoryStackSize() > 1) {
-			Log.d(TAG, "Loading previous page.");
+			Log.i(TAG, "Loading previous page.");
+			Log.d(TAG, "Position on page currently at " + getScrollY());
 			wikiClient.goBackHistory();
 			return true;
 		} else {
@@ -68,5 +69,11 @@ public class WikiView extends WebView {
 	 */
 	public WikiPage getCurrentWebPage() {
 		return wikiClient.getCurrentWebPage();
+	}
+
+	@Override
+	public void onRefresh() {
+		wikiClient.refreshPage();
+		stopLoading();
 	}
 }

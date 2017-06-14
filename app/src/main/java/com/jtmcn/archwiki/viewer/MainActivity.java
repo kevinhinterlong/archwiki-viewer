@@ -1,21 +1,20 @@
 package com.jtmcn.archwiki.viewer;
 
-import android.app.Activity;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
+import android.support.v4.view.MenuItemCompat;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SearchView;
+import android.support.v7.widget.ShareActionProvider;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.widget.ProgressBar;
-import android.widget.SearchView;
-import android.widget.Toast;
 
 import com.jtmcn.archwiki.viewer.data.SearchResult;
 import com.jtmcn.archwiki.viewer.data.SearchResultsBuilder;
@@ -23,27 +22,34 @@ import com.jtmcn.archwiki.viewer.data.WikiPage;
 import com.jtmcn.archwiki.viewer.tasks.Fetch;
 import com.jtmcn.archwiki.viewer.tasks.FetchUrl;
 import com.jtmcn.archwiki.viewer.utils.AndroidUtils;
+import com.jtmcn.archwiki.viewer.utils.SettingsUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends Activity implements FetchUrl.OnFinish<List<SearchResult>> {
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
+public class MainActivity extends AppCompatActivity implements FetchUrl.OnFinish<List<SearchResult>> {
 	public static final String TAG = MainActivity.class.getSimpleName();
+	@BindView(R.id.wiki_view) WikiView wikiViewer;
+	@BindView(R.id.toolbar) Toolbar toolbar;
+	private ShareActionProvider shareActionProvider;
 	private SearchView searchView;
 	private MenuItem searchMenuItem;
-	private WikiView wikiViewer;
 	private List<SearchResult> currentSuggestions;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.wiki_layout);
+		setContentView(R.layout.activity_main);
+		ButterKnife.bind(this);
 
-		wikiViewer = (WikiView) findViewById(R.id.wvMain);
-		ProgressBar progressBar = (ProgressBar) findViewById(R.id.ProgressBar);
+		setSupportActionBar(toolbar);
 
-		wikiViewer.buildView(progressBar, getActionBar());
+		ProgressBar progressBar = ButterKnife.findById(this, R.id.progress_bar);
+		wikiViewer.buildView(progressBar, getSupportActionBar());
 
-		wikiViewer.setWebChromeClient(new WebChromeClient());
 		handleIntent(getIntent());
 	}
 
@@ -78,15 +84,7 @@ public class MainActivity extends Activity implements FetchUrl.OnFinish<List<Sea
 	 */
 	public void updateWebSettings() {
 		WebSettings webSettings = wikiViewer.getSettings();
-
-		SharedPreferences prefs = PreferenceManager
-				.getDefaultSharedPreferences(getApplicationContext());
-
-		// https://stackoverflow.com/questions/11346916/listpreference-use-string-array-as-entry-and-integer-array-as-entry-values-does
-		// the value of this preference must be parsed as a string
-		// todo make a settings utils class to wrap this
-		String fontSizePref = prefs.getString(WikiPrefsActivity.KEY_TEXT_SIZE, "2");
-		int fontSize = Integer.valueOf(fontSizePref);
+		int fontSize = SettingsUtils.getFontSize(this);
 
 		//todo this setting should be changed to a slider, remove deprecated call
 		// deprecated method must be used until Android API 14
@@ -114,7 +112,7 @@ public class MainActivity extends Activity implements FetchUrl.OnFinish<List<Sea
 	public boolean onPrepareOptionsMenu(Menu menu) {
 		SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
 		searchMenuItem = menu.findItem(R.id.menu_search);
-		final SearchView searchView = (SearchView) searchMenuItem.getActionView();
+		searchView = (SearchView) MenuItemCompat.getActionView(searchMenuItem);
 		searchView.setOnQueryTextFocusChangeListener(new View.OnFocusChangeListener() {
 			@Override
 			public void onFocusChange(View v, boolean hasFocus) {
@@ -124,7 +122,6 @@ public class MainActivity extends Activity implements FetchUrl.OnFinish<List<Sea
 			}
 		});
 		searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-		this.searchView = searchView;
 		searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
 			@Override
 			public boolean onQueryTextSubmit(String query) {
@@ -135,12 +132,12 @@ public class MainActivity extends Activity implements FetchUrl.OnFinish<List<Sea
 			@Override
 			public boolean onQueryTextChange(String newText) {
 				if (newText.isEmpty()) {
-					searchView.setSuggestionsAdapter(null);
+					setCursorAdapter(new ArrayList<SearchResult>());
 					return true;
 				} else {
 					String searchUrl = SearchResultsBuilder.getSearchQuery(newText);
 					Fetch.search(MainActivity.this, searchUrl);
-					return false;
+					return true;
 				}
 			}
 		});
@@ -170,24 +167,25 @@ public class MainActivity extends Activity implements FetchUrl.OnFinish<List<Sea
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		getMenuInflater().inflate(R.menu.options, menu);
+		getMenuInflater().inflate(R.menu.menu, menu);
+		MenuItem share = menu.findItem(R.id.menu_share);
+		shareActionProvider = (ShareActionProvider) MenuItemCompat.getActionProvider(share);
 		return true;
 	}
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
-			case R.id.menu_settings:
-				startActivity(new Intent(this, WikiPrefsActivity.class));
-				break;
 			case R.id.menu_share:
 				WikiPage wikiPage = wikiViewer.getCurrentWebPage();
-				if (wikiPage != null) {
-					AndroidUtils.shareText(wikiPage.getPageTitle(), wikiPage.getPageUrl(), this);
-				} else { //// TODO: 5/14/2017 either make sure this never happens or localize the strings
-					Log.w(TAG, "Failed to share current page " + wikiViewer.getUrl());
-					Toast.makeText(this, "Sorry, can't share this page!", Toast.LENGTH_SHORT).show();
-				}
+				Intent intent = AndroidUtils.shareText(wikiPage.getPageTitle(), wikiPage.getPageUrl(), this);
+				shareActionProvider.setShareIntent(intent);
+				break;
+			case R.id.refresh:
+				wikiViewer.onRefresh();
+				break;
+			case R.id.menu_settings:
+				startActivity(new Intent(this, PreferencesActivity.class));
 				break;
 			case R.id.exit:
 				finish();
@@ -200,6 +198,12 @@ public class MainActivity extends Activity implements FetchUrl.OnFinish<List<Sea
 	@Override
 	public void onFinish(List<SearchResult> results) {
 		currentSuggestions = results;
-		searchView.setSuggestionsAdapter(SearchResultsAdapter.getCursorAdapter(this, currentSuggestions));
+		setCursorAdapter(currentSuggestions);
+	}
+
+	private void setCursorAdapter(List<SearchResult> currentSuggestions) {
+		searchView.setSuggestionsAdapter(
+				SearchResultsAdapter.getCursorAdapter(this, currentSuggestions)
+		);
 	}
 }

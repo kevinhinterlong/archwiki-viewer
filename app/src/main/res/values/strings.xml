@@ -6,4 +6,5 @@
     <string name="search">Search</string>
     <string name="exit">Exit</string>
     <string name="text_size_preference">Text Size</string>
+    <string name="refresh">Refresh</string>
 </resources>

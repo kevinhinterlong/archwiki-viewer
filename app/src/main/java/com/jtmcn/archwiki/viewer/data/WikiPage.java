@@ -7,6 +7,7 @@ public class WikiPage {
 	private final String pageUrl;
 	private final String pageTitle;
 	private final String htmlString;
+	private int scrollPosition = 0;
 
 	/**
 	 * Store the url, title, and html of a page on the wiki.
@@ -39,5 +40,29 @@ public class WikiPage {
 		sb.append("title='").append(pageTitle).append('\'');
 		sb.append('}');
 		return sb.toString();
+	}
+
+	public int getScrollPosition() {
+		return scrollPosition;
+	}
+
+	public void setScrollPosition(int scrollPosition) {
+		this.scrollPosition = scrollPosition;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof WikiPage)) return false;
+
+		WikiPage wikiPage = (WikiPage) o;
+
+		return getPageUrl() != null ? getPageUrl().equals(wikiPage.getPageUrl()) : wikiPage.getPageUrl() == null;
+
+	}
+
+	@Override
+	public int hashCode() {
+		return getPageUrl() != null ? getPageUrl().hashCode() : 0;
 	}
 }
