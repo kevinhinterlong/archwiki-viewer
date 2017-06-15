@@ -173,18 +173,20 @@ public class WikiClient extends WebViewClient implements FetchUrl.OnFinish<WikiP
 	public void refreshPage() {
 		lastLoadedUrl = null; // set to null if page should restore position, otherwise start at top of page
 		WikiPage currentWebPage = getCurrentWebPage();
-		final int scrollPosition = currentWebPage.getScrollPosition();
+		if (currentWebPage != null) {
+			final int scrollPosition = currentWebPage.getScrollPosition();
 
-		String url = currentWebPage.getPageUrl();
-		showProgress();
-		Fetch.page(new FetchUrl.OnFinish<WikiPage>() {
-			@Override
-			public void onFinish(WikiPage wikiPage) {
-				webpageStack.pop();
-				webpageStack.push(wikiPage);
-				wikiPage.setScrollPosition(scrollPosition);
-				loadWikiHtml(wikiPage);
-			}
-		}, url, false);
+			String url = currentWebPage.getPageUrl();
+			showProgress();
+			Fetch.page(new FetchUrl.OnFinish<WikiPage>() {
+				@Override
+				public void onFinish(WikiPage wikiPage) {
+					webpageStack.pop();
+					webpageStack.push(wikiPage);
+					wikiPage.setScrollPosition(scrollPosition);
+					loadWikiHtml(wikiPage);
+				}
+			}, url, false);
+		}
 	}
 }
