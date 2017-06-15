@@ -178,8 +178,10 @@ public class MainActivity extends AppCompatActivity implements FetchUrl.OnFinish
 		switch (item.getItemId()) {
 			case R.id.menu_share:
 				WikiPage wikiPage = wikiViewer.getCurrentWebPage();
-				Intent intent = AndroidUtils.shareText(wikiPage.getPageTitle(), wikiPage.getPageUrl(), this);
-				shareActionProvider.setShareIntent(intent);
+				if (wikiPage != null) {
+					Intent intent = AndroidUtils.shareText(wikiPage.getPageTitle(), wikiPage.getPageUrl(), this);
+					shareActionProvider.setShareIntent(intent);
+				}
 				break;
 			case R.id.refresh:
 				wikiViewer.onRefresh();
