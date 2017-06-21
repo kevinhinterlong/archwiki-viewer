@@ -2,11 +2,11 @@
 <resources>
 
     <string-array name="fontSizeTitles">
-        <item>Smallest</item>
-        <item>Smaller</item>
+        <item>Sehr klein</item>
+        <item>Klein</item>
         <item>Normal</item>
-        <item>Larger</item>
-        <item>Largest</item>
+        <item>Groß</item>
+        <item>Sehr groß</item>
     </string-array>
 
 </resources>
