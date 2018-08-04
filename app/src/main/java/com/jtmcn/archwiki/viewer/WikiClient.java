@@ -62,7 +62,8 @@ public class WikiClient extends WebViewClient implements FetchUrl.OnFinish<WikiP
 				null
 		);
 
-		setSubtitle(wikiPage.getPageTitle());
+		String sub = wikiPage.getPageTitle() != null ? wikiPage.getPageTitle() : "No Title Found";
+		setSubtitle(sub);
 	}
 
 	/**

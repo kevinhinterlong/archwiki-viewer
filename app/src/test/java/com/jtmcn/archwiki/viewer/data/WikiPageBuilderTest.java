@@ -6,6 +6,7 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 
@@ -21,7 +22,7 @@ public class WikiPageBuilderTest {
 
 	@Test
 	public void getEmptyTitle() throws Exception {
-		assertEquals("No title found", WikiPageBuilder.getPageTitle(new StringBuilder("")));
+		assertNull(WikiPageBuilder.getPageTitle(new StringBuilder("")));
 	}
 
 	@Test

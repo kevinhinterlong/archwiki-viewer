@@ -29,10 +29,10 @@ public class SearchResultsBuilderTest {
 	@Test
 	public void getSearchQuery() {
 		String query = SearchResultsBuilder.getSearchQuery("arch");
-		assertEquals("https://wiki.archlinux.org/api.php?action=opensearch&format=json&formatversion=2&namespace=0&limit=10&suggest=true&search=arch",query);
+		assertEquals("https://wiki.archlinux.org/api.php?action=opensearch&format=json&formatversion=2&namespace=0&suggest=true&search=arch&limit=10",query);
 
 		String queryWithLength = SearchResultsBuilder.getSearchQuery("arch",9);
-		assertEquals("https://wiki.archlinux.org/api.php?action=opensearch&format=json&formatversion=2&namespace=0&limit=9&suggest=true&search=arch",queryWithLength);
+		assertEquals("https://wiki.archlinux.org/api.php?action=opensearch&format=json&formatversion=2&namespace=0&suggest=true&search=arch&limit=9",queryWithLength);
 	}
 
 	@Test
