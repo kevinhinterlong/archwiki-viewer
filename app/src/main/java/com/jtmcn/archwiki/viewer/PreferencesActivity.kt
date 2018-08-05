@@ -33,15 +33,12 @@ class PreferencesActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
         setTitle(R.string.menu_settings)
 
-        with(supportActionBar) {
-            this?.setDisplayHomeAsUpEnabled(true)
-            this?.setHomeButtonEnabled(true)
-        }
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.home -> onBackPressed()
+            android.R.id.home -> onBackPressed()
         }
         return true
     }
