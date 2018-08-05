@@ -1,5 +1,3 @@
-@file:JvmName("Constants")
-
 package com.jtmcn.archwiki.viewer
 
 /**

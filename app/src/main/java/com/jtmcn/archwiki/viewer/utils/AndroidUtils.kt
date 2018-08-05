@@ -1,4 +1,3 @@
-@file:JvmName("AndroidUtils")
 package com.jtmcn.archwiki.viewer.utils
 
 import android.app.Activity

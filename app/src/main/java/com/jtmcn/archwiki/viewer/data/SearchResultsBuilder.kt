@@ -1,5 +1,3 @@
-@file:JvmName("SearchResultsBuilder")
-
 package com.jtmcn.archwiki.viewer.data
 
 import com.google.gson.JsonArray
@@ -10,7 +8,6 @@ import com.jtmcn.archwiki.viewer.ARCHWIKI_BASE
  * Provides a simple interface to make queries against
  * and parse data from the arch wiki for searches.
  */
-private val jsonParser = JsonParser()
 private const val DEFAULT_LIMIT = 10
 
 /**
@@ -34,7 +31,7 @@ fun getSearchQuery(query: String, limit: Int = DEFAULT_LIMIT): String {
  * @return a parsed list of the results.
  */
 fun parseSearchResults(jsonResult: String): List<SearchResult> {
-    val jsonRoot = jsonParser.parse(jsonResult)
+    val jsonRoot = JsonParser().parse(jsonResult)
     if (!jsonRoot.isJsonArray || jsonRoot.asJsonArray.size() != 4) return listOf()
 
     val jsonArray = jsonRoot.asJsonArray

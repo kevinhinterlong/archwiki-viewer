@@ -1,4 +1,3 @@
-@file:JvmName("WikiPageBuilder")
 package com.jtmcn.archwiki.viewer.data
 
 import com.jtmcn.archwiki.viewer.LOCAL_CSS

@@ -26,7 +26,7 @@
             app:layout_scrollFlags="scroll|enterAlways"/>
 
         <ProgressBar
-            android:id="@+id/progress_bar"
+            android:id="@+id/progressBar"
             android:theme="@style/AppTheme.LinearProgress"
             style="@style/Widget.AppCompat.ProgressBar.Horizontal"
             android:layout_width="match_parent"
