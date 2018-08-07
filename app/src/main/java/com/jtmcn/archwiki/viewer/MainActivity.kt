@@ -8,7 +8,6 @@ import android.support.v4.view.MenuItemCompat
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.SearchView
 import android.support.v7.widget.ShareActionProvider
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.webkit.WebSettings
@@ -19,10 +18,10 @@ import com.jtmcn.archwiki.viewer.utils.getFontSize
 import com.jtmcn.archwiki.viewer.utils.shareText
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.toolbar.*
+import timber.log.Timber
 import java.util.*
 
 class MainActivity : AppCompatActivity() {
-    val TAG = MainActivity::class.java.simpleName
     private var shareActionProvider: ShareActionProvider? = null
     private lateinit var searchView: SearchView
     private lateinit var searchMenuItem: MenuItem
@@ -113,7 +112,7 @@ class MainActivity : AppCompatActivity() {
 
             override fun onSuggestionClick(position: Int): Boolean {
                 val (pageName, pageUrl) = currentSuggestions[position]
-                Log.d(TAG, "Opening '$pageName' from search suggestion.")
+                Timber.d("Opening '$pageName' from search suggestion.")
                 wikiViewer.wikiClient.shouldOverrideUrlLoading(wikiViewer, pageUrl)
                 hideSearchView()
                 return true

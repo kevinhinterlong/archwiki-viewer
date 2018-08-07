@@ -2,7 +2,6 @@ package com.jtmcn.archwiki.viewer
 
 import android.os.Handler
 import android.support.v7.app.ActionBar
-import android.util.Log
 import android.view.View
 import android.webkit.WebView
 import android.webkit.WebViewClient
@@ -11,10 +10,10 @@ import com.jtmcn.archwiki.viewer.data.WikiPage
 import com.jtmcn.archwiki.viewer.tasks.Fetch
 import com.jtmcn.archwiki.viewer.tasks.OnFinish
 import com.jtmcn.archwiki.viewer.utils.openLink
+import timber.log.Timber
 import java.util.*
 
 class WikiClient(private val progressBar: ProgressBar, private val actionBar: ActionBar?, private val webView: WebView) : WebViewClient() {
-    val TAG = WikiClient::class.java.simpleName
     private val webpageStack = Stack<WikiPage>()
     private val loadedUrls = HashSet<String>() // this is used to see if we should restore the scroll position
     private var lastLoadedUrl: String? = null //https://stackoverflow.com/questions/11601134/android-webview-function-onpagefinished-is-called-twice
@@ -40,11 +39,11 @@ class WikiClient(private val progressBar: ProgressBar, private val actionBar: Ac
 	 */
     fun addHistory(wikiPage: WikiPage) {
         if (webpageStack.size > 0) {
-            Log.d(TAG, "Saving " + currentWebPage!!.pageTitle + " at " + webView.scrollY)
+            Timber.d("Saving " + currentWebPage!!.pageTitle + " at " + webView.scrollY)
             currentWebPage!!.scrollPosition = webView.scrollY
         }
         webpageStack.push(wikiPage)
-        Log.i(TAG, "Adding page " + wikiPage.pageTitle + ". Stack size= " + webpageStack.size)
+        Timber.i("Adding page " + wikiPage.pageTitle + ". Stack size= " + webpageStack.size)
     }
 
     /**
@@ -89,14 +88,14 @@ class WikiClient(private val progressBar: ProgressBar, private val actionBar: Ac
     override fun onPageFinished(view: WebView, url: String) {
         super.onPageFinished(view, url)
         val currentWebPage = currentWebPage
-        Log.d(TAG, "Calling onPageFinished(view, " + currentWebPage!!.pageTitle + ")")
+        Timber.d("Calling onPageFinished(view, " + currentWebPage!!.pageTitle + ")")
         // make sure we're loading the current page and that
         // this page's url doesn't have an anchor (only on first page load)
         if (url == currentWebPage.pageUrl && url != lastLoadedUrl) {
             if (!isFirstLoad(currentWebPage)) {
                 Handler().postDelayed({
                     val scrollY = currentWebPage.scrollPosition
-                    Log.d(TAG, "Restoring " + currentWebPage.pageTitle + " at " + scrollY)
+                    Timber.d("Restoring " + currentWebPage.pageTitle + " at " + scrollY)
                     webView.scrollY = scrollY
                 }, 25)
             }
@@ -133,7 +132,7 @@ class WikiClient(private val progressBar: ProgressBar, private val actionBar: Ac
     fun goBackHistory() {
         val (pageUrl, pageTitle) = webpageStack.pop()
         loadedUrls.remove(pageUrl)
-        Log.i(TAG, "Removing $pageTitle from stack")
+        Timber.i("Removing $pageTitle from stack")
         val newPage = webpageStack.peek()
         loadWikiHtml(newPage)
     }
