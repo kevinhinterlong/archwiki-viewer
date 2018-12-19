@@ -8,18 +8,25 @@ import android.support.v4.view.MenuItemCompat
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.SearchView
 import android.support.v7.widget.ShareActionProvider
+import android.view.KeyEvent
 import android.view.Menu
 import android.view.MenuItem
 import android.webkit.WebSettings
 import com.jtmcn.archwiki.viewer.data.SearchResult
 import com.jtmcn.archwiki.viewer.data.getSearchQuery
-import com.jtmcn.archwiki.viewer.tasks.Fetch
+import com.jtmcn.archwiki.viewer.data.parseSearchResults
+import com.jtmcn.archwiki.viewer.utils.NetworkUtils
 import com.jtmcn.archwiki.viewer.utils.getFontSize
 import com.jtmcn.archwiki.viewer.utils.shareText
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.toolbar.*
+import okhttp3.Call
+import okhttp3.Callback
+import okhttp3.Response
 import timber.log.Timber
+import java.io.IOException
 import java.util.*
+
 
 class MainActivity : AppCompatActivity() {
     private var shareActionProvider: ShareActionProvider? = null
@@ -54,7 +61,7 @@ class MainActivity : AppCompatActivity() {
             hideSearchView()
         } else if (Intent.ACTION_VIEW == intent.action) {
             val url = intent.dataString
-            wikiViewer.wikiClient.shouldOverrideUrlLoading(wikiViewer, url)
+            wikiViewer.loadUrl(url)
         }
     }
 
@@ -68,12 +75,13 @@ class MainActivity : AppCompatActivity() {
         //todo this setting should be changed to a slider, remove deprecated call
         // deprecated method must be used until Android API 14
         // https://developer.android.com/reference/android/webkit/WebSettings.TextSize.html#NORMAL
-        when (fontSize) {
-            0 -> webSettings.textSize = WebSettings.TextSize.SMALLEST //50%
-            1 -> webSettings.textSize = WebSettings.TextSize.SMALLER //75%
-            2 -> webSettings.textSize = WebSettings.TextSize.NORMAL //100%
-            3 -> webSettings.textSize = WebSettings.TextSize.LARGER //150%
-            4 -> webSettings.textSize = WebSettings.TextSize.LARGEST //200%
+        webSettings.textSize = when (fontSize) {
+            0 -> WebSettings.TextSize.SMALLEST //50%
+            1 -> WebSettings.TextSize.SMALLER //75%
+            2 -> WebSettings.TextSize.NORMAL //100%
+            3 -> WebSettings.TextSize.LARGER //150%
+            4 -> WebSettings.TextSize.LARGEST //200%
+            else -> WebSettings.TextSize.NORMAL
         }
     }
 
@@ -99,7 +107,19 @@ class MainActivity : AppCompatActivity() {
                     return true
                 } else {
                     val searchUrl = getSearchQuery(newText)
-                    Fetch.search(this@MainActivity::onFinish, searchUrl)
+                    NetworkUtils.fetchURL(searchUrl, object : Callback {
+                        override fun onFailure(call: Call?, e: IOException?) {
+                            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                        }
+
+                        override fun onResponse(call: Call?, response: Response?) {
+                            runOnUiThread {
+                                val searchResults = parseSearchResults(response?.body()?.string()
+                                        ?: "")
+                                onFinish(searchResults)
+                            }
+                        }
+                    })
                     return true
                 }
             }
@@ -113,7 +133,7 @@ class MainActivity : AppCompatActivity() {
             override fun onSuggestionClick(position: Int): Boolean {
                 val (pageName, pageUrl) = currentSuggestions[position]
                 Timber.d("Opening '$pageName' from search suggestion.")
-                wikiViewer.wikiClient.shouldOverrideUrlLoading(wikiViewer, pageUrl)
+                wikiViewer.loadUrl(pageUrl)
                 hideSearchView()
                 return true
             }
@@ -157,5 +177,22 @@ class MainActivity : AppCompatActivity() {
 
     private fun setCursorAdapter(currentSuggestions: List<SearchResult>?) {
         searchView.suggestionsAdapter = SearchResultsAdapter.getCursorAdapter(this, currentSuggestions!!)
+    }
+
+    override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
+        if (event.action == KeyEvent.ACTION_DOWN) {
+            when (keyCode) {
+                KeyEvent.KEYCODE_BACK -> {
+                    if (wikiViewer.canGoBack()) {
+                        wikiViewer.goBack()
+                    } else {
+                        finish()
+                    }
+                    return true
+                }
+            }
+
+        }
+        return super.onKeyDown(keyCode, event)
     }
 }

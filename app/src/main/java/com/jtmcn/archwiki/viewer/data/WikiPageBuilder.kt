@@ -12,7 +12,8 @@ const val HTML_HEAD_OPEN = "<head>"
 const val HTML_HEAD_CLOSE = "</head>"
 const val HTML_TITLE_OPEN = "<title>"
 const val HTML_TITLE_CLOSE = "</title>"
-private const val HEAD_TO_INJECT = "<link rel='stylesheet' href='%s' />" + "<meta name='viewport' content='width=device-width, initial-scale=1.0, user-scalable=no' />"
+private const val HEAD_TO_INJECT = "<link rel='stylesheet' href='%s' />" +
+        "<meta name='viewport' content='width=device-width, initial-scale=1.0, user-scalable=no' />"
 private const val DEFAULT_TITLE = " - ArchWiki"
 
 /**
@@ -38,7 +39,7 @@ fun buildPage(stringUrl: String, html: StringBuilder): WikiPage {
 fun getPageTitle(htmlString: StringBuilder): String? {
     val titleStart = htmlString.indexOf(HTML_TITLE_OPEN) + HTML_TITLE_OPEN.length
     val titleEnd = htmlString.indexOf(HTML_TITLE_CLOSE, titleStart)
-    if (titleStart in 1 until titleEnd) { // if there is an html title block
+    if (titleStart > 0 && titleStart < titleEnd) { // if there is an html title block
         val title = htmlString.substring(titleStart, titleEnd)
         return title.replace(DEFAULT_TITLE, "") // drop DEFAULT_TITLE from page title
     }
@@ -57,7 +58,7 @@ fun injectLocalCSS(htmlString: StringBuilder, localCSSFilePath: String): Boolean
     val headStart = htmlString.indexOf(HTML_HEAD_OPEN) + HTML_HEAD_OPEN.length
     val headEnd = htmlString.indexOf(HTML_HEAD_CLOSE, headStart)
 
-    if (headStart in 1..headEnd) {
+    if (headStart > 0 && headStart < headEnd) {
         val injectedHeadHtml = String.format(HEAD_TO_INJECT, localCSSFilePath)
         htmlString.replace(headStart, headEnd, injectedHeadHtml)
         return true

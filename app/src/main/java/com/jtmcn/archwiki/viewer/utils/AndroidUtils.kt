@@ -34,6 +34,5 @@ fun shareText(title: String, url: String, activity: Activity): Intent {
  * @param context The context needed to start the intent.
  */
 fun openLink(url: String, context: Context) {
-    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-    context.startActivity(intent)
+    context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
 }

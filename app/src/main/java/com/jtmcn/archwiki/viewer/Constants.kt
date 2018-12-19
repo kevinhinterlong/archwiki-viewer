@@ -1,9 +1,5 @@
 package com.jtmcn.archwiki.viewer
 
-/**
- * Various constants used throughout the program.
- */
-
 // format types
 const val TEXT_HTML_MIME = "text/html"
 const val TEXT_PLAIN_MIME = "text/plain"
