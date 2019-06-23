@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">ArchWiki Viewer</string>
+    <string name="menu_settings">Preferências</string>
+    <string name="share">Compartilhar link</string>
+    <string name="search">Pesquisar</string>
+    <string name="exit">Sair</string>
+    <string name="text_size_preference">Tamanho da fonte</string>
+    <string name="refresh">Atualizar</string>
+</resources>
