@@ -17,10 +17,12 @@
 package com.github.takahirom.webview_in_coodinator_layout;
 
 import android.content.Context;
+
 import androidx.core.view.MotionEventCompat;
 import androidx.core.view.NestedScrollingChild;
 import androidx.core.view.NestedScrollingChildHelper;
 import androidx.core.view.ViewCompat;
+
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.webkit.WebView;
@@ -120,7 +122,7 @@ public class NestedWebView extends WebView implements NestedScrollingChild {
 
 	@Override
 	public boolean dispatchNestedScroll(int dxConsumed, int dyConsumed, int dxUnconsumed, int dyUnconsumed,
-										int[] offsetInWindow) {
+	                                    int[] offsetInWindow) {
 		return mChildHelper.dispatchNestedScroll(dxConsumed, dyConsumed, dxUnconsumed, dyUnconsumed, offsetInWindow);
 	}
 

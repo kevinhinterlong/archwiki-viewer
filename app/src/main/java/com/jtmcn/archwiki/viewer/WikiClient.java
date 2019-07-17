@@ -24,7 +24,7 @@ import static com.jtmcn.archwiki.viewer.Constants.UTF_8;
 public class WikiClient extends WebViewClient implements FetchUrl.OnFinish<WikiPage> {
 	public static final String TAG = WikiClient.class.getSimpleName();
 	private final WebView webView;
-	private final Stack<WikiPage> webpageStack = new Stack<>();
+	private final Stack<WikiPage> webPageStack = new Stack<>();
 	private final ProgressBar progressBar;
 	private final ActionBar actionBar;
 	private Set<String> loadedUrls = new HashSet<>(); // this is used to see if we should restore the scroll position
@@ -40,12 +40,12 @@ public class WikiClient extends WebViewClient implements FetchUrl.OnFinish<WikiP
 	 * Manage page history
 	 */
 	public void addHistory(WikiPage wikiPage) {
-		if (webpageStack.size() > 0) {
+		if (webPageStack.size() > 0) {
 			Log.d(TAG, "Saving " + getCurrentWebPage().getPageTitle() + " at " + webView.getScrollY());
 			getCurrentWebPage().setScrollPosition(webView.getScrollY());
 		}
-		webpageStack.push(wikiPage);
-		Log.i(TAG, "Adding page " + wikiPage.getPageTitle() + ". Stack size= " + webpageStack.size());
+		webPageStack.push(wikiPage);
+		Log.i(TAG, "Adding page " + wikiPage.getPageTitle() + ". Stack size= " + webPageStack.size());
 	}
 
 	/**
@@ -78,7 +78,7 @@ public class WikiClient extends WebViewClient implements FetchUrl.OnFinish<WikiP
 		// deprecated until min api 21 is used
 		if (url.startsWith(ARCHWIKI_BASE)) {
 			webView.stopLoading();
-			Fetch.page(this, url, true);
+			Fetch.page(this, url);
 			showProgress();
 
 			return false;
@@ -97,13 +97,10 @@ public class WikiClient extends WebViewClient implements FetchUrl.OnFinish<WikiP
 		// this page's url doesn't have an anchor (only on first page load)
 		if (url.equals(currentWebPage.getPageUrl()) && !url.equals(lastLoadedUrl)) {
 			if (!isFirstLoad(currentWebPage)) {
-				new Handler().postDelayed(new Runnable() {
-					@Override
-					public void run() {
-						int scrollY = currentWebPage.getScrollPosition();
-						Log.d(TAG, "Restoring " + currentWebPage.getPageTitle() + " at " + scrollY);
-						webView.setScrollY(scrollY);
-					}
+				new Handler().postDelayed(() -> {
+					int scrollY = currentWebPage.getScrollPosition();
+					Log.d(TAG, "Restoring " + currentWebPage.getPageTitle() + " at " + scrollY);
+					webView.setScrollY(scrollY);
 				}, 25);
 			}
 
@@ -141,17 +138,17 @@ public class WikiClient extends WebViewClient implements FetchUrl.OnFinish<WikiP
 	 * @return number of pages on the stack.
 	 */
 	public int getHistoryStackSize() {
-		return webpageStack.size();
+		return webPageStack.size();
 	}
 
 	/**
 	 * Go back to the last loaded page.
 	 */
 	public void goBackHistory() {
-		WikiPage removed = webpageStack.pop();
+		WikiPage removed = webPageStack.pop();
 		loadedUrls.remove(removed.getPageUrl());
 		Log.i(TAG, "Removing " + removed.getPageTitle() + " from stack");
-		WikiPage newPage = webpageStack.peek();
+		WikiPage newPage = webPageStack.peek();
 		loadWikiHtml(newPage);
 	}
 
@@ -161,7 +158,7 @@ public class WikiClient extends WebViewClient implements FetchUrl.OnFinish<WikiP
 	 * @return The current page
 	 */
 	public WikiPage getCurrentWebPage() {
-		return webpageStack.size() == 0 ? null : webpageStack.peek();
+		return webPageStack.size() == 0 ? null : webPageStack.peek();
 	}
 
 	@Override
@@ -178,15 +175,12 @@ public class WikiClient extends WebViewClient implements FetchUrl.OnFinish<WikiP
 
 			String url = currentWebPage.getPageUrl();
 			showProgress();
-			Fetch.page(new FetchUrl.OnFinish<WikiPage>() {
-				@Override
-				public void onFinish(WikiPage wikiPage) {
-					webpageStack.pop();
-					webpageStack.push(wikiPage);
-					wikiPage.setScrollPosition(scrollPosition);
-					loadWikiHtml(wikiPage);
-				}
-			}, url, false);
+			Fetch.page(wikiPage -> {
+				webPageStack.pop();
+				webPageStack.push(wikiPage);
+				wikiPage.setScrollPosition(scrollPosition);
+				loadWikiHtml(wikiPage);
+			}, url);
 		}
 	}
 }

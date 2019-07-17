@@ -2,8 +2,10 @@ package com.jtmcn.archwiki.viewer;
 
 import android.content.Context;
 import android.os.Build;
+
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.appcompat.app.ActionBar;
+
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -19,12 +21,11 @@ import static com.jtmcn.archwiki.viewer.Constants.ARCHWIKI_SEARCH_URL;
 public class WikiView extends NestedWebView implements SwipeRefreshLayout.OnRefreshListener {
 	public static final String TAG = WikiView.class.getSimpleName();
 	WikiClient wikiClient;
-	private Context context;
 
 	public WikiView(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && !isInEditMode()) {
-			//this allows the webview to inject the css (otherwise it blocks it for security reasons)
+			// This allows the webview to inject the css (otherwise it blocks it for security reasons)
 			getSettings().setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
 		}
 	}

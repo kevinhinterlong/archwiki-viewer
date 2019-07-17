@@ -36,10 +36,7 @@ public class WikiPage {
 
 	@Override
 	public String toString() {
-		StringBuilder sb = new StringBuilder("WikiPage{");
-		sb.append("title='").append(pageTitle).append('\'');
-		sb.append('}');
-		return sb.toString();
+		return "WikiPage{" + "title='" + pageTitle + '\'' + '}';
 	}
 
 	public int getScrollPosition() {
@@ -58,7 +55,6 @@ public class WikiPage {
 		WikiPage wikiPage = (WikiPage) o;
 
 		return getPageUrl() != null ? getPageUrl().equals(wikiPage.getPageUrl()) : wikiPage.getPageUrl() == null;
-
 	}
 
 	@Override

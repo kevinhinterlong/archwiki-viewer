@@ -8,11 +8,10 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-
 public class WikiPageBuilderTest {
 	@Test
 	public void getPageTitle() throws Exception {
-		String fakeTitle = " fake title..1!@#!@ #!RASDF";
+		String fakeTitle = "fake title..1!@#!@#!";
 		StringBuilder wrapped = new StringBuilder(WikiPageBuilder.HTML_TITLE_OPEN)
 				.append(fakeTitle)
 				.append(WikiPageBuilder.HTML_TITLE_CLOSE);
@@ -21,7 +20,7 @@ public class WikiPageBuilderTest {
 
 	@Test
 	public void getEmptyTitle() throws Exception {
-		assertEquals("No title found", WikiPageBuilder.getPageTitle(new StringBuilder("")));
+		assertEquals("No title found", WikiPageBuilder.getPageTitle(new StringBuilder()));
 	}
 
 	@Test
