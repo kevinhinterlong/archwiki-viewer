@@ -4,11 +4,11 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.view.MenuItemCompat;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.SearchView;
-import android.support.v7.widget.ShareActionProvider;
-import android.support.v7.widget.Toolbar;
+import androidx.core.view.MenuItemCompat;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
+import androidx.appcompat.widget.ShareActionProvider;
+import androidx.appcompat.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity implements FetchUrl.OnFinish
 
 		setSupportActionBar(toolbar);
 
-		ProgressBar progressBar = ButterKnife.findById(this, R.id.progress_bar);
+		ProgressBar progressBar = findViewById(R.id.progress_bar);
 		wikiViewer.buildView(progressBar, getSupportActionBar());
 
 		handleIntent(getIntent());

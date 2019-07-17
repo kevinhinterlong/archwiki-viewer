@@ -4,8 +4,8 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.database.MatrixCursor;
 import android.provider.BaseColumns;
-import android.support.v4.widget.CursorAdapter;
-import android.support.v4.widget.SimpleCursorAdapter;
+import androidx.cursoradapter.widget.CursorAdapter;
+import androidx.cursoradapter.widget.SimpleCursorAdapter;
 
 import com.jtmcn.archwiki.viewer.data.SearchResult;
 
