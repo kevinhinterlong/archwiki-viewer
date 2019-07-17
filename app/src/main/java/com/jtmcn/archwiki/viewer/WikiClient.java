@@ -1,7 +1,7 @@
 package com.jtmcn.archwiki.viewer;
 
 import android.os.Handler;
-import android.support.v7.app.ActionBar;
+import androidx.appcompat.app.ActionBar;
 import android.util.Log;
 import android.view.View;
 import android.webkit.WebView;

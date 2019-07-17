@@ -2,8 +2,8 @@ package com.jtmcn.archwiki.viewer;
 
 import android.content.Context;
 import android.os.Build;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.ActionBar;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import androidx.appcompat.app.ActionBar;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.KeyEvent;
