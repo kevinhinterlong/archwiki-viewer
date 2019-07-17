@@ -30,7 +30,7 @@ public class PreferencesActivity extends AppCompatActivity {
 				.replace(R.id.settings_content, new ApplicationPreferenceFragment())
 				.commit();
 
-		Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+		Toolbar toolbar = findViewById(R.id.toolbar);
 		setSupportActionBar(toolbar);
 		setTitle(R.string.menu_settings);
 

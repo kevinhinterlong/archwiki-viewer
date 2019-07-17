@@ -12,7 +12,6 @@ import androidx.appcompat.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.webkit.WebSettings;
 import android.widget.ProgressBar;
 
@@ -113,12 +112,9 @@ public class MainActivity extends AppCompatActivity implements FetchUrl.OnFinish
 		SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
 		searchMenuItem = menu.findItem(R.id.menu_search);
 		searchView = (SearchView) MenuItemCompat.getActionView(searchMenuItem);
-		searchView.setOnQueryTextFocusChangeListener(new View.OnFocusChangeListener() {
-			@Override
-			public void onFocusChange(View v, boolean hasFocus) {
-				if (!hasFocus) {
-					hideSearchView();
-				}
+		searchView.setOnQueryTextFocusChangeListener((v, hasFocus) -> {
+			if (!hasFocus) {
+				hideSearchView();
 			}
 		});
 		searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
@@ -132,7 +128,7 @@ public class MainActivity extends AppCompatActivity implements FetchUrl.OnFinish
 			@Override
 			public boolean onQueryTextChange(String newText) {
 				if (newText.isEmpty()) {
-					setCursorAdapter(new ArrayList<SearchResult>());
+					setCursorAdapter(new ArrayList<>());
 					return true;
 				} else {
 					String searchUrl = SearchResultsBuilder.getSearchQuery(newText);
@@ -152,7 +148,7 @@ public class MainActivity extends AppCompatActivity implements FetchUrl.OnFinish
 			public boolean onSuggestionClick(int position) {
 				SearchResult searchResult = currentSuggestions.get(position);
 				Log.d(TAG, "Opening '" + searchResult.getPageName() + "' from search suggestion.");
-				wikiViewer.wikiClient.shouldOverrideUrlLoading(wikiViewer, searchResult.getPageUrl());
+				wikiViewer.wikiClient.shouldOverrideUrlLoading(wikiViewer, searchResult.getPageURL());
 				hideSearchView();
 				return true;
 			}

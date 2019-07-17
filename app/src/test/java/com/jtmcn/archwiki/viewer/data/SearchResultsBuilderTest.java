@@ -1,8 +1,5 @@
 package com.jtmcn.archwiki.viewer.data;
 
-import com.jtmcn.archwiki.viewer.data.SearchResult;
-import com.jtmcn.archwiki.viewer.data.SearchResultsBuilder;
-
 import org.junit.Test;
 
 import java.util.List;
@@ -20,10 +17,10 @@ public class SearchResultsBuilderTest {
 		List<SearchResult> searchResults = SearchResultsBuilder.parseSearchResults(realResult);
 
 		assertEquals("Arch-based Distros",searchResults.get(0).getPageName());
-		assertEquals("https://wiki.archlinux.org/index.php/Arch-based_Distros", searchResults.get(0).getPageUrl());
+		assertEquals("https://wiki.archlinux.org/index.php/Arch-based_Distros", searchResults.get(0).getPageURL());
 
 		assertEquals("Arch-chroot",searchResults.get(2).getPageName());
-		assertEquals("https://wiki.archlinux.org/index.php/Arch-chroot", searchResults.get(2).getPageUrl());
+		assertEquals("https://wiki.archlinux.org/index.php/Arch-chroot", searchResults.get(2).getPageURL());
 	}
 
 	@Test
