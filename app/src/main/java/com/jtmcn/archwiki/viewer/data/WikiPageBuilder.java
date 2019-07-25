@@ -24,7 +24,7 @@ public class WikiPageBuilder {
 	 * Builds a page containing the title, url, and injects local css.
 	 *
 	 * @param stringUrl url to download.
-	 * @param html      stringbuilder containing the html of the wikipage
+	 * @param html      StringBuilder containing the html of the wikipage
 	 * @return {@link WikiPage} containing downloaded page.
 	 */
 	public static WikiPage buildPage(String stringUrl, StringBuilder html) {

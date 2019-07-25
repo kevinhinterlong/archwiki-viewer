@@ -38,7 +38,7 @@ public class NetworkUtils {
 	 * @throws IOException on network failure.
 	 */
 	public static StringBuilder fetchURL(String stringUrl, boolean useCache) throws IOException {
-		StringBuilder sb = new StringBuilder("");
+		StringBuilder sb = new StringBuilder();
 		URL url = new URL(stringUrl);
 		if (useCache && downloadCache.containsKey(url)) {
 			return new StringBuilder(downloadCache.get(url));

@@ -5,33 +5,30 @@ package com.jtmcn.archwiki.viewer.data;
  */
 public class SearchResult {
 	private final String pageName;
-	private final String pageUrl;
+	private final String pageURL;
 
 	/**
 	 * Create a search result.
 	 *
 	 * @param pageName the name of the page as shown on the wiki.
-	 * @param pageUrl  the string url on the wiki.
+	 * @param pageURL  the string url on the wiki.
 	 */
-	public SearchResult(String pageName, String pageUrl) {
+	public SearchResult(String pageName, String pageURL) {
 		this.pageName = pageName;
-		this.pageUrl = pageUrl;
+		this.pageURL = pageURL;
 	}
 
 	public String getPageName() {
 		return pageName;
 	}
 
-	public String getPageUrl() {
-		return pageUrl;
+	public String getPageURL() {
+		return pageURL;
 	}
 
 	@Override
 	public String toString() {
-		StringBuilder sb = new StringBuilder("SearchResult{");
-		sb.append("title='").append(pageName).append('\'');
-		sb.append(", url='").append(pageUrl).append('\'');
-		sb.append('}');
-		return sb.toString();
+		return "SearchResult{" + "title='" + pageName + '\'' +
+				", url='" + pageURL + '\'' + '}';
 	}
 }

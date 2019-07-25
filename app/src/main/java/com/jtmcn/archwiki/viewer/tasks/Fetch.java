@@ -15,20 +15,10 @@ import java.util.List;
  */
 public class Fetch {
 	public static final FetchUrl.FetchUrlMapper<List<SearchResult>> SEARCH_RESULTS_MAPPER =
-			new FetchUrl.FetchUrlMapper<List<SearchResult>>() {
-				@Override
-				public List<SearchResult> mapTo(String url, StringBuilder stringBuilder) {
-					return SearchResultsBuilder.parseSearchResults(stringBuilder.toString());
-				}
-			};
+			(url, stringBuilder) -> SearchResultsBuilder.parseSearchResults(stringBuilder.toString());
 
-	public static final FetchUrl.FetchUrlMapper<WikiPage> WIKIPAGE_MAPPER =
-			new FetchUrl.FetchUrlMapper<WikiPage>() {
-				@Override
-				public WikiPage mapTo(String url, StringBuilder sb) {
-					return WikiPageBuilder.buildPage(url, sb);
-				}
-			};
+	public static final FetchUrl.FetchUrlMapper<WikiPage> WIKI_PAGE_MAPPER =
+			WikiPageBuilder::buildPage;
 
 	private Fetch() {
 
@@ -57,10 +47,9 @@ public class Fetch {
 	 */
 	public static AsyncTask<String, Void, WikiPage> page(
 			FetchUrl.OnFinish<WikiPage> onFinish,
-			String url,
-			boolean caching
+			String url
 	) {
-		return new FetchUrl<>(onFinish, WIKIPAGE_MAPPER).execute(url);
+		return new FetchUrl<>(onFinish, WIKI_PAGE_MAPPER).execute(url);
 	}
 
 }
