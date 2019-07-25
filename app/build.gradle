@@ -1,7 +1,17 @@
-apply plugin: 'com.android.application'
+plugins {
+    id 'com.android.application'
+    id 'com.github.triplet.play' version '2.1.0'
+}
 
 android {
+    applicationVariants.all { variant ->
+        variant.outputs.all {
+            outputFileName = "archwiki-viewer-v${variant.versionName}.apk"
+        }
+    }
+
     compileSdkVersion 29
+    buildToolsVersion '29.0.1'
     defaultConfig {
         applicationId "com.jtmcn.archwiki.viewer"
         minSdkVersion 21
@@ -11,8 +21,33 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    signingConfigs {
+        debug {
+            storeFile file('debug.keystore')
+            storePassword 'archwiki-viewer'
+            keyAlias 'archwiki-viewer'
+            keyPassword 'archwiki-viewer'
+        }
+        if (file('upload.keystore').exists()) {
+            upload {
+                storeFile file('upload.keystore')
+                storePassword System.getenv('ARCHWIKI_VIEWER_UPLOAD_STORE_PASSWORD')
+                keyAlias 'kevinandroidkey'
+                keyPassword System.getenv('ARCHWIKI_VIEWER_UPLOAD_KEY_PASSWORD')
+            }
+        }
+    }
+
     buildTypes {
+        debug {
+            signingConfig signingConfigs.debug
+        }
         release {
+            if (file('upload.keystore').exists()) {
+                signingConfig signingConfigs.upload
+            } else {
+                signingConfig signingConfigs.debug
+            }
             minifyEnabled true
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
@@ -35,9 +70,14 @@ dependencies {
     implementation 'com.jakewharton:butterknife:10.1.0'
     annotationProcessor 'com.jakewharton:butterknife-compiler:10.1.0'
 
-    implementation 'com.google.code.gson:gson:2.8.2'
+    implementation 'com.google.code.gson:gson:2.8.5'
 
     implementation 'com.google.android.material:material:1.0.0'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.appcompat:appcompat:1.0.2'
+}
+
+play {
+    serviceAccountCredentials = file("upload.json")
+    track = "beta"
 }
