@@ -34,11 +34,6 @@ public class WikiPage {
 		return htmlString;
 	}
 
-	@Override
-	public String toString() {
-		return "WikiPage{" + "title='" + pageTitle + '\'' + '}';
-	}
-
 	public int getScrollPosition() {
 		return scrollPosition;
 	}
@@ -48,11 +43,16 @@ public class WikiPage {
 	}
 
 	@Override
-	public boolean equals(Object o) {
-		if (this == o) return true;
-		if (!(o instanceof WikiPage)) return false;
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
 
-		WikiPage wikiPage = (WikiPage) o;
+		if (!(obj instanceof WikiPage))  {
+			return false;
+		}
+
+		WikiPage wikiPage = (WikiPage) obj;
 
 		return getPageUrl() != null ? getPageUrl().equals(wikiPage.getPageUrl()) : wikiPage.getPageUrl() == null;
 	}
@@ -60,5 +60,15 @@ public class WikiPage {
 	@Override
 	public int hashCode() {
 		return getPageUrl() != null ? getPageUrl().hashCode() : 0;
+	}
+
+	@Override
+	public String toString() {
+		return "WikiPage{" +
+				"pageUrl='" + pageUrl + '\'' +
+				", pageTitle='" + pageTitle + '\'' +
+				", htmlString='" + htmlString + '\'' +
+				", scrollPosition=" + scrollPosition +
+				'}';
 	}
 }
