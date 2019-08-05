@@ -4,13 +4,15 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+
+import androidx.annotation.NonNull;
 import androidx.core.view.MenuItemCompat;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
-import androidx.appcompat.widget.ShareActionProvider;
 import androidx.appcompat.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.webkit.WebSettings;
 import android.widget.ProgressBar;
@@ -20,7 +22,6 @@ import com.jtmcn.archwiki.viewer.data.SearchResultsBuilder;
 import com.jtmcn.archwiki.viewer.data.WikiPage;
 import com.jtmcn.archwiki.viewer.tasks.Fetch;
 import com.jtmcn.archwiki.viewer.tasks.FetchUrl;
-import com.jtmcn.archwiki.viewer.utils.AndroidUtils;
 import com.jtmcn.archwiki.viewer.utils.SettingsUtils;
 
 import java.util.ArrayList;
@@ -29,11 +30,12 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.jtmcn.archwiki.viewer.Constants.TEXT_PLAIN_MIME;
+
 public class MainActivity extends AppCompatActivity implements FetchUrl.OnFinish<List<SearchResult>> {
 	public static final String TAG = MainActivity.class.getSimpleName();
 	@BindView(R.id.wiki_view) WikiView wikiViewer;
 	@BindView(R.id.toolbar) Toolbar toolbar;
-	private ShareActionProvider shareActionProvider;
 	private SearchView searchView;
 	private MenuItem searchMenuItem;
 	private List<SearchResult> currentSuggestions;
@@ -163,20 +165,23 @@ public class MainActivity extends AppCompatActivity implements FetchUrl.OnFinish
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		getMenuInflater().inflate(R.menu.menu, menu);
-		MenuItem share = menu.findItem(R.id.menu_share);
-		shareActionProvider = (ShareActionProvider) MenuItemCompat.getActionProvider(share);
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.menu, menu);
 		return true;
 	}
 
 	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
+	public boolean onOptionsItemSelected(@NonNull MenuItem item) {
 		switch (item.getItemId()) {
 			case R.id.menu_share:
 				WikiPage wikiPage = wikiViewer.getCurrentWebPage();
 				if (wikiPage != null) {
-					Intent intent = AndroidUtils.shareText(wikiPage.getPageTitle(), wikiPage.getPageUrl(), this);
-					shareActionProvider.setShareIntent(intent);
+					Intent sharingIntent = new Intent();
+					sharingIntent.setType(TEXT_PLAIN_MIME);
+					sharingIntent.setAction(Intent.ACTION_SEND);
+					sharingIntent.putExtra(Intent.EXTRA_TITLE, wikiPage.getPageTitle());
+					sharingIntent.putExtra(Intent.EXTRA_TEXT, wikiPage.getPageUrl());
+					startActivity(Intent.createChooser(sharingIntent, null));
 				}
 				break;
 			case R.id.refresh:
@@ -189,9 +194,8 @@ public class MainActivity extends AppCompatActivity implements FetchUrl.OnFinish
 				finish();
 				break;
 		}
-		return true;
+		return super.onOptionsItemSelected(item);
 	}
-
 
 	@Override
 	public void onFinish(List<SearchResult> results) {

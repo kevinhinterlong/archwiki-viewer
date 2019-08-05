@@ -1,28 +1,29 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-      xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
         android:id="@+id/menu_search"
         android:icon="@drawable/ic_search_white_24dp"
         android:title="@string/search"
         app:actionViewClass="androidx.appcompat.widget.SearchView"
-        app:showAsAction="always|collapseActionView"/>
+        app:showAsAction="always|collapseActionView" />
 
     <item
         android:id="@+id/menu_share"
+        android:icon="@drawable/ic_share_white_24dp"
         android:title="@string/share"
-        app:actionProviderClass="androidx.appcompat.widget.ShareActionProvider"/>
+        app:showAsAction="ifRoom|collapseActionView" />
 
     <item
         android:id="@+id/refresh"
-        android:title="@string/refresh"/>
+        android:title="@string/refresh" />
 
     <item
         android:id="@+id/menu_settings"
-        android:title="@string/menu_settings"/>
+        android:title="@string/menu_settings" />
 
     <item
         android:id="@+id/exit"
-        android:title="@string/exit"/>
+        android:title="@string/exit" />
 
 </menu>
