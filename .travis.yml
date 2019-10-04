@@ -61,5 +61,5 @@ deploy:
     - app/build/outputs/apk/release/md5sum.txt
     - app/build/outputs/apk/release/sha1sum.txt
   on:
-    repo: jtmcn/archwiki-viewer
+    repo: kevinhinterlong/archwiki-viewer
     tags: true
