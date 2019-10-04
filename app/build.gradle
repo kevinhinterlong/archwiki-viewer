@@ -32,7 +32,7 @@ android {
             upload {
                 storeFile file('upload.keystore')
                 storePassword System.getenv('ARCHWIKI_VIEWER_UPLOAD_STORE_PASSWORD')
-                keyAlias 'kevinandroidkey'
+                keyAlias 'awvalias'
                 keyPassword System.getenv('ARCHWIKI_VIEWER_UPLOAD_KEY_PASSWORD')
             }
         }
