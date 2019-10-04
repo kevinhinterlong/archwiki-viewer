@@ -1,6 +1,7 @@
 <img src="playstore/archwiki_feature_graphic.png" height="150"/>
 
-ArchWiki Viewer
+ArchWiki Viewer 
+[![Build Status](https://api.travis-ci.org/kevinhinterlong/archwiki-viewer.svg?branch=master)](https://api.travis-ci.org/kevinhinterlong/archwiki-viewer) [![GitHub release](https://img.shields.io/github/release/kevinhinterlong/archwiki-viewer.svg)](https://github.com/kevinhinterlong/archwiki-viewer/releases)
 ===============
 A simple viewer for the Arch Linux Wiki. Page content is formatted for optimal mobile viewing.
 

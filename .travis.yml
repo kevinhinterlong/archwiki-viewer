@@ -16,6 +16,7 @@ android:
   - extra-google-m2repository
   - extra-android-m2repository
   - sys-img-armeabi-v7a-android-$EMULATOR_API
+
 before_install:
 - if [ -n "$TRAVIS_TAG" ]; then echo "Decrypting upload config"; openssl aes-256-cbc
   -K $encrypted_da56e498cb22_key -iv $encrypted_da56e498cb22_iv -in upload_config.tar.enc
@@ -23,12 +24,15 @@ before_install:
   mv upload_config/upload.json app/upload.json; mv upload_config/upload.keystore app/upload.keystore;
   fi
 - "./gradlew lint"
+
 before_script:
 - echo no | android create avd --force -n test -t android-$EMULATOR_API --abi armeabi-v7a
 - emulator -avd test -no-skin -no-audio -no-window &
 - android-wait-for-emulator
 - adb shell input keyevent 82 &
+
 script: "./gradlew build test connectedAndroidTest"
+
 before_cache:
 - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
 - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
@@ -37,20 +41,13 @@ cache:
   - "$HOME/.gradle/caches/"
   - "$HOME/.gradle/wrapper/"
   - "$HOME/.android/build-cache"
+
 before_deploy:
 - cd app/build/outputs/apk/release/; ls -la; md5sum archwiki-viewer-*.apk > md5sum.txt;
   sha1sum archwiki-viewer-*.apk > sha1sum.txt; cd -
-after_deploy:
-- echo "Checking if tag matches v.X.Y.Z"
-- if [[ $TRAVIS_TAG =~ v[0-9]+\.[0-9]+\.[0-9]+ ]] ; then ./gradlew publishRelease;
-  fi
-notifications:
-  webhooks:
-    on_success: change
-    on_failure: always
-    on_start: never
 
 deploy:
+  skip_cleanup: true
   provider: releases
   api_key:
     secure: F/LqVUBz5fMT28Av5NT3uGUYMxMepkk1XjL7XD/rtlwh1ApJjQDdwEBDSuFiXIqMv5ru8Gvo6u8HsiEJurnuiJ16wkTdyGDvGQffGmm2OIAko6fnlRpKvboN03eEuHElONqHzX792QMCUcSM6YnkSPJdydxhza1BRHnYsECLPcGQzp6CFNKCkVOsfX0XO7dSuZwVKZJufRDLbInaJgAYuKRjeG5Qj+3tM6WDUqOaVroSxeN8cfW14OSShTgXYYtZBYEcrt3p75/9qftMMPVAd5599/voFYJZHMzvZ321dEB84FJX1woY7MJp/tJMdfTVYuUEtYY9XwoR4H/DW+dvwlFFz+v/bNyCoV30KIZm/L7ohNeH5zbLA8bAbHFOcsOW3gXMxgv4gCquenh5/9xDUOIX8CQmjwcvmNzNcx7SxoIuOe2ghttVBziNQPL6D+Xbnd+W7uzlLLleJGnhVomkomFYhwy29a+/fM1gjKRJ7H/VruqCzfWMoXDektSoD3BLAR5Ckm9WRvEPQW5R1Q8gk4Bt13if43GwtI83qh8UQjleJLiVRm6e7HsGqoLnjCoN6gRDx0oo+h3S2vrp4QBe9vOZuCurWXrHDdf5CtuwSAFTpYoT9EF8IfOZ3sXrwRSdtsJaiactj1h2cUK2FJ0Rgy6gxHqeT1sh8HeRetQJZAQ=
@@ -63,3 +60,14 @@ deploy:
   on:
     repo: kevinhinterlong/archwiki-viewer
     tags: true
+
+after_deploy:
+- echo "Checking if tag matches v.X.Y.Z"
+- if [[ $TRAVIS_TAG =~ v[0-9]+\.[0-9]+\.[0-9]+ ]] ; then ./gradlew publishRelease;
+  fi
+
+notifications:
+  webhooks:
+    on_success: change
+    on_failure: always
+    on_start: never
