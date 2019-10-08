@@ -1,0 +1,4 @@
+A simple viewer for the ArchLinux Wiki online. Page content is formatted for optimal mobile viewing.
+
+
+https://github.com/jtmcn/archwiki-viewer/
