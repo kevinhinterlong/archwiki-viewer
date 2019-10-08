@@ -60,6 +60,7 @@ public class MainActivity extends AppCompatActivity implements FetchUrl.OnFinish
 
 	@Override
 	protected void onNewIntent(Intent intent) {
+		super.onNewIntent(intent);
 		handleIntent(intent);
 	}
 
