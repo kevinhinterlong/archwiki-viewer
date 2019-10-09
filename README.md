@@ -3,7 +3,7 @@ ArchWiki Viewer <img src="app/src/main/play/listings/en-US/graphics/icon/0.png" 
 ===============
 A simple viewer for the Arch Linux Wiki. Page content is formatted for optimal mobile viewing.
 
-[<img src="https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png" alt="Get it on Google Play" height="80">](https://play.google.com/store/apps/details?id=com.jtmcn.archwiki.viewer) [<img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png" alt="Get it on F-Droid" height="80"><br/>](https://f-droid.org/repository/browse/?fdid=com.jtmcn.archwiki.viewer) [<img src=".github/assets/direct-apk-download.png" alt="Direct apk download" height="60">](https://github.com/kevinhinterlong/SwishTicker/releases/latest)
+[<img src="https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png" alt="Get it on Google Play" height="60">](https://play.google.com/store/apps/details?id=com.jtmcn.archwiki.viewer) [<img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png" alt="Get it on F-Droid" height="60">](https://f-droid.org/repository/browse/?fdid=com.jtmcn.archwiki.viewer) [<img src=".github/assets/direct-apk-download.png" alt="Direct apk download" height="60">](https://github.com/kevinhinterlong/SwishTicker/releases/latest)
 
 ## Screenshots
 
