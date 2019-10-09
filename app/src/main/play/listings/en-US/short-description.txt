@@ -1,0 +1,1 @@
+A simple viewer for the ArchLinux Wiki online.

@@ -1,0 +1,10 @@
+v1.0.13
+
+It's been awhile, here's what's new
+- Spanish translation
+- Brazilian Portuguese translation
+- Slovak translation
+
+Backend
+- Automated releases
+- Updated to androidx
