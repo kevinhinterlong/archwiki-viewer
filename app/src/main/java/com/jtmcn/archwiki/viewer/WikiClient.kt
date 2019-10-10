@@ -1,20 +1,16 @@
 package com.jtmcn.archwiki.viewer
 
 import android.os.Handler
-import androidx.appcompat.app.ActionBar
-import android.util.Log
 import android.view.View
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.ProgressBar
-
+import androidx.appcompat.app.ActionBar
 import com.jtmcn.archwiki.viewer.data.WikiPage
 import com.jtmcn.archwiki.viewer.tasks.Fetch
-import com.jtmcn.archwiki.viewer.tasks.FetchUrl
-import com.jtmcn.archwiki.viewer.utils.*
-
-import java.util.HashSet
-import java.util.Stack
+import com.jtmcn.archwiki.viewer.utils.openLink
+import timber.log.Timber
+import java.util.*
 
 
 class WikiClient(private val progressBar: ProgressBar, private val actionBar: ActionBar?, private val webView: WebView) : WebViewClient() {
@@ -43,11 +39,11 @@ class WikiClient(private val progressBar: ProgressBar, private val actionBar: Ac
 	 */
     private fun addHistory(wikiPage: WikiPage) {
         if (webPageStack.size > 0) {
-            Log.d(TAG, "Saving " + currentWebPage!!.pageTitle + " at " + webView.scrollY)
+            Timber.d("Saving ${currentWebPage?.pageTitle} at ${webView.scrollY}")
             currentWebPage!!.scrollPosition = webView.scrollY
         }
         webPageStack.push(wikiPage)
-        Log.i(TAG, "Adding page " + wikiPage.pageTitle + ". Stack size= " + webPageStack.size)
+        Timber.i("Adding page ${wikiPage.pageTitle}. Stack size= ${webPageStack.size}")
     }
 
     /**
@@ -95,14 +91,14 @@ class WikiClient(private val progressBar: ProgressBar, private val actionBar: Ac
     override fun onPageFinished(view: WebView, url: String) {
         super.onPageFinished(view, url)
         val currentWebPage = currentWebPage
-        Log.d(TAG, "Calling onPageFinished(view, " + currentWebPage!!.pageTitle + ")")
+        Timber.d("Calling onPageFinished(view, ${currentWebPage?.pageTitle})")
         // make sure we're loading the current page and that
         // this page's url doesn't have an anchor (only on first page load)
-        if (url == currentWebPage.pageUrl && url != lastLoadedUrl) {
+        if (url == currentWebPage?.pageUrl && url != lastLoadedUrl) {
             if (!isFirstLoad(currentWebPage)) {
                 Handler().postDelayed({
                     val scrollY = currentWebPage.scrollPosition
-                    Log.d(TAG, "Restoring " + currentWebPage.pageTitle + " at " + scrollY)
+                    Timber.d("Restoring ${currentWebPage.pageTitle} at $scrollY")
                     webView.scrollY = scrollY
                 }, 25)
             }
@@ -141,7 +137,7 @@ class WikiClient(private val progressBar: ProgressBar, private val actionBar: Ac
     fun goBackHistory() {
         val (pageUrl, pageTitle) = webPageStack.pop()
         loadedUrls.remove(pageUrl)
-        Log.i(TAG, "Removing $pageTitle from stack")
+        Timber.i("Removing $pageTitle from stack")
         val newPage = webPageStack.peek()
         loadWikiHtml(newPage)
     }
@@ -161,9 +157,5 @@ class WikiClient(private val progressBar: ProgressBar, private val actionBar: Ac
                 loadWikiHtml(wikiPage)
             }, url)
         }
-    }
-
-    companion object {
-        val TAG = WikiClient::class.java.simpleName
     }
 }

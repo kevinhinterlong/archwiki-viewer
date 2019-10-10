@@ -2,10 +2,8 @@
 package com.jtmcn.archwiki.viewer.utils
 
 import okhttp3.Call
-import okhttp3.Callback
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import java.io.IOException
 
 
 

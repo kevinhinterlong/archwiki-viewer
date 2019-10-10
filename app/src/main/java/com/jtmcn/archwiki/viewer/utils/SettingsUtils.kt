@@ -1,9 +1,7 @@
 package com.jtmcn.archwiki.viewer.utils
 
 import android.content.Context
-import android.content.SharedPreferences
 import android.preference.PreferenceManager
-
 import com.jtmcn.archwiki.viewer.PreferencesActivity
 
 fun getFontSize(context: Context): Int {

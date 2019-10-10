@@ -4,24 +4,21 @@ import android.app.SearchManager
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import androidx.core.view.MenuItemCompat
-import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.SearchView
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.webkit.WebSettings
 import android.widget.ProgressBar
-
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.SearchView
+import androidx.core.view.MenuItemCompat
 import com.jtmcn.archwiki.viewer.data.SearchResult
-import com.jtmcn.archwiki.viewer.data.*
+import com.jtmcn.archwiki.viewer.data.getSearchQuery
 import com.jtmcn.archwiki.viewer.tasks.Fetch
-import com.jtmcn.archwiki.viewer.utils.*
-
-import java.util.ArrayList
-
+import com.jtmcn.archwiki.viewer.utils.getFontSize
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.toolbar.*
+import timber.log.Timber
+import java.util.*
 
 class MainActivity : AppCompatActivity() {
     private var searchView: SearchView? = null
@@ -122,7 +119,7 @@ class MainActivity : AppCompatActivity() {
 
             override fun onSuggestionClick(position: Int): Boolean {
                 val (pageName, pageURL) = currentSuggestions!![position]
-                Log.d(TAG, "Opening '$pageName' from search suggestion.")
+                Timber.d("Opening '$pageName' from search suggestion.")
                 wikiViewer.wikiClient.shouldOverrideUrlLoading(wikiViewer, pageURL)
                 hideSearchView()
                 return true
@@ -164,9 +161,5 @@ class MainActivity : AppCompatActivity() {
 
     private fun setCursorAdapter(currentSuggestions: List<SearchResult>?) {
         searchView!!.suggestionsAdapter = SearchResultsAdapter.getCursorAdapter(this, currentSuggestions!!)
-    }
-
-    companion object {
-        val TAG = MainActivity::class.java.simpleName
     }
 }

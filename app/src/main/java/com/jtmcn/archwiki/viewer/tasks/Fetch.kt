@@ -1,10 +1,10 @@
 package com.jtmcn.archwiki.viewer.tasks
 
 import android.os.AsyncTask
-
 import com.jtmcn.archwiki.viewer.data.SearchResult
-import com.jtmcn.archwiki.viewer.data.*
 import com.jtmcn.archwiki.viewer.data.WikiPage
+import com.jtmcn.archwiki.viewer.data.buildPage
+import com.jtmcn.archwiki.viewer.data.parseSearchResults
 
 /**
  * Wrapper for [FetchUrl] which gives an easy to use interface

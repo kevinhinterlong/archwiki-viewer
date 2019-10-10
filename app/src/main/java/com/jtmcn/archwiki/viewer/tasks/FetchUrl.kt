@@ -1,16 +1,13 @@
 package com.jtmcn.archwiki.viewer.tasks
 
 import android.os.AsyncTask
-import android.util.Log
 import com.jtmcn.archwiki.viewer.utils.fetchURL
-
+import timber.log.Timber
 import java.io.IOException
 
 /**
- * Fetches a url, maps it to a [Result], and returns it.
- *
- * @param <Result> The type which the fetched url's text will be mapped to.
-</Result> */
+ * Fetches a url, [mapper] maps it to a [Result], and returns it.
+ * */
 class FetchUrl<Result>(
     private val onFinish: (Result) -> Unit,
     private val mapper: (url: String, html: StringBuilder) -> Result
@@ -41,14 +38,10 @@ class FetchUrl<Result>(
             val response = fetchURL(url).execute().body()?.string() ?: ""
             toReturn = StringBuilder(response)
         } catch (e: IOException) { //network exception
-            Log.w(TAG, "Could not connect to: $url", e)
+            Timber.w(e,"Could not connect to $url")
             toReturn = StringBuilder()
         }
 
         return toReturn
-    }
-
-    companion object {
-        private val TAG = FetchUrl::class.java.simpleName
     }
 }

@@ -19,14 +19,14 @@ private const val DEFAULT_TITLE = " - ArchWiki"
 /**
  * Builds a page containing the title, url, and injects local css.
  *
- * @param stringUrl url to download.
- * @param html      stringbuilder containing the html of the wikipage
+ * @param url url to download.
+ * @param html      [StringBuilder] containing the html of the wikipage
  * @return [WikiPage] containing downloaded page.
  */
-fun buildPage(stringUrl: String, html: StringBuilder): WikiPage {
+fun buildPage(url: String, html: StringBuilder): WikiPage {
     val pageTitle = getPageTitle(html)
     injectLocalCSS(html, LOCAL_CSS)
-    return WikiPage(stringUrl, pageTitle, html.toString())
+    return WikiPage(url, pageTitle, html.toString())
 }
 
 /**

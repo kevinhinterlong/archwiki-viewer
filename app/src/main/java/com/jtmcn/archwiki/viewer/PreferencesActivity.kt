@@ -4,9 +4,9 @@ import android.os.Bundle
 import android.preference.PreferenceActivity
 import android.preference.PreferenceFragment
 import android.preference.PreferenceManager
+import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import android.view.MenuItem
 
 /**
  * The [PreferenceActivity] to change settings for the application.
