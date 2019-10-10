@@ -6,23 +6,20 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.webkit.WebSettings
-import android.widget.ProgressBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
-import androidx.core.view.MenuItemCompat
 import com.jtmcn.archwiki.viewer.data.SearchResult
 import com.jtmcn.archwiki.viewer.data.getSearchQuery
 import com.jtmcn.archwiki.viewer.tasks.Fetch
-import com.jtmcn.archwiki.viewer.utils.getFontSize
+import com.jtmcn.archwiki.viewer.utils.getFontZoom
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.toolbar.*
 import timber.log.Timber
 import java.util.*
 
 class MainActivity : AppCompatActivity() {
-    private var searchView: SearchView? = null
-    private var searchMenuItem: MenuItem? = null
+    private lateinit var searchView: SearchView
+    private lateinit var searchMenuItem: MenuItem
     private var currentSuggestions: List<SearchResult>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -31,8 +28,7 @@ class MainActivity : AppCompatActivity() {
 
         setSupportActionBar(toolbar)
 
-        val progressBar = findViewById<ProgressBar>(R.id.progress_bar)
-        wikiViewer.buildView(progressBar, supportActionBar!!)
+        wikiViewer.buildView(progressBar, supportActionBar)
 
         handleIntent(intent)
     }
@@ -66,32 +62,20 @@ class MainActivity : AppCompatActivity() {
      * Update the font size used in the webview.
      */
     private fun updateWebSettings() {
-        val webSettings = wikiViewer.settings
-        val fontSize = getFontSize(this)
-
-        //todo this setting should be changed to a slider, remove deprecated call
-        // deprecated method must be used until Android API 14
-        // https://developer.android.com/reference/android/webkit/WebSettings.TextSize.html#NORMAL
-        when (fontSize) {
-            0 -> webSettings.textSize = WebSettings.TextSize.SMALLEST //50%
-            1 -> webSettings.textSize = WebSettings.TextSize.SMALLER //75%
-            2 -> webSettings.textSize = WebSettings.TextSize.NORMAL //100%
-            3 -> webSettings.textSize = WebSettings.TextSize.LARGER //150%
-            4 -> webSettings.textSize = WebSettings.TextSize.LARGEST //200%
-        }
+        wikiViewer.settings.textZoom = getFontZoom(this)
     }
 
     override fun onPrepareOptionsMenu(menu: Menu): Boolean {
         val searchManager = getSystemService(Context.SEARCH_SERVICE) as SearchManager
         searchMenuItem = menu.findItem(R.id.menu_search)
-        searchView = MenuItemCompat.getActionView(searchMenuItem!!) as SearchView
-        searchView!!.setOnQueryTextFocusChangeListener { v, hasFocus ->
+        searchView = searchMenuItem.actionView as SearchView
+        searchView.setOnQueryTextFocusChangeListener { _, hasFocus ->
             if (!hasFocus) {
                 hideSearchView()
             }
         }
-        searchView!!.setSearchableInfo(searchManager.getSearchableInfo(componentName))
-        searchView!!.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(componentName))
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String): Boolean {
                 wikiViewer.passSearch(query)
                 return false
@@ -112,7 +96,7 @@ class MainActivity : AppCompatActivity() {
             }
         })
 
-        searchView!!.setOnSuggestionListener(object : SearchView.OnSuggestionListener {
+        searchView.setOnSuggestionListener(object : SearchView.OnSuggestionListener {
             override fun onSuggestionSelect(position: Int): Boolean {
                 return false
             }
@@ -128,8 +112,8 @@ class MainActivity : AppCompatActivity() {
         return true
     }
 
-    fun hideSearchView() {
-        searchMenuItem!!.collapseActionView()
+    private fun hideSearchView() {
+        searchMenuItem.collapseActionView()
         wikiViewer.requestFocus() //pass control back to the wikiview
     }
 
@@ -160,6 +144,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setCursorAdapter(currentSuggestions: List<SearchResult>?) {
-        searchView!!.suggestionsAdapter = SearchResultsAdapter.getCursorAdapter(this, currentSuggestions!!)
+        searchView.suggestionsAdapter = SearchResultsAdapter.getCursorAdapter(this, currentSuggestions!!)
     }
 }

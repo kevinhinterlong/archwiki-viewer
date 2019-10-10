@@ -33,7 +33,7 @@ class WikiView(context: Context, attrs: AttributeSet) : NestedWebView(context, a
     /**
      * Initializes the wiki client and loads the main page.
      */
-    fun buildView(progressBar: ProgressBar, actionBar: ActionBar) {
+    fun buildView(progressBar: ProgressBar, actionBar: ActionBar?) {
         wikiClient = WikiClient(progressBar, actionBar, this)
         webViewClient = wikiClient
         wikiClient.shouldOverrideUrlLoading(this, ARCHWIKI_MAIN)

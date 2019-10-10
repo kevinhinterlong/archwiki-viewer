@@ -126,9 +126,7 @@ class WikiClient(private val progressBar: ProgressBar, private val actionBar: Ac
     }
 
     private fun setSubtitle(title: String?) {
-        if (actionBar != null) {
-            actionBar.subtitle = title
-        }
+        actionBar?.subtitle = title
     }
 
     /**

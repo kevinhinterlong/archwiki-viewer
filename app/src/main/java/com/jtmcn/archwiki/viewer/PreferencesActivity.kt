@@ -1,59 +1,55 @@
 package com.jtmcn.archwiki.viewer
 
 import android.os.Bundle
-import android.preference.PreferenceActivity
-import android.preference.PreferenceFragment
-import android.preference.PreferenceManager
-import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
+import androidx.preference.PreferenceFragmentCompat
+import androidx.preference.PreferenceManager
+import kotlinx.android.synthetic.main.toolbar.*
 
-/**
- * The [PreferenceActivity] to change settings for the application.
- */
 class PreferencesActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        PreferenceManager.setDefaultValues(this, R.xml.prefs, false)
-    }
-
-    override fun onPostCreate(savedInstanceState: Bundle?) {
-        super.onPostCreate(savedInstanceState)
         setContentView(R.layout.activity_preferences)
 
-        fragmentManager.beginTransaction()
-                .replace(R.id.settings_content, ApplicationPreferenceFragment())
-                .commit()
-
-        val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
-        setTitle(R.string.menu_settings)
 
-        if (supportActionBar != null) {
-            supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-            supportActionBar!!.setHomeButtonEnabled(true)
+        supportFragmentManager
+                .beginTransaction()
+                .replace(R.id.settings, SettingsFragment())
+                .commit()
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
+
+        val prefs = PreferenceManager.getDefaultSharedPreferences(this)
+
+        if(prefs.contains(Prefs.KEY_TEXT_SIZE)) {
+            val textZoom = when(Integer.valueOf(prefs.getString(Prefs.KEY_TEXT_SIZE, "2")!!)) {
+                0 -> 50
+                1 -> 75
+                2 -> 100
+                3 -> 150
+                4 -> 200
+                else -> 100
+            }
+            prefs.edit()
+                    .putInt(Prefs.KEY_TEXT_ZOOM, textZoom)
+                    .remove(Prefs.KEY_TEXT_SIZE)
+                    .apply();
+
+        }
+
+    }
+
+    class SettingsFragment : PreferenceFragmentCompat() {
+        override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
+            setPreferencesFromResource(R.xml.preferences, rootKey)
         }
     }
+}
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            android.R.id.home -> onBackPressed()
-        }
-        return true
-    }
-
-    /**
-     * Loads the activities preferences into the fragment.
-     */
-    class ApplicationPreferenceFragment : PreferenceFragment() {
-        override fun onCreate(bundle: Bundle?) {
-            super.onCreate(bundle)
-            addPreferencesFromResource(R.xml.prefs)
-        }
-    }
-
-    companion object {
-        val KEY_TEXT_SIZE = "textSize"
-    }
+object Prefs {
+    @Deprecated(message = "Should use textZoom")
+    const val KEY_TEXT_SIZE = "textSize"
+    const val KEY_TEXT_ZOOM = "textZoom"
 }
