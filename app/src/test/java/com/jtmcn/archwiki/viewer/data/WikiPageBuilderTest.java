@@ -12,22 +12,22 @@ public class WikiPageBuilderTest {
 	@Test
 	public void getPageTitle() throws Exception {
 		String fakeTitle = "fake title..1!@#!@#!";
-		StringBuilder wrapped = new StringBuilder(WikiPageBuilder.HTML_TITLE_OPEN)
+		StringBuilder wrapped = new StringBuilder(WikiPageBuilder.INSTANCE.getHTML_TITLE_OPEN())
 				.append(fakeTitle)
-				.append(WikiPageBuilder.HTML_TITLE_CLOSE);
-		assertEquals(fakeTitle, WikiPageBuilder.getPageTitle(wrapped));
+				.append(WikiPageBuilder.INSTANCE.getHTML_TITLE_CLOSE());
+		assertEquals(fakeTitle, WikiPageBuilder.INSTANCE.getPageTitle(wrapped));
 	}
 
 	@Test
 	public void getEmptyTitle() throws Exception {
-		assertEquals("No title found", WikiPageBuilder.getPageTitle(new StringBuilder()));
+		assertEquals("No title found", WikiPageBuilder.INSTANCE.getPageTitle(new StringBuilder()));
 	}
 
 	@Test
 	public void injectLocalCSS() throws Exception {
-		StringBuilder head = new StringBuilder(WikiPageBuilder.HTML_HEAD_OPEN)
-				.append(WikiPageBuilder.HTML_HEAD_CLOSE);
-		boolean passed = WikiPageBuilder.injectLocalCSS(head, Constants.LOCAL_CSS);
+		StringBuilder head = new StringBuilder(WikiPageBuilder.INSTANCE.getHTML_HEAD_OPEN())
+				.append(WikiPageBuilder.INSTANCE.getHTML_HEAD_CLOSE());
+		boolean passed = WikiPageBuilder.INSTANCE.injectLocalCSS(head, Constants.INSTANCE.getLOCAL_CSS());
 		assertTrue(passed);
 		assertEquals("<head><link rel='stylesheet' href='file:///android_asset/style.css' /><meta name='viewport' content='width=device-width, initial-scale=1.0, user-scalable=no' /></head>",
 				head.toString());
@@ -37,7 +37,7 @@ public class WikiPageBuilderTest {
 	public void injectLocalCSSFail() throws Exception {
 		String fakeHead = "<head> <head>";
 		StringBuilder head = new StringBuilder(fakeHead);
-		boolean passed = WikiPageBuilder.injectLocalCSS(head, Constants.LOCAL_CSS);
+		boolean passed = WikiPageBuilder.INSTANCE.injectLocalCSS(head, Constants.INSTANCE.getLOCAL_CSS());
 		assertFalse(passed);
 		assertEquals(fakeHead, head.toString());
 	}

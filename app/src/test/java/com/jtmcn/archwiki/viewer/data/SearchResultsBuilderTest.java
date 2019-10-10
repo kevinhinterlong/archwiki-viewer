@@ -14,7 +14,7 @@ public class SearchResultsBuilderTest {
 
 	@Test
 	public void parseSearchResults() throws Exception {
-		List<SearchResult> searchResults = SearchResultsBuilder.parseSearchResults(realResult);
+		List<SearchResult> searchResults = SearchResultsBuilder.INSTANCE.parseSearchResults(realResult);
 
 		assertEquals("Arch-based Distros",searchResults.get(0).getPageName());
 		assertEquals("https://wiki.archlinux.org/index.php/Arch-based_Distros", searchResults.get(0).getPageURL());
@@ -28,7 +28,7 @@ public class SearchResultsBuilderTest {
 		String query = SearchResultsBuilder.getSearchQuery("arch");
 		assertEquals("https://wiki.archlinux.org/api.php?action=opensearch&format=json&formatversion=2&namespace=0&limit=10&suggest=true&search=arch",query);
 
-		String queryWithLength = SearchResultsBuilder.getSearchQuery("arch",9);
+		String queryWithLength = SearchResultsBuilder.INSTANCE.getSearchQuery("arch",9);
 		assertEquals("https://wiki.archlinux.org/api.php?action=opensearch&format=json&formatversion=2&namespace=0&limit=9&suggest=true&search=arch",queryWithLength);
 	}
 
@@ -38,14 +38,14 @@ public class SearchResultsBuilderTest {
 				"\t[],\n" +
 				"\t[]\n" +
 				"]";
-		List<SearchResult> searchResults = SearchResultsBuilder.parseSearchResults(fakeResult);
+		List<SearchResult> searchResults = SearchResultsBuilder.INSTANCE.parseSearchResults(fakeResult);
 		assertEquals(0,searchResults.size());
 	}
 
 	@Test
 	public void emptyStringSearch() throws Exception {
 		String fakeResult = "";
-		List<SearchResult> searchResults = SearchResultsBuilder.parseSearchResults(fakeResult);
+		List<SearchResult> searchResults = SearchResultsBuilder.INSTANCE.parseSearchResults(fakeResult);
 		assertEquals(0,searchResults.size());
 	}
 }
