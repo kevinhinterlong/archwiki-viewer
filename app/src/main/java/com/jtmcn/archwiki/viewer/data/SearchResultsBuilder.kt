@@ -1,6 +1,5 @@
 package com.jtmcn.archwiki.viewer.data
 
-import com.google.gson.JsonArray
 import com.google.gson.JsonParser
 import com.jtmcn.archwiki.viewer.ARCHWIKI_BASE
 
@@ -12,7 +11,7 @@ import com.jtmcn.archwiki.viewer.ARCHWIKI_BASE
  * @return a url to fetch.
  */
 fun getSearchQuery(query: String, limit: Int = 10): String {
-    return "${ARCHWIKI_BASE}api.php?" +
+    return "${ARCHWIKI_BASE}/api.php?" +
             "action=opensearch&format=json&formatversion=2&namespace=0&suggest=true" +
             "&search=$query" +
             "&limit=$limit"
@@ -30,18 +29,8 @@ fun parseSearchResults(jsonResult: String): List<SearchResult> {
 
     val jsonArray = jsonRoot.asJsonArray
 
-    val listOfPageTitles = getJsonArrayAsStringArray(jsonArray.get(1).asJsonArray)
-    val listOfPageUrls = getJsonArrayAsStringArray(jsonArray.get(3).asJsonArray)
+    val listOfPageTitles = jsonArray.get(1).asJsonArray.mapNotNull { it.asString }
+    val listOfPageUrls = jsonArray.get(3).asJsonArray.mapNotNull { it.asString }
 
     return listOfPageTitles.zip(listOfPageUrls).map { SearchResult(it.first, it.second) }
-}
-
-/**
- * Convert a [JsonArray] into an array of strings.
- *
- * @param jsonArray the array to be parsed.
- * @return the string array which was parsed.
- */
-private fun getJsonArrayAsStringArray(jsonArray: JsonArray): List<String> {
-    return jsonArray.mapNotNull { it.asString }
 }

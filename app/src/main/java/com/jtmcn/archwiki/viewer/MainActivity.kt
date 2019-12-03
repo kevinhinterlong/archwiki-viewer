@@ -11,7 +11,7 @@ import androidx.appcompat.widget.SearchView
 import com.jtmcn.archwiki.viewer.data.SearchResult
 import com.jtmcn.archwiki.viewer.data.getSearchQuery
 import com.jtmcn.archwiki.viewer.tasks.Fetch
-import com.jtmcn.archwiki.viewer.utils.getFontZoom
+import com.jtmcn.archwiki.viewer.utils.getTextZoom
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.toolbar.*
 import timber.log.Timber
@@ -62,7 +62,7 @@ class MainActivity : AppCompatActivity() {
      * Update the font size used in the webview.
      */
     private fun updateWebSettings() {
-        wikiViewer.settings.textZoom = getFontZoom(this)
+        wikiViewer.settings.textZoom = getTextZoom(this)
     }
 
     override fun onPrepareOptionsMenu(menu: Menu): Boolean {

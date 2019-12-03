@@ -3,7 +3,7 @@ package com.jtmcn.archwiki.viewer
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.preference.PreferenceFragmentCompat
-import androidx.preference.PreferenceManager
+import com.jtmcn.archwiki.viewer.utils.getTextZoom
 import kotlinx.android.synthetic.main.toolbar.*
 
 class PreferencesActivity : AppCompatActivity() {
@@ -20,25 +20,7 @@ class PreferencesActivity : AppCompatActivity() {
                 .commit()
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-
-        val prefs = PreferenceManager.getDefaultSharedPreferences(this)
-
-        if(prefs.contains(Prefs.KEY_TEXT_SIZE)) {
-            val textZoom = when(Integer.valueOf(prefs.getString(Prefs.KEY_TEXT_SIZE, "2")!!)) {
-                0 -> 50
-                1 -> 75
-                2 -> 100
-                3 -> 150
-                4 -> 200
-                else -> 100
-            }
-            prefs.edit()
-                    .putInt(Prefs.KEY_TEXT_ZOOM, textZoom)
-                    .remove(Prefs.KEY_TEXT_SIZE)
-                    .apply();
-
-        }
-
+        getTextZoom(this)
     }
 
     class SettingsFragment : PreferenceFragmentCompat() {
@@ -49,7 +31,7 @@ class PreferencesActivity : AppCompatActivity() {
 }
 
 object Prefs {
-    @Deprecated(message = "Should use textZoom")
+    @Deprecated(message = "Should use textZoom", replaceWith = ReplaceWith("KEY_TEXT_ZOOM"))
     const val KEY_TEXT_SIZE = "textSize"
     const val KEY_TEXT_ZOOM = "textZoom"
 }
