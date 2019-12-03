@@ -11,7 +11,7 @@
     <include layout="@layout/toolbar"/>
 
     <com.jtmcn.archwiki.viewer.WikiView
-        android:id="@+id/wiki_view"
+        android:id="@+id/wikiViewer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"/>

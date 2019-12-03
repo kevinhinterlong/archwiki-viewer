@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:key="applicationPreference"
+    android:title="@string/menu_settings">
+
+    <SeekBarPreference
+        android:key="textZoom"
+        android:title="@string/text_size_preference"
+        app:min="25"
+        app:showSeekBarValue="true"
+        android:max="200"
+        app:seekBarIncrement="5"
+        android:defaultValue="100" />
+
+</androidx.preference.PreferenceScreen>
